@@ -11,7 +11,7 @@ import {
   updateLastActive,
 } from '../utils/storage'
 import './Admin.css'
-import { dbSaveConfig, dbSavePhotos, dbUploadHeroSlideImg, dbUploadAboutImg, dbUploadLogoImg, dbUploadPortfolioImg, dbGetVisitHistory } from '../utils/db'
+import { dbSaveConfig, dbSaveAboutImg, dbSaveLogoImg, dbSaveCustomPhoto, dbDeleteCustomPhoto, dbSaveAllHeroSlides, dbGetVisitHistory } from '../utils/db'
 
 const CATEGORIES = ['Portraits & Famille', 'Nature & Paysages', 'Concerts & Événements']
 
@@ -392,46 +392,45 @@ function TabPhotos() {
   const [uploading, setUploading] = useState(false)
   const [success, setSuccess] = useState(false)
   const [dragId, setDragId]   = useState(null)
-  const [slideUploading, setSlideUploading] = useState(false)
+  const [slideUploading] = useState(false)
   const fileRef = useRef(null)
 
   const { open: openSlide, Input: SlideInput } = useFilePicker((base64) => {
-    const id = Date.now()
-    const newSlide = { src: base64, location: '', sub: '' }
-    const next = [...getHeroImgs(), newSlide]
-    saveHeroImgs(next); setHeroImgsState(next)
-    setSlideUploading(true)
-    dbUploadHeroSlideImg(base64, id).then(url => {
-      const updated = getHeroImgs().map(s => s.src === base64 ? { ...s, src: url } : s)
-      saveHeroImgs(updated); setHeroImgsState(updated)
-      dbSavePhotos({ heroImgs: updated })
-    }).catch(() => {
-      dbSavePhotos({ heroImgs: next })
-    }).finally(() => setSlideUploading(false))
+    compressImage(base64, 900, 0.65).then(compressed => {
+      const id = Date.now()
+      const newSlide = { src: compressed, location: '', sub: '', _id: id }
+      const next = [...getHeroImgs(), newSlide]
+      saveHeroImgs(next); setHeroImgsState(next)
+      dbSaveAllHeroSlides(next)
+    })
   })
 
   const removeSlide = (i) => {
     const next = heroImgs.filter((_, idx) => idx !== i)
     saveHeroImgs(next); setHeroImgsState(next)
-    dbSavePhotos({ heroImgs: next })
+    dbSaveAllHeroSlides(next)
   }
 
   const updateSlide = (i, field, value) => {
     const next = heroImgs.map((s, idx) => idx === i ? { ...s, [field]: value } : s)
     saveHeroImgs(next); setHeroImgsState(next)
-    dbSavePhotos({ heroImgs: next })
+    dbSaveAllHeroSlides(next)
   }
 
   const { open: openAbout, Input: AboutInput } = useFilePicker((base64) => {
-    saveAboutImg(base64); setAboutImgState(base64)
-    dbUploadAboutImg(base64).then(url => { saveAboutImg(url); setAboutImgState(url) }).catch(() => {})
+    compressImage(base64, 900, 0.7).then(compressed => {
+      saveAboutImg(compressed); setAboutImgState(compressed)
+      dbSaveAboutImg(compressed)
+    })
   })
 
   const { open: openLogo, Input: LogoInput } = useFilePicker((base64) => {
-    removeBackground(base64).then(transparent => {
-      saveLogoImg(transparent); setLogoImgState(transparent)
-      dbUploadLogoImg(transparent).then(url => { saveLogoImg(url); setLogoImgState(url) }).catch(() => {})
-    })
+    removeBackground(base64).then(transparent =>
+      compressImage(transparent, 400, 0.85).then(compressed => {
+        saveLogoImg(compressed); setLogoImgState(compressed)
+        dbSaveLogoImg(compressed)
+      })
+    )
   })
 
   const toggleHide = (id) => {
@@ -442,14 +441,14 @@ function TabPhotos() {
   const deleteCustom = (id) => {
     const next = customPhotos.filter(p => p.id !== id)
     setCustomPhotos(next); saveCustomPhotos(next)
-    dbSavePhotos({ customPhotos: next })
+    dbDeleteCustomPhoto(id)
   }
 
   const handleFile = (e) => {
     const file = e.target.files[0]
     if (!file) return
     const reader = new FileReader()
-    reader.onload = (ev) => compressImage(ev.target.result).then(setPreview)
+    reader.onload = (ev) => compressImage(ev.target.result, 900, 0.65).then(setPreview)
     reader.readAsDataURL(file)
   }
 
@@ -465,15 +464,7 @@ function TabPhotos() {
     if (fileRef.current) fileRef.current.value = ''
     setUploading(false); setSuccess(true)
     setTimeout(() => setSuccess(false), 3000)
-    // Upload en arrière-plan vers Firebase Storage
-    dbUploadPortfolioImg(preview, id).then(url => {
-      const updated = getCustomPhotos().map(p => p.id === id ? { ...p, src: url } : p)
-      saveCustomPhotos(updated)
-      dbSavePhotos({ customPhotos: updated })
-    }).catch(() => {
-      // Garder le base64 local si l'upload échoue
-      dbSavePhotos({ customPhotos: next }).catch(() => {})
-    })
+    dbSaveCustomPhoto(newPhoto)
   }
 
   // Drag & drop reorder (custom photos only)
@@ -485,7 +476,7 @@ function TabPhotos() {
     const to   = arr.findIndex(p => p.id === targetId)
     arr.splice(to, 0, arr.splice(from, 1)[0])
     setCustomPhotos(arr); saveCustomPhotos(arr)
-    dbSavePhotos({ customPhotos: arr })
+    arr.forEach(p => dbSaveCustomPhoto(p))
     setDragId(null)
   }
 
