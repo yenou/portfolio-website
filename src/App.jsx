@@ -12,7 +12,7 @@ import Footer from './components/Footer'
 import Banner from './components/Banner'
 import Admin from './pages/Admin'
 import { incrementVisits } from './utils/storage'
-import { syncFromFirestore, dbIncrementVisit } from './utils/db'
+import { syncFromFirestore, syncPhotosFromFirestore, dbIncrementVisit } from './utils/db'
 
 function isAdminRoute() {
   return window.location.pathname === '/admin' || window.location.hash === '#admin'
@@ -27,6 +27,7 @@ export default function App() {
 
   useEffect(() => {
     syncFromFirestore().finally(() => setSyncDone(true))
+    syncPhotosFromFirestore()
     if (!visitedRef.current) {
       visitedRef.current = true
       incrementVisits()
