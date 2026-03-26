@@ -1,0 +1,40 @@
+@media (min-width: 1024px) {
+  * { cursor: none !important; }
+}
+
+.cursor-dot {
+  position: fixed;
+  top: 0; left: 0;
+  width: 6px; height: 6px;
+  background: white;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 99999;
+  margin: -3px 0 0 -3px;
+  opacity: 0;
+  transition: transform 0.2s ease, opacity 0.4s ease;
+  will-change: left, top;
+}
+
+.cursor-ring {
+  position: fixed;
+  top: 0; left: 0;
+  width: 36px; height: 36px;
+  border: 1px solid rgba(255,255,255,0.55);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 99998;
+  margin: -18px 0 0 -18px;
+  opacity: 0;
+  transition: transform 0.35s ease, border-color 0.3s ease, opacity 0.4s ease;
+  will-change: left, top;
+}
+
+.cursor-dot.cursor--hover {
+  transform: scale(0);
+}
+
+.cursor-ring.cursor--hover {
+  transform: scale(2);
+  border-color: rgba(255,255,255,0.9);
+}
