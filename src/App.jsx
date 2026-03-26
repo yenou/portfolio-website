@@ -26,8 +26,7 @@ export default function App() {
   const visitedRef = useRef(false)
 
   useEffect(() => {
-    syncFromFirestore().finally(() => setSyncDone(true))
-    syncPhotosFromFirestore()
+    Promise.all([syncFromFirestore(), syncPhotosFromFirestore()]).finally(() => setSyncDone(true))
     if (!visitedRef.current) {
       visitedRef.current = true
       incrementVisits()
