@@ -165,16 +165,16 @@ a.contact__detail-value:hover {
     margin-right: auto;
   }
   .contact__details {
-    align-items: center;
+    align-items: flex-start;
+    width: fit-content;
+    margin: 0 auto;
   }
   .contact__detail {
-    justify-content: center;
     align-items: center;
     text-align: left;
   }
   .contact__detail-icon {
     margin-top: 0;
-    flex-shrink: 0;
   }
 }
 
