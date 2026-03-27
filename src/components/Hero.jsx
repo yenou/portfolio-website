@@ -105,16 +105,13 @@ export default function Hero() {
           <span className="hero__divider-line" />
         </div>
 
-        <div className="hero__eyebrow">
-          <span>{texts.heroEyebrow}</span>
-        </div>
 
         <div className="hero__title-wrap">
           <h1 className="hero__title">YENOU André</h1>
         </div>
 
         <div className="hero__subtitle-wrap">
-          <p className="hero__subtitle">Photographie basé sur Contrexéville</p>
+          <p className="hero__subtitle">Photographe basé sur Contrexéville</p>
         </div>
 
         <p className="hero__tagline">{texts.heroTagline}</p>
