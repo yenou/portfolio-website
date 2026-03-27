@@ -216,12 +216,27 @@
     grid-template-columns: 1fr;
     gap: 40px;
   }
-  .about__img {
-    height: 360px;
-  }
+  .about__img { height: 360px; }
   .about__img-border { display: none; }
   .about__bg-number { font-size: 8rem; }
   .about__quote { font-size: 1rem; padding-left: 18px; }
+
+  /* Animation verticale sur mobile */
+  .about__left,
+  .about__right {
+    transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .about__right {
+    transition-delay: 0.1s;
+  }
+
+  /* Bouton pleine largeur sur mobile */
+  .about__right .btn {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
 }
 
 @media (max-width: 480px) {
