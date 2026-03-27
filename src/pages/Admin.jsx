@@ -168,21 +168,73 @@ function SavedBadge({ show }) {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
+const LOCKOUT_KEY = 'admin_lockout'
+const MAX_ATTEMPTS = 5
+const LOCKOUT_DURATION = 15 * 60 * 1000 // 15 minutes
+
+function getLockoutState() {
+  try { return JSON.parse(localStorage.getItem(LOCKOUT_KEY) || '{}') } catch { return {} }
+}
+function saveLockoutState(state) {
+  localStorage.setItem(LOCKOUT_KEY, JSON.stringify(state))
+}
+
 export default function Admin({ onExit }) {
   const [auth, setAuth]       = useState(false)
   const [pwd, setPwd]         = useState('')
   const [pwdError, setPwdError] = useState(false)
   const [tab, setTab]         = useState('dashboard')
   const [autoLogoutMin, setAutoLogoutMin] = useState(30)
+  const [lockoutRemaining, setLockoutRemaining] = useState(0)
+  const [loginDisabled, setLoginDisabled] = useState(false)
 
   useAutoLogout(auth ? autoLogoutMin : 0, () => setAuth(false))
+
+  // Check lockout on mount and on timer
+  useEffect(() => {
+    const check = () => {
+      const state = getLockoutState()
+      if (state.lockedUntil && Date.now() < state.lockedUntil) {
+        const remaining = Math.ceil((state.lockedUntil - Date.now()) / 1000)
+        setLockoutRemaining(remaining)
+        setLoginDisabled(true)
+      } else {
+        setLockoutRemaining(0)
+        setLoginDisabled(false)
+      }
+    }
+    check()
+    const interval = setInterval(check, 1000)
+    return () => clearInterval(interval)
+  }, [])
 
   // ── LOGIN ──────────────────────────────────────────────────────────────────
   const handleLogin = (e) => {
     e.preventDefault()
-    if (pwd === getPassword()) { setAuth(true); setPwdError(false) }
-    else setPwdError(true)
+    if (loginDisabled) return
+
+    const state = getLockoutState()
+    const attempts = state.attempts || 0
+
+    if (pwd === getPassword()) {
+      saveLockoutState({})
+      setAuth(true)
+      setPwdError(false)
+    } else {
+      const newAttempts = attempts + 1
+      if (newAttempts >= MAX_ATTEMPTS) {
+        const lockedUntil = Date.now() + LOCKOUT_DURATION
+        saveLockoutState({ attempts: newAttempts, lockedUntil })
+        setLoginDisabled(true)
+      } else {
+        saveLockoutState({ attempts: newAttempts })
+      }
+      setPwdError(true)
+    }
   }
+
+  const attemptsLeft = MAX_ATTEMPTS - (getLockoutState().attempts || 0)
+  const formatRemaining = (s) => s >= 60 ? `${Math.ceil(s/60)} min` : `${s}s`
 
   if (!auth) return (
     <div className="admin-login">
@@ -197,9 +249,17 @@ export default function Admin({ onExit }) {
         <form onSubmit={handleLogin} className="admin-login__form">
           <input type="password" placeholder="Mot de passe" value={pwd}
             onChange={e => { setPwd(e.target.value); setPwdError(false) }}
-            className={`admin-login__input ${pwdError ? 'error' : ''}`} autoFocus />
-          {pwdError && <p className="admin-login__error">Mot de passe incorrect</p>}
-          <button type="submit" className="admin-btn admin-btn--solid">Accéder</button>
+            className={`admin-login__input ${pwdError ? 'error' : ''}`}
+            autoFocus disabled={loginDisabled} />
+          {loginDisabled && lockoutRemaining > 0 && (
+            <p className="admin-login__error">Trop de tentatives. Réessayez dans {formatRemaining(lockoutRemaining)}.</p>
+          )}
+          {pwdError && !loginDisabled && (
+            <p className="admin-login__error">
+              Mot de passe incorrect.{attemptsLeft > 0 && attemptsLeft <= 3 ? ` ${attemptsLeft} tentative${attemptsLeft > 1 ? 's' : ''} restante${attemptsLeft > 1 ? 's' : ''}.` : ''}
+            </p>
+          )}
+          <button type="submit" className="admin-btn admin-btn--solid" disabled={loginDisabled}>Accéder</button>
         </form>
         <button className="admin-login__back" onClick={onExit}>← Retour au site</button>
       </div>
