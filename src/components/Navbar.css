@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300&display=swap');
 
 /* ===== NAVBAR ===== */
 .navbar {
@@ -41,16 +41,18 @@
 }
 
 .navbar__logo-signature {
-  font-family: 'Great Vibes', cursive;
-  font-size: 2rem;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-weight: 300;
+  font-size: 1.6rem;
   color: white;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.08em;
   line-height: 1;
   display: block;
 }
 
 @media (max-width: 768px) {
-  .navbar__logo-signature { font-size: 1.6rem; }
+  .navbar__logo-signature { font-size: 1.3rem; }
 }
 
 /* ===== LIENS DESKTOP ===== */
