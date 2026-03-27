@@ -44,29 +44,16 @@ function addWatermark(base64) {
       const ctx = canvas.getContext('2d')
       ctx.drawImage(img, 0, 0)
 
-      const fontSize = Math.max(Math.round(w * 0.024), 18)
+      const fontSize = Math.max(Math.round(w * 0.016), 14)
       const text = '© YENOU André Photographie'
-      ctx.font = `bold ${fontSize}px Arial, sans-serif`
-      ctx.fillStyle = 'rgba(255,255,255,0.38)'
-      ctx.textAlign = 'center'
-      ctx.textBaseline = 'middle'
+      ctx.font = `300 ${fontSize}px Arial, sans-serif`
+      ctx.fillStyle = 'rgba(255,255,255,0.22)'
+      ctx.textAlign = 'right'
+      ctx.textBaseline = 'bottom'
 
-      ctx.save()
-      ctx.translate(w / 2, h / 2)
-      ctx.rotate(-Math.PI / 6)
+      const padding = Math.round(w * 0.02)
+      ctx.fillText(text, w - padding, h - padding)
 
-      const textW = ctx.measureText(text).width + 70
-      const textH = fontSize + 60
-      const diag = Math.ceil(Math.sqrt(w * w + h * h))
-      const cols = Math.ceil(diag / textW) + 1
-      const rows = Math.ceil(diag / textH) + 1
-
-      for (let r = -rows; r <= rows; r++) {
-        for (let c = -cols; c <= cols; c++) {
-          ctx.fillText(text, c * textW, r * textH)
-        }
-      }
-      ctx.restore()
       resolve(canvas.toDataURL('image/jpeg', 0.88))
     }
     img.src = base64
