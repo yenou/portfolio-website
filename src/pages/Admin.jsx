@@ -418,6 +418,20 @@ function TabPhotos() {
   const [slideUploading] = useState(false)
   const fileRef = useRef(null)
 
+  // Re-sync state when Firebase finishes loading (other device / first load)
+  useEffect(() => {
+    const onUpdate = () => {
+      const imgs = getHeroImgs()
+      const normalized = imgs.map(s =>
+        typeof s === 'string' ? { src: s, location: 'Contrexéville', sub: 'Vosges, France' } : s
+      )
+      if (normalized.length > 0) setHeroImgsState(normalized)
+      setCustomPhotos(getCustomPhotos())
+    }
+    window.addEventListener('yenou:updated', onUpdate)
+    return () => window.removeEventListener('yenou:updated', onUpdate)
+  }, [])
+
   const { open: openSlide, Input: SlideInput } = useFilePicker((base64) => {
     compressImage(base64, 1600, 0.82).then(compressed => {
       const id = Date.now()
