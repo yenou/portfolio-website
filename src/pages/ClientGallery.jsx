@@ -57,8 +57,7 @@ export default function ClientGallery() {
     setLightbox(i => (i + dir + gallery.photos.length) % gallery.photos.length)
   }
 
-  const toggleSelect = (photoId, e) => {
-    e.stopPropagation()
+  const toggleSelect = (photoId) => {
     setSelected(prev => {
       const next = new Set(prev)
       next.has(photoId) ? next.delete(photoId) : next.add(photoId)
@@ -177,14 +176,12 @@ export default function ClientGallery() {
                     {/* Numéro */}
                     <span className="cg__num">{i + 1}</span>
                     {/* Checkbox */}
-                    <label className="cg__check" onClick={e => toggleSelect(photo.id, e)}>
-                      <input
-                        type="checkbox"
-                        checked={isSelected}
-                        onChange={() => {}}
-                      />
-                      <span className="cg__check-box">{isSelected ? '✓' : ''}</span>
-                    </label>
+                    <div
+                      className={`cg__check ${isSelected ? 'cg__check--on' : ''}`}
+                      onClick={e => { e.stopPropagation(); toggleSelect(photo.id) }}
+                    >
+                      {isSelected ? '✓' : ''}
+                    </div>
                     {photo.caption && <span className="cg__caption">{photo.caption}</span>}
                   </div>
                 )
@@ -241,12 +238,12 @@ export default function ClientGallery() {
           <button className="cg__lb-next" onClick={e => { e.stopPropagation(); navigate(1) }}>›</button>
           <div className="cg__lb-bottom">
             <span className="cg__lb-counter">{lightbox + 1} / {gallery.photos.length}</span>
-            <label className="cg__lb-check" onClick={e => toggleSelect(gallery.photos[lightbox].id, e)}>
-              <input type="checkbox" checked={selected.has(gallery.photos[lightbox].id)} onChange={() => {}} />
-              <span className="cg__lb-check-box">
-                {selected.has(gallery.photos[lightbox].id) ? '✓ Sélectionnée' : '+ Sélectionner cette photo'}
-              </span>
-            </label>
+            <div
+              className={`cg__lb-check ${selected.has(gallery.photos[lightbox].id) ? 'cg__lb-check--on' : ''}`}
+              onClick={e => { e.stopPropagation(); toggleSelect(gallery.photos[lightbox].id) }}
+            >
+              {selected.has(gallery.photos[lightbox].id) ? '✓ Sélectionnée' : '+ Sélectionner cette photo'}
+            </div>
           </div>
         </div>
       )}

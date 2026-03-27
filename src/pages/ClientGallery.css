@@ -273,23 +273,21 @@
   right: 8px;
   z-index: 4;
   cursor: pointer;
-}
-.cg__check input { display: none; }
-.cg__check-box {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   border: 2px solid rgba(255,255,255,0.6);
-  background: rgba(0,0,0,0.45);
+  background: rgba(0,0,0,0.5);
   color: white;
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   font-weight: 700;
   transition: all 0.15s;
+  user-select: none;
 }
-.cg__item--selected .cg__check-box {
+.cg__check--on {
   background: rgba(80,200,80,0.9);
   border-color: rgba(80,200,80,0.9);
 }
@@ -384,9 +382,8 @@
   align-items: center;
   gap: 10px;
 }
-.cg__lb-check { cursor: pointer; }
-.cg__lb-check input { display: none; }
-.cg__lb-check-box {
+.cg__lb-check {
+  cursor: pointer;
   display: inline-block;
   padding: 6px 16px;
   border-radius: 20px;
@@ -397,8 +394,9 @@
   color: rgba(255,255,255,0.6);
   transition: all 0.15s;
   white-space: nowrap;
+  user-select: none;
 }
-.cg__lb-check:has(input:checked) .cg__lb-check-box {
+.cg__lb-check--on {
   background: rgba(80,200,80,0.25);
   border-color: rgba(80,200,80,0.6);
   color: rgb(120,230,120);
