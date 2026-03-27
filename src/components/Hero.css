@@ -544,6 +544,10 @@
   .hero__exif { display: none; }
   .hero__scroll { display: none; }
 
+  .hero__slide {
+    background-size: cover !important;
+  }
+
   .hero__location {
     bottom: 36px;
     left: 50%;
