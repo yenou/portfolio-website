@@ -254,6 +254,44 @@
 }
 
 @media (max-width: 768px) {
+  /* Header centré */
+  .portfolio__header { text-align: center; }
+
+  /* "Portfolio" — typo élégante animée */
+  .portfolio__header .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3rem;
+    font-weight: 300;
+    letter-spacing: 0.08em;
+    animation: portfolio-reveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  @keyframes portfolio-reveal {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Filtres centrés */
+  .portfolio__filters {
+    justify-content: center;
+    border-bottom: none;
+    gap: 4px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+  }
+  .portfolio__filter {
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 20px;
+    padding: 7px 14px;
+    font-size: 0.58rem;
+    margin-bottom: 0;
+  }
+  .portfolio__filter.active {
+    background: white;
+    color: #080808;
+    border-color: white;
+    border-bottom-color: white;
+  }
+
   /* Cacher la grille, afficher le carousel */
   .portfolio__grid { display: none; }
 
