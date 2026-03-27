@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { getCustomPhotos, getHiddenIds, useStorage } from '../utils/storage'
 import './Portfolio.css'
 
@@ -39,6 +39,16 @@ export default function Portfolio() {
   const navigate = (dir) => {
     const idx = filtered.findIndex(p => p.id === lightbox.id)
     setLightbox(filtered[(idx + dir + filtered.length) % filtered.length])
+  }
+
+  // Swipe mobile
+  const touchStart = useRef(null)
+  const onTouchStart = (e) => { touchStart.current = e.touches[0].clientX }
+  const onTouchEnd = (e) => {
+    if (touchStart.current === null) return
+    const diff = touchStart.current - e.changedTouches[0].clientX
+    if (Math.abs(diff) > 50) navigate(diff > 0 ? 1 : -1)
+    touchStart.current = null
   }
 
   return (
@@ -103,7 +113,7 @@ export default function Portfolio() {
       </div>
 
       {lightbox && (
-        <div className="lightbox" onClick={() => setLightbox(null)}>
+        <div className="lightbox" onClick={() => setLightbox(null)} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
           <button className="lightbox__close" onClick={() => setLightbox(null)}>✕</button>
           <button className="lightbox__prev" onClick={e => { e.stopPropagation(); navigate(-1) }}>‹</button>
           <div className="lightbox__inner" onClick={e => e.stopPropagation()}>

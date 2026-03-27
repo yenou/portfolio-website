@@ -203,6 +203,17 @@
   .portfolio__grid { grid-template-columns: 1fr 1fr; grid-auto-rows: 200px; }
   .portfolio__item--large { grid-column: span 2; }
   .portfolio__item-exif { display: none; }
+
+  .lightbox__close {
+    top: 16px; right: 16px;
+    font-size: 1.8rem;
+    color: white;
+    background: rgba(0,0,0,0.5);
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .lightbox__prev, .lightbox__next { display: none; }
 }
 
 @media (max-width: 480px) {

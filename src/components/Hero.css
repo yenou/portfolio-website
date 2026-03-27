@@ -545,9 +545,25 @@
   .hero__scroll { display: none; }
 
   .hero__location {
-    bottom: 20px;
+    bottom: 36px;
     left: 50%;
     transform: translateX(-50%);
     white-space: nowrap;
+    gap: 6px;
+  }
+
+  .hero__location-text {
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+  }
+
+  .hero__location-sub {
+    font-size: 0.52rem;
+    letter-spacing: 0.12em;
+  }
+
+  .hero__location-icon {
+    width: 10px;
+    height: 10px;
   }
 }
