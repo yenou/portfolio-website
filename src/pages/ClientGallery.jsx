@@ -152,6 +152,12 @@ export default function ClientGallery() {
         </div>
       </header>
 
+      <section className="cg__hero">
+        <p className="cg__hero-label">Galerie privée</p>
+        <h2 className="cg__hero-name">{gallery.clientName}</h2>
+        <p className="cg__hero-meta">{gallery.photos.length} photo{gallery.photos.length > 1 ? 's' : ''}</p>
+      </section>
+
       <main className="cg__main">
         {gallery.photos.length === 0 ? (
           <div className="cg__empty">
@@ -162,7 +168,7 @@ export default function ClientGallery() {
           <>
             {!validated && (
               <p className="cg__select-hint">
-                Cochez les photos que vous souhaitez, puis validez votre sélection.
+                Cliquez sur une photo pour l'agrandir · Cochez vos favoris puis validez
               </p>
             )}
             <div className="cg__grid">
