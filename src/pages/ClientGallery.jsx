@@ -109,8 +109,8 @@ export default function ClientGallery() {
             maxLength={6}
             autoFocus
           />
-          <button className="cg__lock-btn" onClick={submitPassword}>Accéder →</button>
         </div>
+        <button className="cg__lock-btn" onClick={submitPassword}>→</button>
         {pwdError && <p className="cg__lock-error">Code incorrect</p>}
         <a href="/" className="cg__back" style={{ marginTop: '24px' }}>← Retour au site</a>
       </div>

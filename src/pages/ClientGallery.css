@@ -98,21 +98,21 @@
 }
 .cg__lock-input::placeholder { letter-spacing: 0.1em; font-weight: 400; color: rgba(255,255,255,0.18); font-size: 0.75rem; }
 .cg__lock-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  margin-top: 16px;
   background: rgba(255,255,255,0.06);
   color: rgba(255,255,255,0.7);
-  border: none;
-  border-left: 1px solid rgba(255,255,255,0.1);
-  padding: 14px 22px;
-  font-size: 0.62rem;
-  font-weight: 700;
-  letter-spacing: 0.15em;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 50%;
+  font-size: 1.2rem;
   cursor: pointer;
-  white-space: nowrap;
-  transition: background 0.2s, color 0.2s;
-  font-family: inherit;
-  text-transform: uppercase;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
 }
-.cg__lock-btn:hover { background: rgba(255,255,255,0.12); color: white; }
+.cg__lock-btn:hover { background: rgba(255,255,255,0.12); color: white; border-color: rgba(255,255,255,0.35); }
 .cg__lock-error {
   margin-top: 12px;
   font-size: 0.65rem;
