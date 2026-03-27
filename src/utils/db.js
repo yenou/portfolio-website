@@ -147,3 +147,54 @@ export async function dbGetVisitHistory() {
     return snap.exists() ? snap.data() : {}
   } catch (e) { return {} }
 }
+
+// ── Client Galleries ───────────────────────────────────────────────────────────
+const clientGalleriesCol = collection(db, 'clientGalleries')
+const clientGalleryPhotosCol = collection(db, 'clientGalleryPhotos')
+
+export async function dbCreateGallery(gallery) {
+  // gallery = { code, clientName, createdAt }
+  try { await setDoc(doc(clientGalleriesCol, gallery.code), gallery) }
+  catch (e) { console.warn('[Firebase] Gallery create failed:', e.message) }
+}
+
+export async function dbDeleteGallery(code) {
+  try {
+    await deleteDoc(doc(clientGalleriesCol, code))
+    // delete all photos for this gallery
+    const snap = await getDocs(clientGalleryPhotosCol)
+    await Promise.all(snap.docs.filter(d => d.data().galleryCode === code).map(d => deleteDoc(d.ref)))
+  } catch (e) { console.warn('[Firebase] Gallery delete failed:', e.message) }
+}
+
+export async function dbAddGalleryPhoto(photo) {
+  // photo = { id, galleryCode, src, caption, order }
+  try { await setDoc(doc(clientGalleryPhotosCol, String(photo.id)), photo) }
+  catch (e) { console.warn('[Firebase] Gallery photo add failed:', e.message) }
+}
+
+export async function dbDeleteGalleryPhoto(id) {
+  try { await deleteDoc(doc(clientGalleryPhotosCol, String(id))) }
+  catch (e) { console.warn('[Firebase] Gallery photo delete failed:', e.message) }
+}
+
+export async function dbGetAllGalleries() {
+  try {
+    const snap = await getDocs(clientGalleriesCol)
+    return snap.docs.map(d => d.data()).sort((a, b) => b.createdAt - a.createdAt)
+  } catch (e) { return [] }
+}
+
+export async function dbGetGallery(code) {
+  try {
+    const gallerySnap = await getDoc(doc(clientGalleriesCol, code))
+    if (!gallerySnap.exists()) return null
+    const gallery = gallerySnap.data()
+    const photosSnap = await getDocs(clientGalleryPhotosCol)
+    const photos = photosSnap.docs
+      .map(d => d.data())
+      .filter(p => p.galleryCode === code)
+      .sort((a, b) => a.order - b.order)
+    return { ...gallery, photos }
+  } catch (e) { return null }
+}

@@ -11,7 +11,7 @@ import {
   updateLastActive,
 } from '../utils/storage'
 import './Admin.css'
-import { dbSaveConfig, dbSaveAboutImg, dbSaveLogoImg, dbSaveCustomPhoto, dbDeleteCustomPhoto, dbSaveAllHeroSlides, dbGetVisitHistory } from '../utils/db'
+import { dbSaveConfig, dbSaveAboutImg, dbSaveLogoImg, dbSaveCustomPhoto, dbDeleteCustomPhoto, dbSaveAllHeroSlides, dbGetVisitHistory, dbCreateGallery, dbDeleteGallery, dbAddGalleryPhoto, dbDeleteGalleryPhoto, dbGetAllGalleries } from '../utils/db'
 
 const CATEGORIES = ['Portraits & Famille', 'Nature & Paysages', 'Concerts & Événements']
 
@@ -180,6 +180,7 @@ export default function Admin({ onExit }) {
 
   const TABS = [
     { id: 'dashboard',     label: '📊 Tableau de bord' },
+    { id: 'galleries',     label: '🔒 Galeries clients' },
     { id: 'photos',        label: '🖼 Photos' },
     { id: 'textes',        label: '✍️ Textes' },
     { id: 'temoignages',   label: '💬 Témoignages' },
@@ -224,6 +225,7 @@ export default function Admin({ onExit }) {
 
         <div className="admin-content">
           {tab === 'dashboard'   && <TabDashboard onExit={onExit} />}
+          {tab === 'galleries'   && <TabGalleries />}
           {tab === 'photos'      && <TabPhotos />}
           {tab === 'textes'      && <TabTextes />}
           {tab === 'temoignages' && <TabTemoignages />}
@@ -990,6 +992,147 @@ function TabBanniere() {
         <button className="admin-btn admin-btn--solid" onClick={save}>Sauvegarder</button>
         <SavedBadge show={saved} />
       </div>
+    </div>
+  )
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// TAB: GALERIES CLIENTS
+// ═══════════════════════════════════════════════════════════════════════════════
+function TabGalleries() {
+  const [galleries, setGalleries] = useState([])
+  const [newName, setNewName] = useState('')
+  const [creating, setCreating] = useState(false)
+  const [expanded, setExpanded] = useState(null) // code of open gallery
+
+  useEffect(() => {
+    dbGetAllGalleries().then(setGalleries)
+  }, [])
+
+  const generateCode = () => {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
+    return Array.from({ length: 6 }, () => chars[Math.floor(Math.random() * chars.length)]).join('')
+  }
+
+  const createGallery = async () => {
+    if (!newName.trim()) return
+    setCreating(true)
+    const gallery = { code: generateCode(), clientName: newName.trim(), createdAt: Date.now(), photos: [] }
+    await dbCreateGallery(gallery)
+    setGalleries(prev => [gallery, ...prev])
+    setNewName('')
+    setExpanded(gallery.code)
+    setCreating(false)
+  }
+
+  const deleteGallery = async (code) => {
+    if (!window.confirm('Supprimer cette galerie et toutes ses photos ?')) return
+    await dbDeleteGallery(code)
+    setGalleries(prev => prev.filter(g => g.code !== code))
+    if (expanded === code) setExpanded(null)
+  }
+
+  const addPhoto = (code, photo) => {
+    setGalleries(prev => prev.map(g => g.code === code ? { ...g, photos: [...(g.photos || []), photo] } : g))
+  }
+
+  const removePhoto = async (galleryCode, photoId) => {
+    await dbDeleteGalleryPhoto(photoId)
+    setGalleries(prev => prev.map(g => g.code === galleryCode ? { ...g, photos: g.photos.filter(p => p.id !== photoId) } : g))
+  }
+
+  const copyLink = (code) => {
+    const url = `${window.location.origin}/galerie/${code}`
+    navigator.clipboard.writeText(url).then(() => alert('Lien copié !'))
+  }
+
+  return (
+    <div className="tab-galleries">
+      <div className="admin-tab__header">
+        <h2 className="admin-tab__title">Galeries clients</h2>
+      </div>
+
+      {/* Create form */}
+      <div className="gallery-create-form">
+        <input
+          className="admin-input"
+          placeholder="Nom du client (ex: Martin & Sophie)"
+          value={newName}
+          onChange={e => setNewName(e.target.value)}
+          onKeyDown={e => e.key === 'Enter' && createGallery()}
+        />
+        <button className="admin-btn admin-btn--solid" onClick={createGallery} disabled={creating || !newName.trim()}>
+          {creating ? '⏳' : '+ Créer la galerie'}
+        </button>
+      </div>
+
+      {/* Gallery list */}
+      {galleries.length === 0 && (
+        <p className="gallery-empty">Aucune galerie pour le moment.</p>
+      )}
+
+      <div className="gallery-list">
+        {galleries.map(g => (
+          <GalleryCard
+            key={g.code}
+            gallery={g}
+            expanded={expanded === g.code}
+            onToggle={() => setExpanded(expanded === g.code ? null : g.code)}
+            onDelete={() => deleteGallery(g.code)}
+            onCopyLink={() => copyLink(g.code)}
+            onAddPhoto={(photo) => addPhoto(g.code, photo)}
+            onRemovePhoto={(photoId) => removePhoto(g.code, photoId)}
+          />
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function GalleryCard({ gallery, expanded, onToggle, onDelete, onCopyLink, onAddPhoto, onRemovePhoto }) {
+  const url = `${window.location.origin}/galerie/${gallery.code}`
+
+  const { open: openPhoto, Input: PhotoInput } = useFilePicker((base64) => {
+    compressImage(base64, 900, 0.7).then(compressed => {
+      const photo = { id: Date.now(), galleryCode: gallery.code, src: compressed, caption: '', order: (gallery.photos || []).length }
+      dbAddGalleryPhoto(photo).then(() => onAddPhoto(photo))
+    })
+  })
+
+  return (
+    <div className={`gallery-card ${expanded ? 'gallery-card--open' : ''}`}>
+      <div className="gallery-card__header" onClick={onToggle}>
+        <div className="gallery-card__info">
+          <span className="gallery-card__name">{gallery.clientName}</span>
+          <span className="gallery-card__meta">{gallery.code} · {(gallery.photos || []).length} photo{(gallery.photos || []).length !== 1 ? 's' : ''}</span>
+        </div>
+        <div className="gallery-card__actions" onClick={e => e.stopPropagation()}>
+          <button className="admin-btn admin-btn--ghost" onClick={onCopyLink} title="Copier le lien">🔗 Lien</button>
+          <button className="admin-btn admin-btn--danger" onClick={onDelete}>Supprimer</button>
+        </div>
+        <span className="gallery-card__chevron">{expanded ? '▲' : '▼'}</span>
+      </div>
+
+      {expanded && (
+        <div className="gallery-card__body">
+          <div className="gallery-link-row">
+            <span className="gallery-link-url">{url}</span>
+          </div>
+          <div className="gallery-card__photos">
+            {(gallery.photos || []).map((photo, i) => (
+              <div key={photo.id} className="gallery-photo-thumb">
+                <img src={photo.src} alt={`Photo ${i + 1}`} />
+                <button className="admin-slide-thumb__del" onClick={() => onRemovePhoto(photo.id)}>×</button>
+              </div>
+            ))}
+            <button className="gallery-add-photo" onClick={openPhoto}>
+              <span>+</span>
+              <span>Ajouter</span>
+            </button>
+          </div>
+          <PhotoInput />
+        </div>
+      )}
     </div>
   )
 }

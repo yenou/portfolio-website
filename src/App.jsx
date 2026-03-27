@@ -11,6 +11,7 @@ import Contact from './components/Contact'
 import Footer from './components/Footer'
 import Banner from './components/Banner'
 import Admin from './pages/Admin'
+import ClientGallery from './pages/ClientGallery'
 import { incrementVisits } from './utils/storage'
 import { syncFromFirestore, syncPhotosFromFirestore, dbIncrementVisit } from './utils/db'
 
@@ -18,11 +19,16 @@ function isAdminRoute() {
   return window.location.pathname === '/admin' || window.location.hash === '#admin'
 }
 
+function isGalleryRoute() {
+  return window.location.pathname.startsWith('/galerie/')
+}
+
 export default function App() {
   const [loaderDone, setLoaderDone]   = useState(false)
   const [syncDone, setSyncDone]       = useState(false)
   const [scrollProgress, setScrollProgress] = useState(0)
   const [showAdmin, setShowAdmin]     = useState(isAdminRoute)
+  const [showGallery] = useState(isGalleryRoute)
   const visitedRef = useRef(false)
 
   useEffect(() => {
@@ -79,6 +85,11 @@ export default function App() {
     els.forEach(el => observer.observe(el))
     return () => observer.disconnect()
   }, [loaderDone, showAdmin])
+
+  // Page galerie client
+  if (showGallery) {
+    return <ClientGallery />
+  }
 
   // Page admin
   if (showAdmin) {
