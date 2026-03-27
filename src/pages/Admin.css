@@ -1560,3 +1560,106 @@ h2.admin-tab__title { margin-bottom: 32px; }
 
 .admin--light .avail-admin__grid-head span { color: rgba(0,0,0,0.25); }
 .admin--light .avail-admin__day--past { color: rgba(0,0,0,0.12); }
+.admin--light .avail-admin__month-name { color: rgba(0,0,0,0.6); }
+
+/* Témoignages & Services */
+.admin--light .temoignage-card,
+.admin--light .service-edit-card,
+.admin--light .admin-add-block {
+  background: #fafafa;
+  border-color: rgba(0,0,0,0.08);
+}
+
+/* Bannière */
+.admin--light .admin-section__desc { color: rgba(0,0,0,0.4); }
+.admin--light .admin-label         { color: rgba(0,0,0,0.4); }
+.admin--light .admin-input {
+  background: #fff;
+  border-color: rgba(0,0,0,0.12);
+  color: #111;
+}
+.admin--light .admin-input::placeholder { color: rgba(0,0,0,0.25); }
+.admin--light .admin-input:focus { border-color: rgba(0,0,0,0.35); }
+.admin--light .gallery-create-form .admin-input {
+  background: #fff;
+  border-color: rgba(0,0,0,0.12);
+  color: rgba(0,0,0,0.85);
+}
+.admin--light .gallery-create-form .admin-input::placeholder { color: rgba(0,0,0,0.25); }
+.admin--light .banner-preview {
+  background: #fff;
+  border-color: rgba(0,0,0,0.08);
+}
+.admin--light .banner-preview__text  { color: rgba(0,0,0,0.5); }
+.admin--light .banner-preview__link  { color: rgba(0,0,0,0.75); }
+.admin--light .banner-preview__close { color: rgba(0,0,0,0.25); }
+
+/* Toggle switch */
+.admin--light .admin-toggle__track { background: rgba(0,0,0,0.12); }
+.admin--light .admin-toggle__track::after { background: rgba(0,0,0,0.35); }
+.admin--light .admin-toggle input:checked ~ .admin-toggle__track { background: rgba(0,0,0,0.25); }
+.admin--light .admin-toggle input:checked ~ .admin-toggle__track::after { background: #111; }
+.admin--light .admin-toggle__label { color: rgba(0,0,0,0.5); }
+
+/* Galeries clients */
+.admin--light .gallery-card {
+  background: #fff;
+  border-color: rgba(0,0,0,0.08);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+.admin--light .gallery-card--open { border-color: rgba(0,0,0,0.18); }
+.admin--light .gallery-card__header:hover { background: rgba(0,0,0,0.02); }
+.admin--light .gallery-card__name { color: rgba(0,0,0,0.85); }
+.admin--light .gallery-card__meta { color: rgba(0,0,0,0.35); }
+.admin--light .gallery-card__pwd {
+  color: rgba(0,0,0,0.45);
+  background: rgba(0,0,0,0.04);
+  border-color: rgba(0,0,0,0.1);
+}
+.admin--light .gallery-card__pwd strong { color: #b07d00; }
+.admin--light .gallery-card__chevron { color: rgba(0,0,0,0.2); }
+.admin--light .gallery-card__body { border-top-color: rgba(0,0,0,0.07); }
+.admin--light .gallery-link-row {
+  background: rgba(0,0,0,0.03);
+  border-color: rgba(0,0,0,0.07);
+}
+.admin--light .gallery-link-url { color: rgba(0,0,0,0.45); }
+.admin--light .gallery-photo-thumb { background: #e0e0e0; }
+.admin--light .gallery-add-photo {
+  background: rgba(0,0,0,0.03);
+  border-color: rgba(0,0,0,0.12);
+  color: rgba(0,0,0,0.3);
+}
+.admin--light .gallery-add-photo:hover {
+  background: rgba(0,0,0,0.06);
+  border-color: rgba(0,0,0,0.25);
+  color: rgba(0,0,0,0.55);
+}
+.admin--light .gallery-empty { color: rgba(0,0,0,0.3); }
+
+/* Slideshow preview */
+.admin--light .admin-slide-preview__toggle button {
+  background: rgba(0,0,0,0.04);
+  border-color: rgba(0,0,0,0.1);
+  color: rgba(0,0,0,0.4);
+}
+.admin--light .admin-slide-preview__toggle button.active {
+  background: rgba(0,0,0,0.1);
+  color: #111;
+  border-color: rgba(0,0,0,0.3);
+}
+
+/* Mobile nav en mode clair */
+@media (max-width: 900px) {
+  .admin--light .admin-nav {
+    border-bottom-color: rgba(0,0,0,0.08);
+  }
+  .admin--light .admin-nav__item {
+    background: rgba(0,0,0,0.03);
+  }
+  .admin--light .admin-nav__item.active {
+    border-bottom-color: #111;
+    background: rgba(0,0,0,0.07);
+    color: #111;
+  }
+}
