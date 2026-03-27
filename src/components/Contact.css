@@ -121,6 +121,13 @@ a.contact__detail-value:hover {
 }
 
 /* ===== SUCCESS ===== */
+.contact__error {
+  font-size: 0.75rem;
+  color: rgba(255, 100, 100, 0.9);
+  letter-spacing: 0.04em;
+  margin-top: -8px;
+}
+
 .contact__success {
   display: flex;
   flex-direction: column;
