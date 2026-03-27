@@ -1,6 +1,5 @@
 import { useEffect, useState, useRef } from 'react'
 import { dbGetGallery, dbIncrementGalleryView, dbSaveGallerySelection } from '../utils/db'
-import { getLogoImg } from '../utils/storage'
 import './ClientGallery.css'
 
 
@@ -16,7 +15,6 @@ export default function ClientGallery() {
   const [validated, setValidated] = useState(false)
   const [validating, setValidating] = useState(false)
   const [codeVisible, setCodeVisible] = useState(false)
-  const logoImg = getLogoImg()
   const touchStart = useRef(null)
 
   useEffect(() => {
@@ -136,16 +134,6 @@ export default function ClientGallery() {
     <div className="cg" onContextMenu={noContext}>
       <header className="cg__header">
         <div className="cg__header-inner">
-          <a href="/" className="cg__brand">
-            {logoImg
-              ? <img src={logoImg} alt="Logo" className="cg__logo" draggable={false} />
-              : <span className="cg__logo-text">YENOU André</span>
-            }
-          </a>
-          <div className="cg__title-wrap">
-            <p className="cg__label">Galerie privée</p>
-            <h1 className="cg__client-name">{gallery.clientName}</h1>
-          </div>
           <div className="cg__code-badge">
             <span className="cg__code-label">Numéro de galerie</span>
             <div className="cg__code-row">

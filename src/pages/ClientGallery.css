@@ -175,6 +175,7 @@
   padding: 14px 48px;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 20px;
 }
 .cg__brand { text-decoration: none; flex-shrink: 0; }
@@ -204,7 +205,7 @@
 .cg__code-badge {
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: center;
   flex-shrink: 0;
 }
 .cg__code-label {
