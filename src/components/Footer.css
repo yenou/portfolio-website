@@ -69,8 +69,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
   border: 1px solid var(--gray-dark);
   color: var(--gray-mid);
   transition: all 0.3s ease;
