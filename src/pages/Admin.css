@@ -756,6 +756,24 @@ h2.admin-tab__title { margin-bottom: 32px; }
 .admin-slide-input:focus { border-color: rgba(255,255,255,0.3); }
 .admin-slide-input--sub { color: rgba(255,255,255,0.4); font-size: 0.62rem; }
 
+.admin-slide-pos {
+  margin-top: 8px;
+}
+.admin-slide-pos__label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.62rem;
+  color: rgba(255,255,255,0.35);
+  letter-spacing: 0.08em;
+  margin-bottom: 6px;
+}
+.admin-slide-pos__label span { color: rgba(255,255,255,0.6); }
+.admin-slide-pos__range {
+  width: 100%;
+  accent-color: white;
+  cursor: pointer;
+}
+
 .admin-slide-empty {
   aspect-ratio: 16/9;
   border: 1px dashed rgba(255,255,255,0.12);

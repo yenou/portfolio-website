@@ -515,6 +515,18 @@ function TabPhotos() {
                   value={slide.sub}
                   onChange={e => updateSlide(i, 'sub', e.target.value)}
                 />
+                <div className="admin-slide-pos">
+                  <label className="admin-slide-pos__label">
+                    Position verticale
+                    <span>{slide.posY ?? 50}%</span>
+                  </label>
+                  <input
+                    type="range" min="0" max="100"
+                    value={slide.posY ?? 50}
+                    onChange={e => updateSlide(i, 'posY', Number(e.target.value))}
+                    className="admin-slide-pos__range"
+                  />
+                </div>
               </div>
             </div>
           ))}
