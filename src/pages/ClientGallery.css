@@ -257,6 +257,18 @@
   text-transform: uppercase;
   color: rgba(255,255,255,0.25);
 }
+.cg__hero-welcome {
+  max-width: 480px;
+  margin: 22px auto 0;
+  font-size: 0.72rem;
+  line-height: 1.8;
+  color: rgba(255,255,255,0.35);
+  letter-spacing: 0.04em;
+}
+.cg__hero-welcome em {
+  font-style: normal;
+  color: rgba(255,255,255,0.55);
+}
 
 /* ── Main ── */
 .cg__main {
@@ -412,59 +424,59 @@
 /* ── Barre de validation (flottante) ── */
 .cg__validate-bar {
   position: fixed;
-  bottom: 28px;
+  bottom: 24px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
   align-items: center;
-  gap: 20px;
-  padding: 14px 20px 14px 24px;
-  background: rgba(18,18,18,0.92);
+  gap: 16px;
+  padding: 10px 12px 10px 20px;
+  background: rgba(15,15,15,0.94);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255,255,255,0.1);
   border-radius: 50px;
   z-index: 50;
-  box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.7);
   white-space: nowrap;
 }
 .cg__validate-left {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
 }
 .cg__validate-count {
-  font-size: 0.68rem;
+  font-size: 0.62rem;
   letter-spacing: 0.08em;
-  color: rgba(255,255,255,0.5);
+  color: rgba(255,255,255,0.45);
 }
 .cg__deselect-btn {
   background: none;
   border: none;
-  color: rgba(255,120,120,0.6);
-  font-size: 0.6rem;
-  letter-spacing: 0.08em;
+  color: rgba(255,110,110,0.55);
+  font-size: 0.58rem;
+  letter-spacing: 0.06em;
   cursor: pointer;
   padding: 0;
   font-family: inherit;
   transition: color 0.2s;
 }
-.cg__deselect-btn:hover { color: rgba(255,120,120,0.9); }
+.cg__deselect-btn:hover { color: rgba(255,110,110,0.85); }
 .cg__validate-btn {
   background: white;
   color: #080808;
   border: none;
   border-radius: 30px;
-  padding: 9px 22px;
-  font-size: 0.62rem;
+  padding: 8px 18px;
+  font-size: 0.58rem;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   cursor: pointer;
   transition: opacity 0.2s, transform 0.15s;
   font-family: inherit;
 }
-.cg__validate-btn:disabled { opacity: 0.25; cursor: default; }
-.cg__validate-btn:not(:disabled):hover { opacity: 0.88; transform: scale(1.02); }
+.cg__validate-btn:disabled { opacity: 0.2; cursor: default; }
+.cg__validate-btn:not(:disabled):hover { opacity: 0.85; transform: scale(1.02); }
 
 /* ── Message validé ── */
 .cg__validated-msg {
