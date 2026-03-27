@@ -501,6 +501,13 @@ function TabPhotos() {
     dbDeleteCustomPhoto(id)
   }
 
+  const renamePhoto = (id, newAlt) => {
+    const next = customPhotos.map(p => p.id === id ? { ...p, alt: newAlt } : p)
+    setCustomPhotos(next); saveCustomPhotos(next)
+    const photo = next.find(p => p.id === id)
+    if (photo) dbSaveCustomPhoto(photo)
+  }
+
   const handleFile = (e) => {
     const file = e.target.files[0]
     if (!file) return
@@ -694,7 +701,16 @@ function TabPhotos() {
                       {!photo.isDefault && <div className="admin-card__drag-hint">⠿ Glisser</div>}
                     </div>
                     <div className="admin-card__info">
-                      <span className="admin-card__alt">{photo.alt}</span>
+                      {photo.isDefault ? (
+                        <span className="admin-card__alt">{photo.alt}</span>
+                      ) : (
+                        <input
+                          className="admin-card__alt-input"
+                          value={photo.alt}
+                          onChange={e => renamePhoto(photo.id, e.target.value)}
+                          placeholder="Nom de la photo"
+                        />
+                      )}
                       <div className="admin-card__actions">
                         {photo.isDefault ? (
                           <button className={`admin-btn-sm ${isHidden ? 'admin-btn-sm--show' : 'admin-btn-sm--hide'}`} onClick={() => toggleHide(photo.id)}>
