@@ -1050,6 +1050,7 @@ function TabGalleries() {
     <div className="tab-galleries">
       <div className="admin-tab__header">
         <h2 className="admin-tab__title">Galeries clients</h2>
+        <button className="admin-btn admin-btn--ghost" onClick={() => dbGetAllGalleries().then(setGalleries)}>↻ Rafraîchir</button>
       </div>
 
       {/* Create form */}

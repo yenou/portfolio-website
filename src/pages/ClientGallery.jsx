@@ -11,7 +11,7 @@ export default function ClientGallery() {
   const [unlocked, setUnlocked]   = useState(() => localStorage.getItem('cg_' + code) === '1')
   const [pwdInput, setPwdInput]   = useState('')
   const [pwdError, setPwdError]   = useState(false)
-  const [selected, setSelected]   = useState(new Set())
+  const [selected, setSelected]   = useState([])
   const [validated, setValidated] = useState(false)
   const [validating, setValidating] = useState(false)
   const logoImg = getLogoImg()
@@ -23,8 +23,8 @@ export default function ClientGallery() {
       setGallery(g)
       setLoading(false)
       if (g && (!g.password || unlocked)) dbIncrementGalleryView(code)
-      if (g?.selectionValidated && g?.selectedPhotos) {
-        setSelected(new Set(g.selectedPhotos))
+      if (g?.selectionValidated && g?.selectedPhotos?.length > 0) {
+        setSelected(g.selectedPhotos)
         setValidated(true)
       }
     })
@@ -58,23 +58,21 @@ export default function ClientGallery() {
   }
 
   const toggleSelect = (photoId) => {
-    setSelected(prev => {
-      const next = new Set(prev)
-      next.has(photoId) ? next.delete(photoId) : next.add(photoId)
-      return next
-    })
+    setSelected(prev =>
+      prev.includes(photoId) ? prev.filter(id => id !== photoId) : [...prev, photoId]
+    )
   }
 
   const validate = async () => {
     if (validating) return
     setValidating(true)
-    await dbSaveGallerySelection(code, [...selected])
-    setValidated(selected.size > 0)
+    await dbSaveGallerySelection(code, selected)
+    setValidated(selected.length > 0)
     setValidating(false)
   }
 
   const resetSelection = async () => {
-    setSelected(new Set())
+    setSelected([])
     setValidated(false)
     await dbSaveGallerySelection(code, [])
   }
@@ -166,7 +164,7 @@ export default function ClientGallery() {
             )}
             <div className="cg__grid">
               {gallery.photos.map((photo, i) => {
-                const isSelected = selected.has(photo.id)
+                const isSelected = selected.includes(photo.id)
                 return (
                   <div
                     key={photo.id}
@@ -199,9 +197,9 @@ export default function ClientGallery() {
               <div className="cg__validate-bar">
                 <div className="cg__validate-left">
                   <span className="cg__validate-count">
-                    {selected.size === 0 ? 'Aucune photo sélectionnée' : `${selected.size} photo${selected.size > 1 ? 's' : ''} sélectionnée${selected.size > 1 ? 's' : ''}`}
+                    {selected.length === 0 ? 'Aucune photo sélectionnée' : `${selected.length} photo${selected.length > 1 ? 's' : ''} sélectionnée${selected.length > 1 ? 's' : ''}`}
                   </span>
-                  {selected.size > 0 && (
+                  {selected.length > 0 && (
                     <button className="cg__deselect-btn" onClick={resetSelection}>
                       Tout désélectionner
                     </button>
@@ -210,7 +208,7 @@ export default function ClientGallery() {
                 <button
                   className="cg__validate-btn"
                   onClick={validate}
-                  disabled={selected.size === 0 || validating}
+                  disabled={selected.length === 0 || validating}
                 >
                   {validating ? 'Envoi…' : 'Valider ma sélection →'}
                 </button>
@@ -221,7 +219,7 @@ export default function ClientGallery() {
                 <div style={{ flex: 1 }}>
                   <p className="cg__validated-title">Sélection envoyée !</p>
                   <p className="cg__validated-sub">
-                    Vous avez sélectionné {selected.size} photo{selected.size > 1 ? 's' : ''}. Votre photographe en a été informé.
+                    Vous avez sélectionné {selected.length} photo{selected.length > 1 ? 's' : ''}. Votre photographe en a été informé.
                   </p>
                 </div>
                 <button className="cg__modify-btn" onClick={() => setValidated(false)}>
@@ -255,10 +253,10 @@ export default function ClientGallery() {
           <div className="cg__lb-bottom">
             <span className="cg__lb-counter">{lightbox + 1} / {gallery.photos.length}</span>
             <div
-              className={`cg__lb-check ${selected.has(gallery.photos[lightbox].id) ? 'cg__lb-check--on' : ''}`}
+              className={`cg__lb-check ${selected.includes(gallery.photos[lightbox].id) ? 'cg__lb-check--on' : ''}`}
               onClick={e => { e.stopPropagation(); toggleSelect(gallery.photos[lightbox].id) }}
             >
-              {selected.has(gallery.photos[lightbox].id) ? '✓ Sélectionnée' : '+ Sélectionner cette photo'}
+              {selected.includes(gallery.photos[lightbox].id) ? '✓ Sélectionnée' : '+ Sélectionner cette photo'}
             </div>
           </div>
         </div>
