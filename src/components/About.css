@@ -70,6 +70,12 @@
   .about__img-caption { display: none; }
 }
 
+/* Mobile : cacher le titre de la colonne droite */
+@media (max-width: 960px) {
+  .about__right .section-label,
+  .about__right .section-title { display: none; }
+}
+
 .about__img-caption {
   position: absolute;
   bottom: 0;
