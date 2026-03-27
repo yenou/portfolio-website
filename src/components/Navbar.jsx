@@ -1,21 +1,19 @@
 import { useState, useEffect } from 'react'
 import './Navbar.css'
-import { getLogoImg, useStorage } from '../utils/storage'
 
 const navLinks = [
-  { label: 'Accueil',      href: '#accueil' },
-  { label: 'Portfolio',    href: '#portfolio' },
-  { label: 'À propos',     href: '#apropos' },
-  { label: 'Services',     href: '#services' },
+  { label: 'Accueil',        href: '#accueil' },
+  { label: 'Portfolio',      href: '#portfolio' },
+  { label: 'À propos',       href: '#apropos' },
+  { label: 'Services',       href: '#services' },
   { label: 'Témoignages',    href: '#temoignages' },
   { label: 'Disponibilités', href: '#disponibilites' },
   { label: 'Contact',        href: '#contact' },
 ]
 
 export default function Navbar() {
-  const [scrolled, setScrolled]   = useState(false)
-  const [menuOpen, setMenuOpen]   = useState(false)
-  const logoImg = useStorage(getLogoImg)
+  const [scrolled, setScrolled] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 60)
@@ -23,7 +21,6 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // Bloquer le scroll quand le menu est ouvert
   useEffect(() => {
     document.body.style.overflow = menuOpen ? 'hidden' : ''
     return () => { document.body.style.overflow = '' }
@@ -34,22 +31,17 @@ export default function Navbar() {
   return (
     <>
       <nav className={`navbar ${scrolled ? 'navbar--scrolled' : ''}`}>
-        <div className="navbar__logo">
-          <a href="#accueil" onClick={close}>
-            <span className="navbar__logo-signature">YENOU André</span>
-          </a>
-        </div>
-
-        {/* Liens desktop */}
+        {/* Liens desktop centrés */}
         <ul className="navbar__links">
-          {navLinks.map(link => (
+          {navLinks.map((link, i) => (
             <li key={link.label}>
+              {i > 0 && <span className="navbar__sep">·</span>}
               <a href={link.href}>{link.label}</a>
             </li>
           ))}
         </ul>
 
-        {/* Burger */}
+        {/* Burger mobile */}
         <button
           className={`navbar__burger ${menuOpen ? 'navbar__burger--open' : ''}`}
           onClick={() => setMenuOpen(o => !o)}
