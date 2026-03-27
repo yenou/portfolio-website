@@ -113,6 +113,15 @@
   transition: background 0.2s, color 0.2s, border-color 0.2s;
 }
 .cg__lock-btn:hover { background: rgba(255,255,255,0.12); color: white; border-color: rgba(255,255,255,0.35); }
+.cg__lock-secure {
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.2);
+  margin-top: 20px;
+  text-align: center;
+  line-height: 1.7;
+}
+
 .cg__lock-error {
   margin-top: 12px;
   font-size: 0.65rem;

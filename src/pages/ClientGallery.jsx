@@ -112,6 +112,7 @@ export default function ClientGallery() {
         </div>
         <button className="cg__lock-btn" onClick={submitPassword}>→</button>
         {pwdError && <p className="cg__lock-error">Code incorrect</p>}
+        <p className="cg__lock-secure">Votre galerie est sécurisée et accessible uniquement avec votre code.</p>
         <a href="/" className="cg__back" style={{ marginTop: '24px' }}>← Retour au site</a>
       </div>
     </div>
