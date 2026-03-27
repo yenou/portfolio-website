@@ -187,6 +187,15 @@ export default function Admin({ onExit }) {
   const [autoLogoutMin, setAutoLogoutMin] = useState(30)
   const [lockoutRemaining, setLockoutRemaining] = useState(0)
   const [loginDisabled, setLoginDisabled] = useState(false)
+  const [lightMode, setLightMode] = useState(() => localStorage.getItem('admin_theme') === 'light')
+
+  const toggleTheme = () => {
+    setLightMode(prev => {
+      const next = !prev
+      localStorage.setItem('admin_theme', next ? 'light' : 'dark')
+      return next
+    })
+  }
 
   useAutoLogout(auth ? autoLogoutMin : 0, () => setAuth(false))
 
@@ -280,7 +289,7 @@ export default function Admin({ onExit }) {
   ]
 
   return (
-    <div className="admin">
+    <div className={`admin${lightMode ? ' admin--light' : ''}`}>
       <header className="admin-header">
         <div className="admin-header__left">
           <div className="admin-header__brand">
@@ -294,6 +303,9 @@ export default function Admin({ onExit }) {
           </div>
         </div>
         <div className="admin-header__right">
+          <button className="admin-theme-toggle" onClick={toggleTheme} title={lightMode ? 'Mode sombre' : 'Mode clair'}>
+            {lightMode ? '🌙' : '☀️'}
+          </button>
           <a href="/" target="_blank" rel="noreferrer" className="admin-btn admin-btn--ghost">
             👁 Voir le site
           </a>
