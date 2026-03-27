@@ -8,22 +8,34 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-top: 10px;
+  margin-top: 12px;
   font-size: 0.65rem;
   letter-spacing: 0.12em;
-  color: rgba(255,255,255,0.3);
+  color: rgba(255,255,255,0.5);
   text-transform: uppercase;
+  animation: heartbeat 2.2s ease-in-out infinite;
 }
 
 .portfolio__coming-soon-icon {
-  font-size: 0.5rem;
-  color: rgba(255,255,255,0.2);
-  animation: coming-soon-pulse 2.5s ease-in-out infinite;
+  font-size: 0.7rem;
+  display: inline-block;
+  animation: heartbeat-icon 2.2s ease-in-out infinite;
 }
 
-@keyframes coming-soon-pulse {
-  0%, 100% { opacity: 0.3; }
-  50%       { opacity: 1; }
+@keyframes heartbeat {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  14%       { opacity: 1;   transform: scale(1.04); }
+  28%       { opacity: 0.7; transform: scale(1); }
+  42%       { opacity: 1;   transform: scale(1.03); }
+  70%       { opacity: 0.4; transform: scale(1); }
+}
+
+@keyframes heartbeat-icon {
+  0%, 100% { transform: scale(1); }
+  14%       { transform: scale(1.4); }
+  28%       { transform: scale(1); }
+  42%       { transform: scale(1.25); }
+  70%       { transform: scale(1); }
 }
 
 .portfolio__filters {
