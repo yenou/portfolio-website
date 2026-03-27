@@ -205,7 +205,9 @@ export default function ClientGallery() {
               <div className="cg__validate-bar">
                 <div className="cg__validate-left">
                   <span className="cg__validate-count">
-                    {selected.length === 0 ? 'Aucune photo sélectionnée' : `${selected.length} photo${selected.length > 1 ? 's' : ''} sélectionnée${selected.length > 1 ? 's' : ''}`}
+                    {selected.length === 0
+                      ? 'Aucune photo sélectionnée'
+                      : `${selected.length} / ${gallery.photos.length} photo${selected.length > 1 ? 's' : ''} sélectionnée${selected.length > 1 ? 's' : ''}`}
                   </span>
                   {selected.length > 0 && (
                     <button className="cg__deselect-btn" onClick={resetSelection}>
@@ -250,6 +252,11 @@ export default function ClientGallery() {
               className="cg__lb-img"
               draggable={false}
             />
+            <div className="cg__watermark cg__watermark--lb" aria-hidden="true">
+              <span>© YENOU André Photographie</span>
+              <span>© YENOU André Photographie</span>
+              <span>© YENOU André Photographie</span>
+            </div>
           </div>
           <button className="cg__lb-next" onClick={e => { e.stopPropagation(); navigate(1) }}>›</button>
           <div className="cg__lb-bottom">
