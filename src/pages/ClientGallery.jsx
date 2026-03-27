@@ -58,9 +58,11 @@ export default function ClientGallery() {
   }
 
   const toggleSelect = (photoId) => {
-    setSelected(prev =>
-      prev.includes(photoId) ? prev.filter(id => id !== photoId) : [...prev, photoId]
-    )
+    setSelected(prev => {
+      const next = prev.includes(photoId) ? prev.filter(id => id !== photoId) : [...prev, photoId]
+      dbSaveGallerySelection(code, next)
+      return next
+    })
   }
 
   const validate = async () => {
