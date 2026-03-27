@@ -205,6 +205,26 @@ export async function dbGetAllGalleries() {
   } catch (e) { return [] }
 }
 
+// ── Photo likes ───────────────────────────────────────────────────────────────
+const photoLikesDoc = doc(db, 'site', 'photoLikes')
+
+export async function dbGetPhotoLikes() {
+  try {
+    const snap = await getDoc(photoLikesDoc)
+    return snap.exists() ? snap.data() : {}
+  } catch (e) { return {} }
+}
+
+export async function dbLikePhoto(photoId) {
+  try { await setDoc(photoLikesDoc, { [photoId]: increment(1) }, { merge: true }) }
+  catch (e) { console.warn('[Firebase] Like failed:', e.message) }
+}
+
+export async function dbUnlikePhoto(photoId) {
+  try { await setDoc(photoLikesDoc, { [photoId]: increment(-1) }, { merge: true }) }
+  catch (e) { console.warn('[Firebase] Unlike failed:', e.message) }
+}
+
 export async function dbGetGallery(code) {
   try {
     const gallerySnap = await getDoc(doc(clientGalleriesCol, code))

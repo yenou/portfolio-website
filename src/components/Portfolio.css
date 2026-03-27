@@ -263,6 +263,42 @@
     color: rgba(255,255,255,0.45);
   }
 
+  .portfolio__like {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(6px);
+    border: none;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 10px 5px 8px;
+    cursor: pointer;
+    transition: transform 0.15s, background 0.2s;
+    z-index: 5;
+  }
+  .portfolio__like:active { transform: scale(0.9); }
+  .portfolio__like--on { background: rgba(0,0,0,0.55); }
+
+  .portfolio__like-heart {
+    font-size: 1rem;
+    line-height: 1;
+    color: rgba(255,255,255,0.7);
+    transition: color 0.2s, transform 0.2s;
+  }
+  .portfolio__like--on .portfolio__like-heart {
+    color: #ff5c7a;
+    transform: scale(1.15);
+  }
+  .portfolio__like-count {
+    font-size: 0.62rem;
+    font-weight: 600;
+    color: rgba(255,255,255,0.75);
+    letter-spacing: 0.03em;
+  }
+
   .portfolio__dots {
     display: flex;
     justify-content: center;

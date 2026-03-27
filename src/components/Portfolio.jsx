@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { getCustomPhotos, getHiddenIds, useStorage } from '../utils/storage'
+import { dbGetPhotoLikes, dbLikePhoto, dbUnlikePhoto } from '../utils/db'
 import './Portfolio.css'
 
 const categories = ['Tous', 'Portraits & Famille', 'Nature & Paysages', 'Concerts & Événements']
@@ -21,6 +22,23 @@ export default function Portfolio() {
   const [lightbox, setLightbox] = useState(null)
   const [carouselIdx, setCarouselIdx] = useState(0)
   const carouselRef = useRef(null)
+  const [likes, setLikes] = useState({})
+  const [likedByMe, setLikedByMe] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('yenou_likes') || '[]') } catch { return [] }
+  })
+
+  useEffect(() => { dbGetPhotoLikes().then(setLikes) }, [])
+
+  const toggleLike = (e, photoId) => {
+    e.stopPropagation()
+    const id = String(photoId)
+    const already = likedByMe.includes(id)
+    const newLikedByMe = already ? likedByMe.filter(x => x !== id) : [...likedByMe, id]
+    setLikedByMe(newLikedByMe)
+    localStorage.setItem('yenou_likes', JSON.stringify(newLikedByMe))
+    setLikes(prev => ({ ...prev, [id]: Math.max(0, (prev[id] || 0) + (already ? -1 : 1)) }))
+    already ? dbUnlikePhoto(id) : dbLikePhoto(id)
+  }
 
   const hiddenIds    = useStorage(getHiddenIds)
   const customPhotos = useStorage(getCustomPhotos)
@@ -123,6 +141,16 @@ export default function Portfolio() {
                 <span className="portfolio__carousel-alt">{photo.alt}</span>
                 <span className="portfolio__carousel-cat">{photo.category}</span>
               </div>
+              <button
+                className={`portfolio__like ${likedByMe.includes(String(photo.id)) ? 'portfolio__like--on' : ''}`}
+                onClick={(e) => toggleLike(e, photo.id)}
+                aria-label="J'aime"
+              >
+                <span className="portfolio__like-heart">{likedByMe.includes(String(photo.id)) ? '♥' : '♡'}</span>
+                {(likes[String(photo.id)] || 0) > 0 && (
+                  <span className="portfolio__like-count">{likes[String(photo.id)]}</span>
+                )}
+              </button>
             </div>
           ))}
         </div>
