@@ -65,6 +65,41 @@
   animation: none;
 }
 
+/* Desktop : cacher l'incrustation, le titre est dans la colonne droite */
+@media (min-width: 961px) {
+  .about__img-caption { display: none; }
+}
+
+.about__img-caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 48px 28px 24px;
+  background: linear-gradient(transparent, rgba(0,0,0,0.82));
+  backdrop-filter: blur(0px);
+  pointer-events: none;
+}
+.about__img-caption-label {
+  font-size: 0.5rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+  margin-bottom: 6px;
+}
+.about__img-caption-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  font-weight: 300;
+  color: white;
+  line-height: 1.15;
+  letter-spacing: 0.04em;
+}
+.about__img-caption-title em {
+  font-style: italic;
+  color: rgba(255,255,255,0.75);
+}
+
 /* ===== STATS ===== */
 .about__stats {
   display: grid;

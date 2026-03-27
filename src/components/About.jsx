@@ -59,6 +59,10 @@ export default function About() {
                 }}
               />
               <div className="about__img-border" />
+              <div className="about__img-caption">
+                <p className="about__img-caption-label">Mon histoire</p>
+                <h2 className="about__img-caption-title">À propos<br /><em>d'André</em></h2>
+              </div>
             </div>
 
             <div className="about__stats">
