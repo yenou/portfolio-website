@@ -4,6 +4,28 @@
 
 .portfolio__header { margin-bottom: 0; }
 
+.portfolio__coming-soon {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  color: rgba(255,255,255,0.3);
+  text-transform: uppercase;
+}
+
+.portfolio__coming-soon-icon {
+  font-size: 0.5rem;
+  color: rgba(255,255,255,0.2);
+  animation: coming-soon-pulse 2.5s ease-in-out infinite;
+}
+
+@keyframes coming-soon-pulse {
+  0%, 100% { opacity: 0.3; }
+  50%       { opacity: 1; }
+}
+
 .portfolio__filters {
   display: flex;
   flex-wrap: wrap;
@@ -270,6 +292,7 @@
     justify-content: center;
   }
   .portfolio__header .section-label::before { display: none; }
+  .portfolio__coming-soon { justify-content: center; }
 
   /* "Portfolio" — typo élégante animée */
   .portfolio__header .section-title {

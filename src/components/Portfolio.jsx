@@ -73,6 +73,10 @@ export default function Portfolio() {
         <div className="portfolio__header reveal">
           <p className="section-label">Mes réalisations</p>
           <h2 className="section-title">Portfolio</h2>
+          <p className="portfolio__coming-soon">
+            <span className="portfolio__coming-soon-icon">✦</span>
+            D'autres photos sont en cours d'importation
+          </p>
         </div>
 
         <div className="portfolio__filters reveal" data-delay="1">
