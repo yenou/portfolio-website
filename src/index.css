@@ -42,6 +42,35 @@ body::after {
   background-size: 180px 180px;
 }
 
+/* ===== SCROLL TO TOP ===== */
+.scroll-top-btn {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  width: 44px;
+  height: 44px;
+  background: rgba(10,10,10,0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 50%;
+  color: rgba(255,255,255,0.55);
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  transition: border-color 0.2s, color 0.2s, transform 0.2s;
+}
+.scroll-top-btn:hover {
+  border-color: rgba(255,255,255,0.4);
+  color: white;
+  transform: translateY(-3px);
+}
+@media (max-width: 768px) {
+  .scroll-top-btn { bottom: 20px; right: 16px; width: 40px; height: 40px; }
+}
+
 /* ===== SCROLL PROGRESS BAR ===== */
 .scroll-progress {
   position: fixed;
@@ -168,3 +197,4 @@ section { padding: 120px 0; }
   .container { padding: 0 24px; }
   section { padding: 80px 0; }
 }
+

@@ -27,6 +27,7 @@ export default function App() {
   const [loaderDone, setLoaderDone]   = useState(false)
   const [syncDone, setSyncDone]       = useState(false)
   const [scrollProgress, setScrollProgress] = useState(0)
+  const [showScrollTop, setShowScrollTop] = useState(false)
   const [showAdmin, setShowAdmin]     = useState(isAdminRoute)
   const [showGallery] = useState(isGalleryRoute)
   const visitedRef = useRef(false)
@@ -56,12 +57,13 @@ export default function App() {
     setShowAdmin(false)
   }
 
-  // Scroll progress bar
+  // Scroll progress bar + show-top button
   useEffect(() => {
     const onScroll = () => {
       const el = document.documentElement
       const progress = (el.scrollTop / (el.scrollHeight - el.clientHeight)) * 100
       setScrollProgress(progress)
+      setShowScrollTop(el.scrollTop > 500)
     }
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
@@ -112,6 +114,9 @@ export default function App() {
       <Cursor />
       {(!loaderDone || !syncDone) && <Loader onDone={() => setLoaderDone(true)} syncDone={syncDone} />}
       <div className="scroll-progress" style={{ width: `${scrollProgress}%` }} />
+      {showScrollTop && (
+        <button className="scroll-top-btn" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} aria-label="Remonter en haut">↑</button>
+      )}
       <Navbar />
       <main>
         <Hero />
