@@ -25,10 +25,26 @@
   color: rgba(255,255,255,0.5);
 }
 
-.footer__tagline {
-  font-size: 0.72rem;
-  letter-spacing: 0.15em;
+.footer__built {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
   color: var(--gray-mid);
+  margin-top: 6px;
+}
+
+.footer__tech-icon {
+  width: 16px;
+  height: 16px;
+  color: var(--gray-mid);
+  flex-shrink: 0;
+}
+
+.footer__built-sep {
+  opacity: 0.4;
+  margin: 0 2px;
 }
 
 .footer__nav {
