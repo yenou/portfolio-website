@@ -19,10 +19,11 @@ const defaultPhotos = [
 export default function Portfolio() {
   const [active, setActive] = useState('Tous')
   const [lightbox, setLightbox] = useState(null)
+  const [carouselIdx, setCarouselIdx] = useState(0)
+  const carouselRef = useRef(null)
 
   const hiddenIds    = useStorage(getHiddenIds)
   const customPhotos = useStorage(getCustomPhotos)
-  // Les photos custom (les plus récentes en premier) apparaissent avant les photos par défaut
   const photos = [...customPhotos.slice().reverse(), ...defaultPhotos].filter(p => !hiddenIds.includes(p.id))
 
   const filtered = active === 'Tous' ? photos : photos.filter(p => p.category === active)
@@ -34,6 +35,9 @@ export default function Portfolio() {
       el.classList.remove('revealed')
       setTimeout(() => el.classList.add('revealed'), i * 60)
     })
+    // Reset carousel position
+    if (carouselRef.current) carouselRef.current.scrollLeft = 0
+    setCarouselIdx(0)
   }, [active])
 
   const navigate = (dir) => {
@@ -41,7 +45,13 @@ export default function Portfolio() {
     setLightbox(filtered[(idx + dir + filtered.length) % filtered.length])
   }
 
-  // Swipe mobile
+  const onCarouselScroll = () => {
+    if (!carouselRef.current) return
+    const idx = Math.round(carouselRef.current.scrollLeft / carouselRef.current.clientWidth)
+    setCarouselIdx(idx)
+  }
+
+  // Swipe mobile (lightbox)
   const touchStart = useRef(null)
   const onTouchStart = (e) => { touchStart.current = e.touches[0].clientX }
   const onTouchEnd = (e) => {
@@ -71,6 +81,7 @@ export default function Portfolio() {
           ))}
         </div>
 
+        {/* Grille desktop */}
         <div className="portfolio__grid">
           {filtered.map((photo, i) => (
             <div
@@ -79,35 +90,45 @@ export default function Portfolio() {
               data-delay={String(Math.min(i % 3 + 1, 4))}
               onClick={() => setLightbox(photo)}
             >
-              <img
-                src={photo.src}
-                alt={photo.alt}
-                loading="lazy"
-                onError={(e) => {
-                  e.target.parentElement.classList.add('portfolio__item--empty')
-                  e.target.style.display = 'none'
-                }}
+              <img src={photo.src} alt={photo.alt} loading="lazy"
+                onError={(e) => { e.target.parentElement.classList.add('portfolio__item--empty'); e.target.style.display = 'none' }}
               />
               <div className="portfolio__item-overlay">
                 <div className="portfolio__item-meta">
                   <span className="portfolio__item-alt">{photo.alt}</span>
                   <div className="portfolio__item-exif">
-                    <span>{photo.exif.a}</span>
-                    <span>{photo.exif.s}</span>
-                    <span>{photo.exif.i}</span>
-                    <span>{photo.exif.f}</span>
+                    <span>{photo.exif.a}</span><span>{photo.exif.s}</span>
+                    <span>{photo.exif.i}</span><span>{photo.exif.f}</span>
                   </div>
                 </div>
                 <div className="portfolio__item-icon">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
-                    <circle cx="12" cy="12" r="9"/>
-                    <line x1="12" y1="3" x2="12" y2="21"/>
-                    <line x1="3" y1="12" x2="21" y2="12"/>
-                    <circle cx="12" cy="12" r="3" fill="currentColor"/>
+                    <circle cx="12" cy="12" r="9"/><line x1="12" y1="3" x2="12" y2="21"/>
+                    <line x1="3" y1="12" x2="21" y2="12"/><circle cx="12" cy="12" r="3" fill="currentColor"/>
                   </svg>
                 </div>
               </div>
             </div>
+          ))}
+        </div>
+
+        {/* Carousel mobile */}
+        <div className="portfolio__carousel" ref={carouselRef} onScroll={onCarouselScroll}>
+          {filtered.map((photo) => (
+            <div key={photo.id} className="portfolio__carousel-item" onClick={() => setLightbox(photo)}>
+              <img src={photo.src} alt={photo.alt} loading="lazy"
+                onError={(e) => { e.target.parentElement.classList.add('portfolio__item--empty'); e.target.style.display = 'none' }}
+              />
+              <div className="portfolio__carousel-info">
+                <span className="portfolio__carousel-alt">{photo.alt}</span>
+                <span className="portfolio__carousel-cat">{photo.category}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="portfolio__dots">
+          {filtered.map((_, i) => (
+            <div key={i} className={`portfolio__dot ${i === carouselIdx ? 'portfolio__dot--active' : ''}`} />
           ))}
         </div>
       </div>

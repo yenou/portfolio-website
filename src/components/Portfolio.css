@@ -199,8 +199,90 @@
 .lightbox__next { right: 10px; }
 .lightbox__prev:hover, .lightbox__next:hover { color: white; }
 
+/* ===== CAROUSEL MOBILE ===== */
+.portfolio__carousel {
+  display: none;
+}
+.portfolio__dots {
+  display: none;
+}
+
 @media (max-width: 768px) {
-  .portfolio__grid { grid-template-columns: 1fr 1fr; grid-auto-rows: 200px; }
+  /* Cacher la grille, afficher le carousel */
+  .portfolio__grid { display: none; }
+
+  .portfolio__carousel {
+    display: flex;
+    overflow-x: scroll;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 12px;
+    padding: 0 24px;
+    margin: 0 -24px;
+  }
+  .portfolio__carousel::-webkit-scrollbar { display: none; }
+
+  .portfolio__carousel-item {
+    flex: 0 0 85vw;
+    scroll-snap-align: center;
+    position: relative;
+    border-radius: 6px;
+    overflow: hidden;
+    aspect-ratio: 4/3;
+    cursor: pointer;
+    background: var(--bg-card);
+  }
+  .portfolio__carousel-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+  }
+  .portfolio__carousel-item:active img { transform: scale(1.03); }
+
+  .portfolio__carousel-info {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 28px 16px 14px;
+    background: linear-gradient(transparent, rgba(0,0,0,0.75));
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .portfolio__carousel-alt {
+    font-family: var(--font-heading);
+    font-style: italic;
+    font-size: 1rem;
+    color: white;
+  }
+  .portfolio__carousel-cat {
+    font-size: 0.55rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+  }
+
+  .portfolio__dots {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+    padding: 0 24px;
+  }
+  .portfolio__dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    transition: background 0.2s, transform 0.2s;
+  }
+  .portfolio__dot--active {
+    background: white;
+    transform: scale(1.3);
+  }
+
   .portfolio__item--large { grid-column: span 2; }
   .portfolio__item-exif { display: none; }
 
