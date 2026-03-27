@@ -114,10 +114,6 @@ export default function Portfolio() {
               <div className="portfolio__item-overlay">
                 <div className="portfolio__item-meta">
                   <span className="portfolio__item-alt">{photo.alt}</span>
-                  <div className="portfolio__item-exif">
-                    <span>{photo.exif.a}</span><span>{photo.exif.s}</span>
-                    <span>{photo.exif.i}</span><span>{photo.exif.f}</span>
-                  </div>
                 </div>
               </div>
               <button
@@ -183,9 +179,6 @@ export default function Portfolio() {
             </button>
             <div className="lightbox__info">
               <span className="lightbox__alt">{lightbox.alt}</span>
-              <div className="lightbox__exif">
-                {Object.values(lightbox.exif).map((v, i) => <span key={i}>{v}</span>)}
-              </div>
             </div>
           </div>
           <button className="lightbox__next" onClick={e => { e.stopPropagation(); navigate(1) }}>›</button>
