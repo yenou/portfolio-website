@@ -208,10 +208,11 @@
   flex-shrink: 0;
 }
 .cg__code-label {
-  font-size: 0.45rem;
-  letter-spacing: 0.22em;
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.35);
+  margin-bottom: 2px;
 }
 .cg__code-row {
   display: flex;
@@ -231,11 +232,12 @@
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 0.75rem;
-  opacity: 0.5;
-  padding: 0;
+  font-size: 0.9rem;
+  opacity: 0.7;
+  padding: 2px 4px;
   line-height: 1;
   transition: opacity 0.2s;
+  filter: invert(1);
 }
 .cg__code-eye:hover { opacity: 1; }
 
@@ -668,7 +670,9 @@
   .cg__header-inner { padding: 12px 20px; gap: 12px; }
   .cg__logo { height: 36px; width: 36px; }
   .cg__client-name { font-size: 0.75rem; }
-  .cg__code-badge { display: none; }
+  .cg__code-badge { display: flex; }
+  .cg__code-label { font-size: 0.55rem; }
+  .cg__code-value { font-size: 0.72rem; }
   .cg__hero { padding: 48px 24px 36px; }
   .cg__hero-name { font-size: 2rem; }
   .cg__main { padding: 0 8px 120px; }
