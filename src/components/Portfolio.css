@@ -214,6 +214,50 @@
     display: flex; align-items: center; justify-content: center;
   }
   .lightbox__prev, .lightbox__next { display: none; }
+
+  .lightbox__mobile-nav {
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 0;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 50px;
+    overflow: hidden;
+  }
+  .lightbox__mobile-nav button {
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.7);
+    font-size: 1.6rem;
+    font-weight: 100;
+    width: 56px;
+    height: 48px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, color 0.15s;
+  }
+  .lightbox__mobile-nav button:active { background: rgba(255,255,255,0.1); color: white; }
+  .lightbox__counter {
+    font-size: 0.62rem;
+    letter-spacing: 0.15em;
+    color: rgba(255,255,255,0.4);
+    padding: 0 12px;
+    border-left: 1px solid rgba(255,255,255,0.1);
+    border-right: 1px solid rgba(255,255,255,0.1);
+    white-space: nowrap;
+  }
+}
+
+/* Desktop : cacher la nav mobile */
+@media (min-width: 769px) {
+  .lightbox__mobile-nav { display: none; }
 }
 
 @media (max-width: 480px) {

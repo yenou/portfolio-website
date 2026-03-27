@@ -126,6 +126,13 @@ export default function Portfolio() {
             </div>
           </div>
           <button className="lightbox__next" onClick={e => { e.stopPropagation(); navigate(1) }}>›</button>
+          <div className="lightbox__mobile-nav" onClick={e => e.stopPropagation()}>
+            <button onClick={() => navigate(-1)}>‹</button>
+            <span className="lightbox__counter">
+              {filtered.findIndex(p => p.id === lightbox.id) + 1} / {filtered.length}
+            </span>
+            <button onClick={() => navigate(1)}>›</button>
+          </div>
         </div>
       )}
     </section>
