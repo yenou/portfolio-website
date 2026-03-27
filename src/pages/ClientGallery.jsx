@@ -157,7 +157,8 @@ export default function ClientGallery() {
         <h2 className="cg__hero-name">{gallery.clientName}</h2>
         <p className="cg__hero-meta">{gallery.photos.length} photo{gallery.photos.length > 1 ? 's' : ''}</p>
         <p className="cg__hero-welcome">
-          Bienvenue sur votre galerie privée. Parcourez vos photos, cochez celles que vous souhaitez conserver, puis cliquez sur <em>Valider ma sélection</em>.
+          Bienvenue sur votre galerie privée. Parcourez vos photos, cochez celles que vous souhaitez conserver, puis cliquez sur <em>Valider ma sélection</em>.<br/>
+          Une fois votre sélection validée, YENOU André sera prévenu de votre choix et pourra traiter vos photos.
         </p>
       </section>
 
