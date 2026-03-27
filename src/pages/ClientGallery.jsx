@@ -1,16 +1,19 @@
 import { useEffect, useState, useRef } from 'react'
-import { dbGetGallery, dbIncrementGalleryView } from '../utils/db'
+import { dbGetGallery, dbIncrementGalleryView, dbSaveGallerySelection } from '../utils/db'
 import { getLogoImg } from '../utils/storage'
 import './ClientGallery.css'
 
 export default function ClientGallery() {
   const code = window.location.pathname.split('/galerie/')[1]?.toUpperCase()
-  const [gallery, setGallery] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [lightbox, setLightbox] = useState(null)
-  const [unlocked, setUnlocked] = useState(() => localStorage.getItem('cg_' + code) === '1')
-  const [pwdInput, setPwdInput] = useState('')
-  const [pwdError, setPwdError] = useState(false)
+  const [gallery, setGallery]     = useState(null)
+  const [loading, setLoading]     = useState(true)
+  const [lightbox, setLightbox]   = useState(null)
+  const [unlocked, setUnlocked]   = useState(() => localStorage.getItem('cg_' + code) === '1')
+  const [pwdInput, setPwdInput]   = useState('')
+  const [pwdError, setPwdError]   = useState(false)
+  const [selected, setSelected]   = useState(new Set())
+  const [validated, setValidated] = useState(false)
+  const [validating, setValidating] = useState(false)
   const logoImg = getLogoImg()
   const touchStart = useRef(null)
 
@@ -20,6 +23,10 @@ export default function ClientGallery() {
       setGallery(g)
       setLoading(false)
       if (g && (!g.password || unlocked)) dbIncrementGalleryView(code)
+      if (g?.selectionValidated && g?.selectedPhotos) {
+        setSelected(new Set(g.selectedPhotos))
+        setValidated(true)
+      }
     })
   }, [code])
 
@@ -48,6 +55,23 @@ export default function ClientGallery() {
   const navigate = (dir) => {
     if (!gallery) return
     setLightbox(i => (i + dir + gallery.photos.length) % gallery.photos.length)
+  }
+
+  const toggleSelect = (photoId, e) => {
+    e.stopPropagation()
+    setSelected(prev => {
+      const next = new Set(prev)
+      next.has(photoId) ? next.delete(photoId) : next.add(photoId)
+      return next
+    })
+  }
+
+  const validate = async () => {
+    if (selected.size === 0 || validating) return
+    setValidating(true)
+    await dbSaveGallerySelection(code, [...selected])
+    setValidated(true)
+    setValidating(false)
   }
 
   const onTouchStart = (e) => { touchStart.current = e.touches[0].clientX }
@@ -129,19 +153,70 @@ export default function ClientGallery() {
             <p>Revenez bientôt !</p>
           </div>
         ) : (
-          <div className="cg__grid">
-            {gallery.photos.map((photo, i) => (
-              <div key={photo.id} className="cg__item" onClick={() => setLightbox(i)}>
-                <img src={photo.src} alt={photo.caption || `Photo ${i + 1}`} loading="lazy" />
-                <div className="cg__watermark" aria-hidden="true">
-                  <span>© YENOU André Photographie</span>
-                  <span>© YENOU André Photographie</span>
-                  <span>© YENOU André Photographie</span>
-                </div>
-                {photo.caption && <span className="cg__caption">{photo.caption}</span>}
+          <>
+            {!validated && (
+              <p className="cg__select-hint">
+                Cochez les photos que vous souhaitez, puis validez votre sélection.
+              </p>
+            )}
+            <div className="cg__grid">
+              {gallery.photos.map((photo, i) => {
+                const isSelected = selected.has(photo.id)
+                return (
+                  <div
+                    key={photo.id}
+                    className={`cg__item ${isSelected ? 'cg__item--selected' : ''}`}
+                    onClick={() => setLightbox(i)}
+                  >
+                    <img src={photo.src} alt={photo.caption || `Photo ${i + 1}`} loading="lazy" />
+                    <div className="cg__watermark" aria-hidden="true">
+                      <span>© YENOU André Photographie</span>
+                      <span>© YENOU André Photographie</span>
+                      <span>© YENOU André Photographie</span>
+                    </div>
+                    {/* Numéro */}
+                    <span className="cg__num">{i + 1}</span>
+                    {/* Checkbox */}
+                    <label className="cg__check" onClick={e => toggleSelect(photo.id, e)}>
+                      <input
+                        type="checkbox"
+                        checked={isSelected}
+                        onChange={() => {}}
+                      />
+                      <span className="cg__check-box">{isSelected ? '✓' : ''}</span>
+                    </label>
+                    {photo.caption && <span className="cg__caption">{photo.caption}</span>}
+                  </div>
+                )
+              })}
+            </div>
+
+            {/* Barre de validation */}
+            {!validated ? (
+              <div className="cg__validate-bar">
+                <span className="cg__validate-count">
+                  {selected.size === 0 ? 'Aucune photo sélectionnée' : `${selected.size} photo${selected.size > 1 ? 's' : ''} sélectionnée${selected.size > 1 ? 's' : ''}`}
+                </span>
+                <button
+                  className="cg__validate-btn"
+                  onClick={validate}
+                  disabled={selected.size === 0 || validating}
+                >
+                  {validating ? 'Envoi…' : 'Valider ma sélection →'}
+                </button>
               </div>
-            ))}
-          </div>
+            ) : (
+              <div className="cg__validated-msg">
+                <span className="cg__validated-icon">✓</span>
+                <div>
+                  <p className="cg__validated-title">Sélection envoyée !</p>
+                  <p className="cg__validated-sub">
+                    Vous avez sélectionné {selected.size} photo{selected.size > 1 ? 's' : ''}. Votre photographe en a été informé.
+                  </p>
+                </div>
+              </div>
+            )}
+          </>
         )}
       </main>
 
@@ -164,7 +239,15 @@ export default function ClientGallery() {
             </div>
           </div>
           <button className="cg__lb-next" onClick={e => { e.stopPropagation(); navigate(1) }}>›</button>
-          <span className="cg__lb-counter">{lightbox + 1} / {gallery.photos.length}</span>
+          <div className="cg__lb-bottom">
+            <span className="cg__lb-counter">{lightbox + 1} / {gallery.photos.length}</span>
+            <label className="cg__lb-check" onClick={e => toggleSelect(gallery.photos[lightbox].id, e)}>
+              <input type="checkbox" checked={selected.has(gallery.photos[lightbox].id)} onChange={() => {}} />
+              <span className="cg__lb-check-box">
+                {selected.has(gallery.photos[lightbox].id) ? '✓ Sélectionnée' : '+ Sélectionner cette photo'}
+              </span>
+            </label>
+          </div>
         </div>
       )}
 

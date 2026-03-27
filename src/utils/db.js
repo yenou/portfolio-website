@@ -184,6 +184,16 @@ export async function dbIncrementGalleryView(code) {
   } catch (e) { /* silent */ }
 }
 
+export async function dbSaveGallerySelection(code, selectedPhotoIds) {
+  try {
+    await setDoc(doc(clientGalleriesCol, code), {
+      selectedPhotos: selectedPhotoIds,
+      selectionValidated: true,
+      validatedAt: Date.now()
+    }, { merge: true })
+  } catch (e) { console.warn('[Firebase] Gallery selection save failed:', e.message) }
+}
+
 export async function dbGetAllGalleries() {
   try {
     const [galSnap, photosSnap] = await Promise.all([getDocs(clientGalleriesCol), getDocs(clientGalleryPhotosCol)])

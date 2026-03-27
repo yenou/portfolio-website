@@ -1108,6 +1108,7 @@ function GalleryCard({ gallery, expanded, onToggle, onDelete, onCopyLink, onAddP
             {gallery.code} · {(gallery.photos || []).length} photo{(gallery.photos || []).length !== 1 ? 's' : ''}
             {gallery.views ? ` · 👁 ${gallery.views} vue${gallery.views > 1 ? 's' : ''}` : ' · Pas encore consulté'}
             {gallery.lastView ? ` · ${new Date(gallery.lastView).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}` : ''}
+            {gallery.selectionValidated ? ` · ✅ ${(gallery.selectedPhotos || []).length} sélectionnée${(gallery.selectedPhotos || []).length > 1 ? 's' : ''}` : ''}
           </span>
         </div>
         <div className="gallery-card__actions" onClick={e => e.stopPropagation()}>
@@ -1126,12 +1127,17 @@ function GalleryCard({ gallery, expanded, onToggle, onDelete, onCopyLink, onAddP
             <span className="gallery-link-url">{url}</span>
           </div>
           <div className="gallery-card__photos">
-            {(gallery.photos || []).map((photo, i) => (
-              <div key={photo.id} className="gallery-photo-thumb">
-                <img src={photo.src} alt={`Photo ${i + 1}`} />
-                <button className="admin-slide-thumb__del" onClick={() => onRemovePhoto(photo.id)}>×</button>
-              </div>
-            ))}
+            {(gallery.photos || []).map((photo, i) => {
+              const isChosen = (gallery.selectedPhotos || []).includes(photo.id)
+              return (
+                <div key={photo.id} className={`gallery-photo-thumb ${isChosen ? 'gallery-photo-thumb--chosen' : ''}`}>
+                  <img src={photo.src} alt={`Photo ${i + 1}`} />
+                  <span className="gallery-photo-num">{i + 1}</span>
+                  {isChosen && <span className="gallery-photo-check">✓</span>}
+                  <button className="admin-slide-thumb__del" onClick={() => onRemovePhoto(photo.id)}>×</button>
+                </div>
+              )
+            })}
             <button className="gallery-add-photo" onClick={openPhoto}>
               <span>+</span>
               <span>Ajouter</span>
