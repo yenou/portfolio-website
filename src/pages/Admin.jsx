@@ -527,6 +527,18 @@ function TabPhotos() {
                     className="admin-slide-pos__range"
                   />
                 </div>
+                <div className="admin-slide-pos">
+                  <label className="admin-slide-pos__label">
+                    Zoom
+                    <span>{slide.scale ?? 100}%</span>
+                  </label>
+                  <input
+                    type="range" min="60" max="150"
+                    value={slide.scale ?? 100}
+                    onChange={e => updateSlide(i, 'scale', Number(e.target.value))}
+                    className="admin-slide-pos__range"
+                  />
+                </div>
               </div>
             </div>
           ))}

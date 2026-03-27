@@ -89,7 +89,7 @@ export default function Hero() {
           <div
             key={slide.src}
             className={`hero__slide ${i === current ? 'hero__slide--active' : ''} ${i === prev ? 'hero__slide--prev' : ''}`}
-            style={{ backgroundImage: `url(${slide.src})`, backgroundPosition: `center ${slide.posY ?? 50}%` }}
+            style={{ backgroundImage: `url(${slide.src})`, backgroundPosition: `center ${slide.posY ?? 50}%`, transform: `scale(${(slide.scale ?? 100) / 100})` }}
           />
         ))}
         <div className="hero__overlay" />
