@@ -32,6 +32,47 @@ function compressImage(base64, maxW = 1600, quality = 0.82) {
   })
 }
 
+// Grave le watermark © YENOU André Photographie directement dans les pixels de l'image
+function addWatermark(base64) {
+  return new Promise((resolve) => {
+    const img = new Image()
+    img.onload = () => {
+      const w = img.naturalWidth
+      const h = img.naturalHeight
+      const canvas = document.createElement('canvas')
+      canvas.width = w; canvas.height = h
+      const ctx = canvas.getContext('2d')
+      ctx.drawImage(img, 0, 0)
+
+      const fontSize = Math.max(Math.round(w * 0.024), 18)
+      const text = '© YENOU André Photographie'
+      ctx.font = `bold ${fontSize}px Arial, sans-serif`
+      ctx.fillStyle = 'rgba(255,255,255,0.38)'
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'middle'
+
+      ctx.save()
+      ctx.translate(w / 2, h / 2)
+      ctx.rotate(-Math.PI / 6)
+
+      const textW = ctx.measureText(text).width + 70
+      const textH = fontSize + 60
+      const diag = Math.ceil(Math.sqrt(w * w + h * h))
+      const cols = Math.ceil(diag / textW) + 1
+      const rows = Math.ceil(diag / textH) + 1
+
+      for (let r = -rows; r <= rows; r++) {
+        for (let c = -cols; c <= cols; c++) {
+          ctx.fillText(text, c * textW, r * textH)
+        }
+      }
+      ctx.restore()
+      resolve(canvas.toDataURL('image/jpeg', 0.88))
+    }
+    img.src = base64
+  })
+}
+
 // Supprime automatiquement le fond d'un logo (détecte la couleur du coin et efface les pixels proches)
 // Protège les cas où le logo est de la même couleur que le fond (logo blanc sur blanc, etc.)
 function removeBackground(base64, tolerance = 40) {
@@ -1094,10 +1135,12 @@ function GalleryCard({ gallery, expanded, onToggle, onDelete, onCopyLink, onAddP
   const url = `${window.location.origin}/galerie/${gallery.code}`
 
   const { open: openPhoto, Input: PhotoInput } = useFilePicker((base64) => {
-    compressImage(base64, 900, 0.7).then(compressed => {
-      const photo = { id: Date.now(), galleryCode: gallery.code, src: compressed, caption: '', order: (gallery.photos || []).length }
-      dbAddGalleryPhoto(photo).then(() => onAddPhoto(photo))
-    })
+    compressImage(base64, 900, 0.7)
+      .then(addWatermark)
+      .then(watermarked => {
+        const photo = { id: Date.now(), galleryCode: gallery.code, src: watermarked, caption: '', order: (gallery.photos || []).length }
+        dbAddGalleryPhoto(photo).then(() => onAddPhoto(photo))
+      })
   })
 
   return (

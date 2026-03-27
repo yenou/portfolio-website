@@ -1016,8 +1016,17 @@ h2.admin-tab__title { margin-bottom: 32px; }
   .services-list { grid-template-columns: 1fr; }
 
   /* Header admin */
-  .admin-header { gap: 10px; }
-  .admin-header-right { gap: 8px; }
+  .admin-header { gap: 8px; padding: 10px 12px; overflow: hidden; }
+  .admin-header__right { gap: 6px; flex-shrink: 0; }
+  .admin-header__right .admin-btn {
+    padding: 6px 10px;
+    font-size: 0.6rem;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+  }
+  .admin-header__brand-sub,
+  .admin-header__brand-sep { display: none; }
+  .admin-header__brand-name { font-size: 0.72rem; }
 }
 
 /* ===== BANNIÈRE ===== */

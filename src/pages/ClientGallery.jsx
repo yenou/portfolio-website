@@ -3,6 +3,7 @@ import { dbGetGallery, dbIncrementGalleryView, dbSaveGallerySelection } from '..
 import { getLogoImg } from '../utils/storage'
 import './ClientGallery.css'
 
+
 export default function ClientGallery() {
   const code = window.location.pathname.split('/galerie/')[1]?.toUpperCase()
   const [gallery, setGallery]     = useState(null)
@@ -128,13 +129,15 @@ export default function ClientGallery() {
     </div>
   )
 
+  const noContext = (e) => e.preventDefault()
+
   return (
-    <div className="cg">
+    <div className="cg" onContextMenu={noContext}>
       <header className="cg__header">
         <div className="cg__header-inner">
           <a href="/" className="cg__brand">
             {logoImg
-              ? <img src={logoImg} alt="Logo" className="cg__logo" />
+              ? <img src={logoImg} alt="Logo" className="cg__logo" draggable={false} />
               : <span className="cg__logo-text">YENOU André</span>
             }
           </a>
@@ -171,7 +174,11 @@ export default function ClientGallery() {
                     className={`cg__item ${isSelected ? 'cg__item--selected' : ''}`}
                     onClick={() => setLightbox(i)}
                   >
-                    <img src={photo.src} alt={photo.caption || `Photo ${i + 1}`} loading="lazy" />
+                    <div
+                      className="cg__item-bg"
+                      style={{ backgroundImage: `url(${photo.src})` }}
+                      aria-label={photo.caption || `Photo ${i + 1}`}
+                    />
                     <div className="cg__watermark" aria-hidden="true">
                       <span>© YENOU André Photographie</span>
                       <span>© YENOU André Photographie</span>
@@ -240,14 +247,8 @@ export default function ClientGallery() {
               src={gallery.photos[lightbox].src}
               alt={gallery.photos[lightbox].caption || ''}
               className="cg__lb-img"
+              draggable={false}
             />
-            <div className="cg__lb-watermark" aria-hidden="true">
-              <span>© YENOU André Photographie</span>
-              <span>© YENOU André Photographie</span>
-              <span>© YENOU André Photographie</span>
-              <span>© YENOU André Photographie</span>
-              <span>© YENOU André Photographie</span>
-            </div>
           </div>
           <button className="cg__lb-next" onClick={e => { e.stopPropagation(); navigate(1) }}>›</button>
           <div className="cg__lb-bottom">
