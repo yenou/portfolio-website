@@ -18,9 +18,8 @@ export default function Footer() {
               <ellipse cx="12" cy="12" rx="10" ry="4" stroke="currentColor" strokeWidth="1.2" fill="none" transform="rotate(120 12 12)"/>
             </svg>
             <span>React,</span>
-            <svg className="footer__tech-icon" viewBox="0 0 410 404" xmlns="http://www.w3.org/2000/svg" aria-label="Vite">
-              <path d="M399.641 59.525l-183.998 330.08a8.65 8.65 0 01-15.152-.024L10.757 59.536a8.65 8.65 0 011.263-9.892l89.152-95.272a8.65 8.65 0 0112.874.593l93.069 105.3 92.7-105.3a8.65 8.65 0 0112.874-.593l89.152 95.272a8.65 8.65 0 011.8 9.881z" fill="currentColor" opacity=".6"/>
-              <path d="M222.441 129.493l-51.839 88.893 139.542.588-139.46 245.796L344.496 129.493H222.441z" fill="currentColor"/>
+            <svg className="footer__tech-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-label="Vite" fill="currentColor">
+              <path d="M13 2L4.5 13.5H11L10 22L19.5 10.5H13L13 2Z"/>
             </svg>
             <span>Vite</span>
           </div>
