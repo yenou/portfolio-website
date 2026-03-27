@@ -256,6 +256,10 @@
 @media (max-width: 768px) {
   /* Header centré */
   .portfolio__header { text-align: center; }
+  .portfolio__header .section-label {
+    justify-content: center;
+  }
+  .portfolio__header .section-label::before { display: none; }
 
   /* "Portfolio" — typo élégante animée */
   .portfolio__header .section-title {
