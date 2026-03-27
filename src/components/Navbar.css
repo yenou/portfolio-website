@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap');
+
 /* ===== NAVBAR ===== */
 .navbar {
   position: fixed;
@@ -38,13 +40,17 @@
   color: rgba(255,255,255,0.6);
 }
 
-.navbar__logo-img {
-  height: 48px;
-  width: auto;
-  max-width: 160px;
-  object-fit: contain;
+.navbar__logo-signature {
+  font-family: 'Great Vibes', cursive;
+  font-size: 2rem;
+  color: white;
+  letter-spacing: 0.02em;
+  line-height: 1;
   display: block;
-  transition: opacity 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  .navbar__logo-signature { font-size: 1.6rem; }
 }
 
 /* ===== LIENS DESKTOP ===== */

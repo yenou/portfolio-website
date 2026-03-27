@@ -36,10 +36,7 @@ export default function Navbar() {
       <nav className={`navbar ${scrolled ? 'navbar--scrolled' : ''}`}>
         <div className="navbar__logo">
           <a href="#accueil" onClick={close}>
-            {logoImg
-              ? <img src={logoImg} alt="YENOU André Photographie" className="navbar__logo-img" />
-              : <>YENOU André <span>Photographie</span></>
-            }
+            <span className="navbar__logo-signature">YENOU André</span>
           </a>
         </div>
 
