@@ -262,9 +262,7 @@ export default function ClientGallery() {
         </div>
       )}
 
-      <footer className="cg__footer">
-        <p>© {new Date().getFullYear()} YENOU André Photographie — Galerie privée · Lien confidentiel</p>
-      </footer>
+
     </div>
   )
 }
