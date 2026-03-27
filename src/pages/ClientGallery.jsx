@@ -8,7 +8,7 @@ export default function ClientGallery() {
   const [gallery, setGallery] = useState(null)
   const [loading, setLoading] = useState(true)
   const [lightbox, setLightbox] = useState(null)
-  const [unlocked, setUnlocked] = useState(() => sessionStorage.getItem('cg_' + code) === '1')
+  const [unlocked, setUnlocked] = useState(() => localStorage.getItem('cg_' + code) === '1')
   const [pwdInput, setPwdInput] = useState('')
   const [pwdError, setPwdError] = useState(false)
   const logoImg = getLogoImg()
@@ -25,7 +25,7 @@ export default function ClientGallery() {
 
   const submitPassword = () => {
     if (pwdInput.toUpperCase() === gallery.password) {
-      sessionStorage.setItem('cg_' + code, '1')
+      localStorage.setItem('cg_' + code, '1')
       setUnlocked(true)
       dbIncrementGalleryView(code)
     } else {
