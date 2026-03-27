@@ -148,6 +148,7 @@ export default function ClientGallery() {
       </header>
 
       <section className="cg__hero">
+        <p className="cg__hero-secure">🔒 Votre galerie est sécurisée et accessible uniquement avec votre code.</p>
         <p className="cg__hero-label">Galerie privée</p>
         <h2 className="cg__hero-name">{gallery.clientName}</h2>
         <p className="cg__hero-meta">{gallery.photos.length} photo{gallery.photos.length > 1 ? 's' : ''}</p>

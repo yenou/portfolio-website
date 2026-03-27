@@ -265,6 +265,14 @@
   background: rgba(255,255,255,0.15);
   margin: 28px auto 0;
 }
+.cg__hero-secure {
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.35);
+  margin-bottom: 20px;
+  line-height: 1.7;
+}
+
 .cg__hero-label {
   font-size: 0.5rem;
   letter-spacing: 0.4em;
