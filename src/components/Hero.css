@@ -472,59 +472,81 @@
   }
 
   .hero__content {
-    padding: 0 28px 120px;
+    padding: calc(var(--banner-h, 0px) + 76px + 20px) 28px 100px;
     text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
   }
 
+  .hero__top-label {
+    font-size: 0.65rem;
+  }
+
+  .hero__portfolio-title {
+    font-size: clamp(2rem, 10vw, 3.5rem);
+    letter-spacing: 0.2em;
+  }
+
+  .hero__top-sub {
+    font-size: 0.68rem;
+    letter-spacing: 0.25em;
+  }
+
+  .hero__divider {
+    margin: 14px 0;
+    width: 160px;
+  }
+
   .hero__aperture {
-    width: 55px;
-    height: 55px;
-    margin-bottom: 20px;
+    width: 50px;
+    height: 50px;
+    margin-bottom: 16px;
   }
 
   .hero__eyebrow {
-    font-size: 0.52rem;
-    letter-spacing: 0.22em;
+    font-size: 0.5rem;
+    letter-spacing: 0.18em;
     justify-content: center;
   }
 
   .hero__title {
-    font-size: clamp(2.8rem, 12vw, 4.5rem);
+    font-size: clamp(2.2rem, 10vw, 3.5rem);
     text-align: center;
   }
 
   .hero__subtitle {
+    font-size: 0.6rem;
+    letter-spacing: 0.35em;
     text-align: center;
   }
 
   .hero__tagline {
-    font-size: 0.95rem;
-    margin-bottom: 28px;
+    font-size: 0.85rem;
+    margin-bottom: 20px;
     text-align: center;
   }
 
   .hero__cta {
-    flex-direction: column;
-    align-items: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 10px;
     width: 100%;
-    max-width: 260px;
+    max-width: 320px;
   }
 
   .hero__cta .btn {
-    width: 100%;
-    justify-content: center;
+    width: auto;
+    padding: 10px 20px;
+    font-size: 0.6rem;
   }
 
   .hero__exif { display: none; }
   .hero__scroll { display: none; }
 
-  /* Badge en bas centré */
   .hero__location {
-    bottom: 32px;
+    bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
     white-space: nowrap;
