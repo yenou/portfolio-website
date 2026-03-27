@@ -3,10 +3,10 @@ import { getCustomPhotos, getHiddenIds, useStorage } from '../utils/storage'
 import { dbGetPhotoLikes, dbLikePhoto, dbUnlikePhoto } from '../utils/db'
 import './Portfolio.css'
 
-const categories = ['Tous', 'Portraits & Famille', 'Nature & Paysages', 'Concerts & Événements']
+const categories = ['Portraits & Famille', 'Nature & Paysages', 'Concerts & Événements']
 
 export default function Portfolio() {
-  const [active, setActive] = useState('Tous')
+  const [active, setActive] = useState(categories[0])
   const [lightbox, setLightbox] = useState(null)
   const [carouselIdx, setCarouselIdx] = useState(0)
   const carouselRef = useRef(null)
@@ -32,7 +32,7 @@ export default function Portfolio() {
   const customPhotos = useStorage(getCustomPhotos)
   const photos = customPhotos.slice().reverse().filter(p => !hiddenIds.includes(p.id))
 
-  const filtered = active === 'Tous' ? photos : photos.filter(p => p.category === active)
+  const filtered = photos.filter(p => p.category === active)
 
   // Re-déclenche les animations après changement de filtre
   useEffect(() => {
