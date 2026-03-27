@@ -4,6 +4,38 @@
   overflow: hidden;
 }
 
+.about::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 10%;
+  height: 80%;
+  width: 1px;
+  background: rgba(255,255,255,0.05);
+  pointer-events: none;
+}
+
+@media (max-width: 960px) {
+  .about::before { display: none; }
+}
+
+/* ===== ANIMATIONS AU SCROLL ===== */
+.about__left {
+  opacity: 0;
+  transform: translateX(-40px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.about__right {
+  opacity: 0;
+  transform: translateX(40px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.15s, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.15s;
+}
+.about__left.about--visible,
+.about__right.about--visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
 /* Big background number */
 .about__bg-number {
   position: absolute;
@@ -40,7 +72,7 @@
   object-position: center top;
   mix-blend-mode: screen;
   animation: cameraFloat 6s ease-in-out infinite;
-  filter: drop-shadow(0 20px 40px rgba(255,255,255,0.04));
+  filter: contrast(1.1) brightness(1.05) drop-shadow(0 20px 40px rgba(255,255,255,0.04));
 }
 
 .about__img-frame--empty {
@@ -156,9 +188,20 @@
 
 .about__text {
   font-size: 0.88rem;
-  color: var(--gray-mid);
+  color: rgba(255,255,255,0.75);
   line-height: 2;
   margin-bottom: 18px;
+}
+
+/* ===== BOUTON PREMIUM ===== */
+.about__right .btn {
+  letter-spacing: 0.15em;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.about__right .btn:hover {
+  background: white;
+  color: black;
+  border-color: white;
 }
 
 /* ===== FLOAT ANIMATION ===== */

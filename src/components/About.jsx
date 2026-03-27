@@ -37,6 +37,17 @@ function AnimatedCounter({ target, suffix = '' }) {
 export default function About() {
   const texts    = useStorage(getTexts)
   const aboutImg = useStorage(getAboutImg) || '/images/about.jpg'
+  const leftRef  = useRef(null)
+  const rightRef = useRef(null)
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('about--visible') })
+    }, { threshold: 0.15 })
+    if (leftRef.current)  observer.observe(leftRef.current)
+    if (rightRef.current) observer.observe(rightRef.current)
+    return () => observer.disconnect()
+  }, [])
 
   return (
     <section id="apropos" className="about">
@@ -47,7 +58,7 @@ export default function About() {
         <div className="about__grid">
 
           {/* Image side */}
-          <div className="about__left reveal">
+          <div className="about__left" ref={leftRef}>
             <div className="about__img-frame">
               <img
                 src={aboutImg}
@@ -86,7 +97,7 @@ export default function About() {
           </div>
 
           {/* Text side */}
-          <div className="about__right">
+          <div className="about__right" ref={rightRef}>
             <div className="reveal">
               <p className="section-label">Mon histoire</p>
               <h2 className="section-title">À propos<br /><em>d'André</em></h2>
