@@ -367,6 +367,29 @@ function TabDashboard() {
 // ═══════════════════════════════════════════════════════════════════════════════
 // TAB: PHOTOS
 // ═══════════════════════════════════════════════════════════════════════════════
+function SlidePreview({ slide }) {
+  const [mode, setMode] = useState('desktop')
+  const ratio = mode === 'desktop' ? '16/9' : '9/19.5'
+  return (
+    <div className="admin-slide-preview">
+      <div className="admin-slide-preview__toggle">
+        <button className={mode === 'desktop' ? 'active' : ''} onClick={() => setMode('desktop')}>🖥 Desktop</button>
+        <button className={mode === 'mobile' ? 'active' : ''} onClick={() => setMode('mobile')}>📱 Mobile</button>
+      </div>
+      <div className="admin-slide-preview__frame" style={{ aspectRatio: ratio }}>
+        <div style={{
+          position: 'absolute', inset: 0,
+          backgroundImage: `url(${slide.src})`,
+          backgroundSize: `${slide.scale ?? 100}%`,
+          backgroundPosition: `center ${slide.posY ?? 50}%`,
+          backgroundRepeat: 'no-repeat',
+        }} />
+        <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.35)' }} />
+      </div>
+    </div>
+  )
+}
+
 function TabPhotos() {
   const [customPhotos, setCustomPhotos] = useState(getCustomPhotos)
   const [hiddenIds, setHiddenIds]       = useState(getHiddenIds)
@@ -502,6 +525,7 @@ function TabPhotos() {
                 <span className="admin-slide-thumb__num">{i + 1}</span>
                 <button className="admin-slide-thumb__del" onClick={() => removeSlide(i)}>×</button>
               </div>
+              <SlidePreview slide={slide} />
               <div className="admin-slide-fields">
                 <input
                   className="admin-slide-input"

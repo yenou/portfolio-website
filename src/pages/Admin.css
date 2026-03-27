@@ -756,6 +756,38 @@ h2.admin-tab__title { margin-bottom: 32px; }
 .admin-slide-input:focus { border-color: rgba(255,255,255,0.3); }
 .admin-slide-input--sub { color: rgba(255,255,255,0.4); font-size: 0.62rem; }
 
+.admin-slide-preview {
+  margin-top: 12px;
+}
+.admin-slide-preview__toggle {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.admin-slide-preview__toggle button {
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.4);
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.admin-slide-preview__toggle button.active {
+  background: rgba(255,255,255,0.15);
+  color: white;
+  border-color: rgba(255,255,255,0.3);
+}
+.admin-slide-preview__frame {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 4px;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
 .admin-slide-pos {
   margin-top: 8px;
 }
