@@ -202,7 +202,7 @@ export default function ClientGallery() {
                     {selected.size === 0 ? 'Aucune photo sélectionnée' : `${selected.size} photo${selected.size > 1 ? 's' : ''} sélectionnée${selected.size > 1 ? 's' : ''}`}
                   </span>
                   {selected.size > 0 && (
-                    <button className="cg__deselect-btn" onClick={() => setSelected(new Set())}>
+                    <button className="cg__deselect-btn" onClick={resetSelection}>
                       Tout désélectionner
                     </button>
                   )}
