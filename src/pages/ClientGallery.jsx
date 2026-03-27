@@ -66,11 +66,17 @@ export default function ClientGallery() {
   }
 
   const validate = async () => {
-    if (selected.size === 0 || validating) return
+    if (validating) return
     setValidating(true)
     await dbSaveGallerySelection(code, [...selected])
-    setValidated(true)
+    setValidated(selected.size > 0)
     setValidating(false)
+  }
+
+  const resetSelection = async () => {
+    setSelected(new Set())
+    setValidated(false)
+    await dbSaveGallerySelection(code, [])
   }
 
   const onTouchStart = (e) => { touchStart.current = e.touches[0].clientX }
@@ -191,9 +197,16 @@ export default function ClientGallery() {
             {/* Barre de validation */}
             {!validated ? (
               <div className="cg__validate-bar">
-                <span className="cg__validate-count">
-                  {selected.size === 0 ? 'Aucune photo sélectionnée' : `${selected.size} photo${selected.size > 1 ? 's' : ''} sélectionnée${selected.size > 1 ? 's' : ''}`}
-                </span>
+                <div className="cg__validate-left">
+                  <span className="cg__validate-count">
+                    {selected.size === 0 ? 'Aucune photo sélectionnée' : `${selected.size} photo${selected.size > 1 ? 's' : ''} sélectionnée${selected.size > 1 ? 's' : ''}`}
+                  </span>
+                  {selected.size > 0 && (
+                    <button className="cg__deselect-btn" onClick={() => setSelected(new Set())}>
+                      Tout désélectionner
+                    </button>
+                  )}
+                </div>
                 <button
                   className="cg__validate-btn"
                   onClick={validate}
@@ -205,12 +218,15 @@ export default function ClientGallery() {
             ) : (
               <div className="cg__validated-msg">
                 <span className="cg__validated-icon">✓</span>
-                <div>
+                <div style={{ flex: 1 }}>
                   <p className="cg__validated-title">Sélection envoyée !</p>
                   <p className="cg__validated-sub">
                     Vous avez sélectionné {selected.size} photo{selected.size > 1 ? 's' : ''}. Votre photographe en a été informé.
                   </p>
                 </div>
+                <button className="cg__modify-btn" onClick={() => setValidated(false)}>
+                  Modifier
+                </button>
               </div>
             )}
           </>

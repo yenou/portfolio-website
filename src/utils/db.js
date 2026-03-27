@@ -188,8 +188,8 @@ export async function dbSaveGallerySelection(code, selectedPhotoIds) {
   try {
     await setDoc(doc(clientGalleriesCol, code), {
       selectedPhotos: selectedPhotoIds,
-      selectionValidated: true,
-      validatedAt: Date.now()
+      selectionValidated: selectedPhotoIds.length > 0,
+      validatedAt: selectedPhotoIds.length > 0 ? Date.now() : null
     }, { merge: true })
   } catch (e) { console.warn('[Firebase] Gallery selection save failed:', e.message) }
 }
