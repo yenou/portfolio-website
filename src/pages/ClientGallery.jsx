@@ -15,6 +15,7 @@ export default function ClientGallery() {
   const [selected, setSelected]   = useState([])
   const [validated, setValidated] = useState(false)
   const [validating, setValidating] = useState(false)
+  const [codeVisible, setCodeVisible] = useState(false)
   const logoImg = getLogoImg()
   const touchStart = useRef(null)
 
@@ -146,8 +147,13 @@ export default function ClientGallery() {
             <h1 className="cg__client-name">{gallery.clientName}</h1>
           </div>
           <div className="cg__code-badge">
-            <span className="cg__code-label">Code</span>
-            <span className="cg__code-value">{gallery.code}</span>
+            <span className="cg__code-label">Numéro de galerie</span>
+            <div className="cg__code-row">
+              <span className={`cg__code-value ${codeVisible ? '' : 'cg__code-value--blurred'}`}>{gallery.code}</span>
+              <button className="cg__code-eye" onClick={() => setCodeVisible(v => !v)} aria-label={codeVisible ? 'Masquer' : 'Afficher'}>
+                {codeVisible ? '🙈' : '👁'}
+              </button>
+            </div>
           </div>
         </div>
       </header>
