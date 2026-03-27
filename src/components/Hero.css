@@ -18,7 +18,7 @@
 .hero__slide {
   position: absolute;
   inset: 0;
-  background-size: cover;
+  background-size: 100%;
   background-position: center;
   opacity: 0;
   transition: opacity 1.2s ease;
@@ -36,8 +36,8 @@
 }
 
 @keyframes kenBurns {
-  from { transform: scale(var(--slide-scale, 1))        translate(0%,    0%); }
-  to   { transform: scale(calc(var(--slide-scale, 1) * 1.06)) translate(-0.8%, 0.4%); }
+  from { transform: scale(1.0)  translate(0%,    0%); }
+  to   { transform: scale(1.06) translate(-0.8%, 0.4%); }
 }
 
 .hero__overlay {
