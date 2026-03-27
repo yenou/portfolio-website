@@ -1009,15 +1009,15 @@ function TabGalleries() {
     dbGetAllGalleries().then(setGalleries)
   }, [])
 
-  const generateCode = () => {
+  const generateCode = (len = 6) => {
     const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
-    return Array.from({ length: 6 }, () => chars[Math.floor(Math.random() * chars.length)]).join('')
+    return Array.from({ length: len }, () => chars[Math.floor(Math.random() * chars.length)]).join('')
   }
 
   const createGallery = async () => {
     if (!newName.trim()) return
     setCreating(true)
-    const gallery = { code: generateCode(), clientName: newName.trim(), createdAt: Date.now(), photos: [] }
+    const gallery = { code: generateCode(6), password: generateCode(4), clientName: newName.trim(), createdAt: Date.now(), photos: [] }
     await dbCreateGallery(gallery)
     setGalleries(prev => [gallery, ...prev])
     setNewName('')
@@ -1111,6 +1111,9 @@ function GalleryCard({ gallery, expanded, onToggle, onDelete, onCopyLink, onAddP
           </span>
         </div>
         <div className="gallery-card__actions" onClick={e => e.stopPropagation()}>
+          {gallery.password && (
+            <span className="gallery-card__pwd" title="Mot de passe client">🔑 <strong>{gallery.password}</strong></span>
+          )}
           <button className="admin-btn admin-btn--ghost" onClick={onCopyLink} title="Copier le lien">🔗 Lien</button>
           <button className="admin-btn admin-btn--danger" onClick={onDelete}>Supprimer</button>
         </div>

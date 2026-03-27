@@ -7,7 +7,10 @@ export default function ClientGallery() {
   const code = window.location.pathname.split('/galerie/')[1]?.toUpperCase()
   const [gallery, setGallery] = useState(null)
   const [loading, setLoading] = useState(true)
-  const [lightbox, setLightbox] = useState(null) // index or null
+  const [lightbox, setLightbox] = useState(null)
+  const [unlocked, setUnlocked] = useState(() => sessionStorage.getItem('cg_' + code) === '1')
+  const [pwdInput, setPwdInput] = useState('')
+  const [pwdError, setPwdError] = useState(false)
   const logoImg = getLogoImg()
   const touchStart = useRef(null)
 
@@ -16,9 +19,20 @@ export default function ClientGallery() {
     dbGetGallery(code).then(g => {
       setGallery(g)
       setLoading(false)
-      if (g) dbIncrementGalleryView(code)
+      if (g && (!g.password || unlocked)) dbIncrementGalleryView(code)
     })
   }, [code])
+
+  const submitPassword = () => {
+    if (pwdInput.toUpperCase() === gallery.password) {
+      sessionStorage.setItem('cg_' + code, '1')
+      setUnlocked(true)
+      dbIncrementGalleryView(code)
+    } else {
+      setPwdError(true)
+      setTimeout(() => setPwdError(false), 1500)
+    }
+  }
 
   useEffect(() => {
     const onKey = (e) => {
@@ -47,6 +61,32 @@ export default function ClientGallery() {
   if (loading) return (
     <div className="cg cg--loading">
       <div className="cg__spinner" />
+    </div>
+  )
+
+  if (gallery && gallery.password && !unlocked) return (
+    <div className="cg cg--locked">
+      <div className="cg__lock-box">
+        <div className="cg__lock-icon">🔒</div>
+        <p className="cg__lock-label">Galerie privée</p>
+        <h1 className="cg__lock-name">{gallery.clientName}</h1>
+        <p className="cg__lock-hint">Entrez le code d'accès transmis par votre photographe</p>
+        <div className={`cg__lock-form ${pwdError ? 'cg__lock-form--error' : ''}`}>
+          <input
+            className="cg__lock-input"
+            type="text"
+            placeholder="Code d'accès"
+            value={pwdInput}
+            onChange={e => setPwdInput(e.target.value.toUpperCase())}
+            onKeyDown={e => e.key === 'Enter' && submitPassword()}
+            maxLength={6}
+            autoFocus
+          />
+          <button className="cg__lock-btn" onClick={submitPassword}>Accéder →</button>
+        </div>
+        {pwdError && <p className="cg__lock-error">Code incorrect</p>}
+        <a href="/" className="cg__back" style={{ marginTop: '24px' }}>← Retour au site</a>
+      </div>
     </div>
   )
 

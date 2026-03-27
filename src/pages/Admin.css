@@ -1128,7 +1128,21 @@ h2.admin-tab__title { margin-bottom: 32px; }
   text-transform: uppercase;
 }
 
-.gallery-card__actions { display: flex; gap: 8px; }
+.gallery-card__actions { display: flex; align-items: center; gap: 8px; }
+.gallery-card__pwd {
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.45);
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 4px;
+  padding: 3px 8px;
+}
+.gallery-card__pwd strong {
+  color: rgba(255,220,100,0.85);
+  letter-spacing: 0.2em;
+  font-size: 0.7rem;
+}
 
 .admin-btn--danger {
   background: rgba(220, 60, 60, 0.15);
