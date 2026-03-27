@@ -557,7 +557,7 @@ function TabPhotos() {
                     <span>{slide.scale ?? 100}%</span>
                   </label>
                   <input
-                    type="range" min="60" max="150"
+                    type="range" min="20" max="150"
                     value={slide.scale ?? 100}
                     onChange={e => updateSlide(i, 'scale', Number(e.target.value))}
                     className="admin-slide-pos__range"
