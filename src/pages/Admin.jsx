@@ -11,7 +11,7 @@ import {
   updateLastActive,
 } from '../utils/storage'
 import './Admin.css'
-import { dbSaveConfig, dbSaveAboutImg, dbSaveLogoImg, dbSaveCustomPhoto, dbDeleteCustomPhoto, dbSaveAllHeroSlides, dbGetVisitHistory } from '../utils/db'
+import { dbSaveConfig, dbSaveAboutImg, dbSaveLogoImg, dbSaveCustomPhoto, dbDeleteCustomPhoto, dbSaveAllHeroSlides, dbGetVisitHistory, syncPhotosFromFirestore } from '../utils/db'
 
 const CATEGORIES = ['Portraits & Famille', 'Nature & Paysages', 'Concerts & Événements']
 
@@ -418,18 +418,16 @@ function TabPhotos() {
   const [slideUploading] = useState(false)
   const fileRef = useRef(null)
 
-  // Re-sync state when Firebase finishes loading (other device / first load)
+  // Re-sync slides/photos from Firestore once on mount (handles new devices with empty localStorage)
   useEffect(() => {
-    const onUpdate = () => {
+    syncPhotosFromFirestore().then(() => {
       const imgs = getHeroImgs()
       const normalized = imgs.map(s =>
         typeof s === 'string' ? { src: s, location: 'Contrexéville', sub: 'Vosges, France' } : s
       )
       if (normalized.length > 0) setHeroImgsState(normalized)
       setCustomPhotos(getCustomPhotos())
-    }
-    window.addEventListener('yenou:updated', onUpdate)
-    return () => window.removeEventListener('yenou:updated', onUpdate)
+    })
   }, [])
 
   const { open: openSlide, Input: SlideInput } = useFilePicker((base64) => {
