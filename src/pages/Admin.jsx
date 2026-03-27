@@ -1104,7 +1104,11 @@ function GalleryCard({ gallery, expanded, onToggle, onDelete, onCopyLink, onAddP
       <div className="gallery-card__header" onClick={onToggle}>
         <div className="gallery-card__info">
           <span className="gallery-card__name">{gallery.clientName}</span>
-          <span className="gallery-card__meta">{gallery.code} · {(gallery.photos || []).length} photo{(gallery.photos || []).length !== 1 ? 's' : ''}</span>
+          <span className="gallery-card__meta">
+            {gallery.code} · {(gallery.photos || []).length} photo{(gallery.photos || []).length !== 1 ? 's' : ''}
+            {gallery.views ? ` · 👁 ${gallery.views} vue${gallery.views > 1 ? 's' : ''}` : ' · Pas encore consulté'}
+            {gallery.lastView ? ` · ${new Date(gallery.lastView).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}` : ''}
+          </span>
         </div>
         <div className="gallery-card__actions" onClick={e => e.stopPropagation()}>
           <button className="admin-btn admin-btn--ghost" onClick={onCopyLink} title="Copier le lien">🔗 Lien</button>

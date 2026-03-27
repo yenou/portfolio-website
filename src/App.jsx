@@ -88,7 +88,12 @@ export default function App() {
 
   // Page galerie client
   if (showGallery) {
-    return <ClientGallery />
+    return (
+      <>
+        <Cursor />
+        <ClientGallery />
+      </>
+    )
   }
 
   // Page admin

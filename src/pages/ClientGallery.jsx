@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react'
-import { dbGetGallery } from '../utils/db'
+import { dbGetGallery, dbIncrementGalleryView } from '../utils/db'
 import { getLogoImg } from '../utils/storage'
 import './ClientGallery.css'
 
@@ -13,7 +13,11 @@ export default function ClientGallery() {
 
   useEffect(() => {
     if (!code) { setLoading(false); return }
-    dbGetGallery(code).then(g => { setGallery(g); setLoading(false) })
+    dbGetGallery(code).then(g => {
+      setGallery(g)
+      setLoading(false)
+      if (g) dbIncrementGalleryView(code)
+    })
   }, [code])
 
   useEffect(() => {
@@ -89,6 +93,7 @@ export default function ClientGallery() {
             {gallery.photos.map((photo, i) => (
               <div key={photo.id} className="cg__item" onClick={() => setLightbox(i)}>
                 <img src={photo.src} alt={photo.caption || `Photo ${i + 1}`} loading="lazy" />
+                <div className="cg__watermark" aria-hidden="true">YENOU André Photographie</div>
                 {photo.caption && <span className="cg__caption">{photo.caption}</span>}
               </div>
             ))}
@@ -100,12 +105,14 @@ export default function ClientGallery() {
         <div className="cg__lightbox" onClick={() => setLightbox(null)} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
           <button className="cg__lb-close" onClick={() => setLightbox(null)}>×</button>
           <button className="cg__lb-prev" onClick={e => { e.stopPropagation(); navigate(-1) }}>‹</button>
-          <img
-            src={gallery.photos[lightbox].src}
-            alt={gallery.photos[lightbox].caption || ''}
-            className="cg__lb-img"
-            onClick={e => e.stopPropagation()}
-          />
+          <div className="cg__lb-wrap" onClick={e => e.stopPropagation()}>
+            <img
+              src={gallery.photos[lightbox].src}
+              alt={gallery.photos[lightbox].caption || ''}
+              className="cg__lb-img"
+            />
+            <div className="cg__lb-watermark" aria-hidden="true">YENOU André Photographie</div>
+          </div>
           <button className="cg__lb-next" onClick={e => { e.stopPropagation(); navigate(1) }}>›</button>
           <span className="cg__lb-counter">{lightbox + 1} / {gallery.photos.length}</span>
         </div>

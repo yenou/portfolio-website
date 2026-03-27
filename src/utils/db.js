@@ -148,6 +148,14 @@ export async function dbGetVisitHistory() {
   } catch (e) { return {} }
 }
 
+// ── Increment gallery view count ───────────────────────────────────────────────
+const clientGalleriesCol2 = collection(db, 'clientGalleries')
+export async function dbIncrementGalleryView(code) {
+  try {
+    await setDoc(doc(clientGalleriesCol2, code), { views: increment(1), lastView: Date.now() }, { merge: true })
+  } catch (e) { /* silent */ }
+}
+
 // ── Client Galleries ───────────────────────────────────────────────────────────
 const clientGalleriesCol = collection(db, 'clientGalleries')
 const clientGalleryPhotosCol = collection(db, 'clientGalleryPhotos')

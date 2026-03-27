@@ -157,6 +157,53 @@
   display: block;
 }
 .cg__item:hover img { transform: scale(1.04); }
+
+/* ── Watermark ── */
+.cg__watermark {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(-30deg);
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.18);
+  pointer-events: none;
+  z-index: 2;
+  white-space: nowrap;
+  user-select: none;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+}
+.cg__lb-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 90vw;
+  max-height: 88vh;
+}
+.cg__lb-watermark {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(-30deg);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.15);
+  pointer-events: none;
+  z-index: 2;
+  white-space: nowrap;
+  user-select: none;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+}
+
 .cg__caption {
   position: absolute;
   bottom: 0;
