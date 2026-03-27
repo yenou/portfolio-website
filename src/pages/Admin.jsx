@@ -417,7 +417,7 @@ function TabPhotos() {
   const [dragId, setDragId]   = useState(null)
   const [slideUploading] = useState(false)
   const fileRef = useRef(null)
-
+  const slideDebounceRef = useRef(null)
 
   const { open: openSlide, Input: SlideInput } = useFilePicker((base64) => {
     compressImage(base64, 1600, 0.82).then(compressed => {
@@ -438,7 +438,8 @@ function TabPhotos() {
   const updateSlide = (i, field, value) => {
     const next = heroImgs.map((s, idx) => idx === i ? { ...s, [field]: value } : s)
     saveHeroImgs(next); setHeroImgsState(next)
-    dbSaveAllHeroSlides(next)
+    clearTimeout(slideDebounceRef.current)
+    slideDebounceRef.current = setTimeout(() => dbSaveAllHeroSlides(next), 600)
   }
 
   const { open: openAbout, Input: AboutInput } = useFilePicker((base64) => {
