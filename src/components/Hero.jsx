@@ -18,8 +18,6 @@ export default function Hero() {
     ? rawSlides.map(s => typeof s === 'string' ? { src: s, location: 'Contrexéville', sub: 'Vosges, France' } : s)
     : [{ src: '/images/hero.jpg', location: 'Contrexéville', sub: 'Vosges, France' }]
 
-  const [badgeVisible, setBadgeVisible] = useState(true)
-
   const [current, setCurrent]   = useState(0)
   const [prev, setPrev]         = useState(null)
   const [transitioning, setTransitioning] = useState(false)
@@ -66,13 +64,6 @@ export default function Hero() {
     }
   }, [])
 
-  // Fade badge out then in on slide change
-  useEffect(() => {
-    setBadgeVisible(false)
-    const t = setTimeout(() => setBadgeVisible(true), 400)
-    return () => clearTimeout(t)
-  }, [current])
-
   const goTo = (i) => {
     if (i === current || transitioning) return
     setPrev(current)
@@ -96,20 +87,6 @@ export default function Hero() {
         <div className="hero__scan" />
       </div>
 
-      {/* Location badge — per slide */}
-      {slides[current]?.location && (
-        <div className={`hero__location ${badgeVisible ? 'hero__location--visible' : ''}`}>
-          <svg className="hero__location-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
-            <circle cx="12" cy="9" r="2.5"/>
-          </svg>
-          <span className="hero__location-text">{slides[current].location}</span>
-          {slides[current].sub && <>
-            <span className="hero__location-sep">·</span>
-            <span className="hero__location-sub">{slides[current].sub}</span>
-          </>}
-        </div>
-      )}
 
       {/* Main content — bloc unique centré */}
       <div className="hero__content">
