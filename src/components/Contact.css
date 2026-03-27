@@ -169,6 +169,12 @@ a.contact__detail-value:hover {
   }
   .contact__detail {
     justify-content: center;
+    align-items: center;
+    text-align: left;
+  }
+  .contact__detail-icon {
+    margin-top: 0;
+    flex-shrink: 0;
   }
 }
 
