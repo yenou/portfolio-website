@@ -93,7 +93,11 @@ export default function ClientGallery() {
             {gallery.photos.map((photo, i) => (
               <div key={photo.id} className="cg__item" onClick={() => setLightbox(i)}>
                 <img src={photo.src} alt={photo.caption || `Photo ${i + 1}`} loading="lazy" />
-                <div className="cg__watermark" aria-hidden="true">YENOU André Photographie</div>
+                <div className="cg__watermark" aria-hidden="true">
+                  <span>© YENOU André Photographie</span>
+                  <span>© YENOU André Photographie</span>
+                  <span>© YENOU André Photographie</span>
+                </div>
                 {photo.caption && <span className="cg__caption">{photo.caption}</span>}
               </div>
             ))}
@@ -111,7 +115,13 @@ export default function ClientGallery() {
               alt={gallery.photos[lightbox].caption || ''}
               className="cg__lb-img"
             />
-            <div className="cg__lb-watermark" aria-hidden="true">YENOU André Photographie</div>
+            <div className="cg__lb-watermark" aria-hidden="true">
+              <span>© YENOU André Photographie</span>
+              <span>© YENOU André Photographie</span>
+              <span>© YENOU André Photographie</span>
+              <span>© YENOU André Photographie</span>
+              <span>© YENOU André Photographie</span>
+            </div>
           </div>
           <button className="cg__lb-next" onClick={e => { e.stopPropagation(); navigate(1) }}>›</button>
           <span className="cg__lb-counter">{lightbox + 1} / {gallery.photos.length}</span>

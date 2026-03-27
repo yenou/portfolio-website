@@ -148,14 +148,6 @@ export async function dbGetVisitHistory() {
   } catch (e) { return {} }
 }
 
-// ── Increment gallery view count ───────────────────────────────────────────────
-const clientGalleriesCol2 = collection(db, 'clientGalleries')
-export async function dbIncrementGalleryView(code) {
-  try {
-    await setDoc(doc(clientGalleriesCol2, code), { views: increment(1), lastView: Date.now() }, { merge: true })
-  } catch (e) { /* silent */ }
-}
-
 // ── Client Galleries ───────────────────────────────────────────────────────────
 const clientGalleriesCol = collection(db, 'clientGalleries')
 const clientGalleryPhotosCol = collection(db, 'clientGalleryPhotos')
@@ -186,10 +178,20 @@ export async function dbDeleteGalleryPhoto(id) {
   catch (e) { console.warn('[Firebase] Gallery photo delete failed:', e.message) }
 }
 
+export async function dbIncrementGalleryView(code) {
+  try {
+    await setDoc(doc(clientGalleriesCol, code), { views: increment(1), lastView: Date.now() }, { merge: true })
+  } catch (e) { /* silent */ }
+}
+
 export async function dbGetAllGalleries() {
   try {
-    const snap = await getDocs(clientGalleriesCol)
-    return snap.docs.map(d => d.data()).sort((a, b) => b.createdAt - a.createdAt)
+    const [galSnap, photosSnap] = await Promise.all([getDocs(clientGalleriesCol), getDocs(clientGalleryPhotosCol)])
+    const allPhotos = photosSnap.docs.map(d => d.data())
+    return galSnap.docs
+      .map(d => d.data())
+      .sort((a, b) => b.createdAt - a.createdAt)
+      .map(g => ({ ...g, photos: allPhotos.filter(p => p.galleryCode === g.code).sort((a, b) => a.order - b.order) }))
   } catch (e) { return [] }
 }
 

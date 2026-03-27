@@ -163,19 +163,24 @@
   position: absolute;
   inset: 0;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  transform: rotate(-30deg);
-  font-size: 0.6rem;
-  font-weight: 600;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: rgba(255,255,255,0.18);
+  gap: 18px;
+  transform: rotate(-30deg) scale(1.4);
   pointer-events: none;
   z-index: 2;
-  white-space: nowrap;
   user-select: none;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+  overflow: hidden;
+}
+.cg__watermark span {
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.32);
+  white-space: nowrap;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.6);
 }
 .cg__lb-wrap {
   position: relative;
@@ -189,19 +194,24 @@
   position: absolute;
   inset: 0;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  transform: rotate(-30deg);
-  font-size: 0.85rem;
-  font-weight: 600;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: rgba(255,255,255,0.15);
+  gap: 28px;
+  transform: rotate(-30deg) scale(1.5);
   pointer-events: none;
   z-index: 2;
-  white-space: nowrap;
   user-select: none;
-  text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+  overflow: hidden;
+}
+.cg__lb-watermark span {
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.28);
+  white-space: nowrap;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.7);
 }
 
 .cg__caption {
