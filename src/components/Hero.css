@@ -504,26 +504,25 @@
     margin-bottom: 16px;
   }
 
-  .hero__eyebrow {
-    font-size: 0.5rem;
-    letter-spacing: 0.18em;
-    justify-content: center;
-  }
+  .hero__eyebrow { display: none; }
+
+  .hero__title-wrap { margin-bottom: 4px; }
+  .hero__subtitle-wrap { margin-bottom: 16px; }
 
   .hero__title {
-    font-size: clamp(2.2rem, 10vw, 3.5rem);
+    font-size: clamp(2rem, 9vw, 3rem);
     text-align: center;
   }
 
   .hero__subtitle {
-    font-size: 0.6rem;
-    letter-spacing: 0.35em;
+    font-size: 0.55rem;
+    letter-spacing: 0.25em;
     text-align: center;
   }
 
   .hero__tagline {
-    font-size: 0.85rem;
-    margin-bottom: 20px;
+    font-size: 0.82rem;
+    margin-bottom: 18px;
     text-align: center;
   }
 
