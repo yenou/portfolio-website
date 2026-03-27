@@ -79,7 +79,6 @@ export const saveTestimonials = (v) => set(KEYS.TESTIMONIALS, v)
 // Services
 const DEFAULT_SERVICES = [
   { id: 1, title: 'Portraits & Famille', description: 'Séances photo personnalisées pour sublimer votre personnalité ou immortaliser les moments en famille. En studio ou en extérieur, dans une atmosphère naturelle et détendue.', details: ['Portrait individuel', 'Séance famille', 'En studio ou extérieur', 'Retouches incluses'] },
-  { id: 2, title: 'Nature & Paysages', description: "Exploration photographique des espaces naturels — forêts, lacs, couchers de soleil. Des images qui respirent la beauté du monde et transmettent une émotion profonde.", details: ['Vosges & alentours', 'Toutes saisons', 'Tirages disponibles', 'Édition fine art'] },
   { id: 3, title: 'Concerts & Événements', description: "Reportage photo lors de vos concerts, festivals ou événements privés. Capture de l'énergie, de l'ambiance et des moments forts qui marquent les esprits.", details: ['Concerts & festivals', 'Événements privés', 'Livraison rapide', 'Galerie en ligne'] },
 ]
 export const getServices = () => get(KEYS.SERVICES, DEFAULT_SERVICES)

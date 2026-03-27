@@ -840,6 +840,7 @@ function TabServices() {
   const save = (list) => { saveServices(list); dbSaveConfig({ services: list }); setItems(list); setSaved(true); setTimeout(() => setSaved(false), 2500) }
   const update = (id, key, val) => save(items.map(s => s.id === id ? { ...s, [key]: val } : s))
   const updateDetails = (id, val) => update(id, 'details', val.split('\n').filter(Boolean))
+  const remove = (id) => save(items.filter(s => s.id !== id))
 
   return (
     <div className="tab-services">
@@ -851,8 +852,11 @@ function TabServices() {
       <div className="services-list">
         {items.map(s => (
           <div key={s.id} className="service-edit-card">
-            <div className="admin-field">
+            <div className="admin-field" style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
               <label>Titre</label>
+              <button className="admin-slide-thumb__del" style={{ position: 'static' }} onClick={() => remove(s.id)}>×</button>
+            </div>
+            <div className="admin-field">
               <input type="text" value={s.title} onChange={e => update(s.id, 'title', e.target.value)} />
             </div>
             <div className="admin-field">
