@@ -8,6 +8,7 @@ import About from './components/About'
 import Services from './components/Services'
 import Testimonials from './components/Testimonials'
 import Contact from './components/Contact'
+import Availability from './components/Availability'
 import Footer from './components/Footer'
 import Banner from './components/Banner'
 import Admin from './pages/Admin'
@@ -124,6 +125,7 @@ export default function App() {
         <About />
         <Services />
         <Testimonials />
+        <Availability />
         <Contact />
       </main>
       <Footer />

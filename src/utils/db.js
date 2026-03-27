@@ -205,6 +205,21 @@ export async function dbGetAllGalleries() {
   } catch (e) { return [] }
 }
 
+// ── Disponibilités ────────────────────────────────────────────────────────────
+const availabilityDoc = doc(db, 'site', 'availability')
+
+export async function dbGetAvailability() {
+  try {
+    const snap = await getDoc(availabilityDoc)
+    return snap.exists() ? snap.data() : {}
+  } catch (e) { return {} }
+}
+
+export async function dbSaveAvailability(data) {
+  try { await setDoc(availabilityDoc, data) }
+  catch (e) { console.warn('[Firebase] Availability save failed:', e.message) }
+}
+
 // ── Photo likes ───────────────────────────────────────────────────────────────
 const photoLikesDoc = doc(db, 'site', 'photoLikes')
 

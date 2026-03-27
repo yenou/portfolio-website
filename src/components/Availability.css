@@ -1,0 +1,118 @@
+.avail {
+  background: var(--bg-primary);
+  position: relative;
+}
+
+.avail__header { margin-bottom: 0; }
+
+.avail__legend {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 40px;
+  margin-top: 8px;
+}
+
+.avail__legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.62rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+}
+
+.avail__legend-item::before {
+  content: '';
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.avail__legend--free::before  { background: rgba(120,210,120,0.7); }
+.avail__legend--busy::before  { background: rgba(220,80,80,0.7); }
+
+/* ── Grille des mois ── */
+.avail__months {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+}
+
+.avail__month { }
+
+.avail__month-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  color: rgba(255,255,255,0.7);
+  margin-bottom: 16px;
+  text-transform: capitalize;
+}
+
+.avail__grid-head {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-bottom: 6px;
+}
+
+.avail__grid-head span {
+  font-size: 0.5rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.2);
+  text-align: center;
+  padding: 4px 0;
+}
+
+.avail__grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+}
+
+.avail__day {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.68rem;
+  border-radius: 4px;
+  font-weight: 500;
+  transition: transform 0.15s;
+}
+
+.avail__day--empty  { background: transparent; }
+.avail__day--past   { color: rgba(255,255,255,0.12); background: transparent; }
+.avail__day--free   { color: rgba(150,230,150,0.9); background: rgba(120,210,120,0.08); }
+.avail__day--busy   { color: rgba(255,255,255,0.25); background: rgba(200,60,60,0.15); text-decoration: line-through; }
+
+/* ── CTA ── */
+.avail__cta {
+  margin-top: 48px;
+  text-align: center;
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.3);
+  letter-spacing: 0.06em;
+}
+.avail__cta a {
+  color: rgba(255,255,255,0.6);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+  padding-bottom: 1px;
+  transition: color 0.2s, border-color 0.2s;
+}
+.avail__cta a:hover { color: white; border-color: white; }
+
+/* ── Mobile ── */
+@media (max-width: 900px) {
+  .avail__months {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  .avail__month-name { font-size: 1rem; text-align: center; }
+  .avail__grid-head span { font-size: 0.48rem; }
+  .avail__day { font-size: 0.75rem; border-radius: 6px; }
+}

@@ -1317,3 +1317,59 @@ h2.admin-tab__title { margin-bottom: 32px; }
   color: rgba(255,255,255,0.6);
 }
 .gallery-add-photo span:first-child { font-size: 1.2rem; line-height: 1; }
+
+/* ===== DISPONIBILITÉS ADMIN ===== */
+.avail-admin__months {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+  margin-top: 24px;
+}
+.avail-admin__month-name {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.6);
+  margin-bottom: 12px;
+}
+.avail-admin__grid-head {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-bottom: 4px;
+}
+.avail-admin__grid-head span {
+  font-size: 0.5rem;
+  color: rgba(255,255,255,0.2);
+  text-align: center;
+  padding: 3px 0;
+  letter-spacing: 0.05em;
+}
+.avail-admin__grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+}
+.avail-admin__day {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.68rem;
+  font-weight: 500;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: inherit;
+}
+.avail-admin__day--empty   { background: transparent; cursor: default; }
+.avail-admin__day--past    { background: transparent; color: rgba(255,255,255,0.1); cursor: default; }
+.avail-admin__day--free    { background: rgba(100,200,100,0.12); color: rgba(150,230,150,0.8); }
+.avail-admin__day--free:hover { background: rgba(200,60,60,0.2); color: rgba(255,120,120,0.8); }
+.avail-admin__day--busy    { background: rgba(200,60,60,0.2); color: rgba(255,120,120,0.8); }
+.avail-admin__day--busy:hover { background: rgba(100,200,100,0.12); color: rgba(150,230,150,0.8); }
+
+@media (max-width: 900px) {
+  .avail-admin__months { grid-template-columns: 1fr; }
+}

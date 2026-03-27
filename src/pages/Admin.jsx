@@ -11,7 +11,7 @@ import {
   updateLastActive,
 } from '../utils/storage'
 import './Admin.css'
-import { dbSaveConfig, dbSaveAboutImg, dbSaveLogoImg, dbSaveCustomPhoto, dbDeleteCustomPhoto, dbSaveAllHeroSlides, dbGetVisitHistory, dbCreateGallery, dbDeleteGallery, dbAddGalleryPhoto, dbDeleteGalleryPhoto, dbGetAllGalleries } from '../utils/db'
+import { dbSaveConfig, dbSaveAboutImg, dbSaveLogoImg, dbSaveCustomPhoto, dbDeleteCustomPhoto, dbSaveAllHeroSlides, dbGetVisitHistory, dbCreateGallery, dbDeleteGallery, dbAddGalleryPhoto, dbDeleteGalleryPhoto, dbGetAllGalleries, dbGetAvailability, dbSaveAvailability } from '../utils/db'
 
 const CATEGORIES = ['Portraits & Famille', 'Nature & Paysages', 'Concerts & Événements']
 
@@ -228,6 +228,7 @@ export default function Admin({ onExit }) {
     { id: 'services',      label: '🎯 Services' },
     { id: 'contact',       label: '📞 Contact' },
     { id: 'banniere',      label: '📢 Bannière' },
+    { id: 'disponibilites', label: '📅 Disponibilités' },
     { id: 'securite',      label: '🔐 Sécurité' },
   ]
 
@@ -273,6 +274,7 @@ export default function Admin({ onExit }) {
           {tab === 'services'    && <TabServices />}
           {tab === 'contact'     && <TabContact />}
           {tab === 'banniere'    && <TabBanniere />}
+          {tab === 'disponibilites' && <TabDisponibilites />}
           {tab === 'securite'    && <TabSecurite autoLogoutMin={autoLogoutMin} setAutoLogoutMin={setAutoLogoutMin} onLogout={() => setAuth(false)} />}
         </div>
       </div>
@@ -1190,6 +1192,94 @@ function GalleryCard({ gallery, expanded, onToggle, onDelete, onCopyLink, onAddP
           <PhotoInput />
         </div>
       )}
+    </div>
+  )
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// TAB: DISPONIBILITÉS
+// ═══════════════════════════════════════════════════════════════════════════════
+const MONTHS_FR = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre']
+const DAYS_FR   = ['L','M','M','J','V','S','D']
+
+function TabDisponibilites() {
+  const [busy, setBusy] = useState({})
+  const [saved, setSaved] = useState(false)
+  const [offset, setOffset] = useState(0)
+
+  useEffect(() => { dbGetAvailability().then(setBusy) }, [])
+
+  const today = new Date()
+  const months = [0,1,2].map(i => {
+    const d = new Date(today.getFullYear(), today.getMonth() + offset + i, 1)
+    return { year: d.getFullYear(), month: d.getMonth() }
+  })
+
+  const toggleDay = (key) => {
+    setBusy(prev => {
+      const next = { ...prev }
+      if (next[key] === 'busy') delete next[key]
+      else next[key] = 'busy'
+      return next
+    })
+    setSaved(false)
+  }
+
+  const save = async () => {
+    await dbSaveAvailability(busy)
+    setSaved(true)
+    setTimeout(() => setSaved(false), 2000)
+  }
+
+  return (
+    <div className="admin-tab">
+      <div className="admin-tab__header">
+        <div>
+          <h2 className="admin-tab__title">📅 Disponibilités</h2>
+          <p className="admin-section__desc">Cliquez sur un jour pour le marquer comme complet. Cliquez à nouveau pour le libérer.</p>
+        </div>
+        <div style={{ display:'flex', gap:8, alignItems:'center' }}>
+          <button className="admin-btn admin-btn--ghost" onClick={() => setOffset(o => o - 3)}>‹</button>
+          <button className="admin-btn admin-btn--ghost" onClick={() => setOffset(0)}>Aujourd'hui</button>
+          <button className="admin-btn admin-btn--ghost" onClick={() => setOffset(o => o + 3)}>›</button>
+          <button className="admin-btn admin-btn--solid" onClick={save}>{saved ? '✓ Sauvegardé' : 'Sauvegarder'}</button>
+        </div>
+      </div>
+
+      <div className="avail-admin__months">
+        {months.map(({ year, month }) => {
+          const firstDay = new Date(year, month, 1)
+          const lastDay  = new Date(year, month + 1, 0)
+          const startOffset = (firstDay.getDay() + 6) % 7
+          const days = []
+          for (let i = 0; i < startOffset; i++) days.push(null)
+          for (let d = 1; d <= lastDay.getDate(); d++) days.push(d)
+          return (
+            <div key={`${year}-${month}`} className="avail-admin__month">
+              <p className="avail-admin__month-name">{MONTHS_FR[month]} {year}</p>
+              <div className="avail-admin__grid-head">
+                {DAYS_FR.map((d,i) => <span key={i}>{d}</span>)}
+              </div>
+              <div className="avail-admin__grid">
+                {days.map((d, i) => {
+                  if (!d) return <span key={`e-${i}`} className="avail-admin__day avail-admin__day--empty" />
+                  const key = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`
+                  const isPast = new Date(year, month, d) < new Date(today.getFullYear(), today.getMonth(), today.getDate())
+                  const isBusy = busy[key] === 'busy'
+                  return (
+                    <button
+                      key={key}
+                      className={`avail-admin__day ${isPast ? 'avail-admin__day--past' : isBusy ? 'avail-admin__day--busy' : 'avail-admin__day--free'}`}
+                      onClick={() => !isPast && toggleDay(key)}
+                      disabled={isPast}
+                    >{d}</button>
+                  )
+                })}
+              </div>
+            </div>
+          )
+        })}
+      </div>
     </div>
   )
 }
