@@ -5,18 +5,6 @@ import './Portfolio.css'
 
 const categories = ['Tous', 'Portraits & Famille', 'Nature & Paysages', 'Concerts & Événements']
 
-const defaultPhotos = [
-  { id: 1, src: '/images/portfolio/portrait1.jpg', category: 'Portraits & Famille', alt: 'Portrait', exif: { a: 'f/1.8', s: '1/250s', i: 'ISO 200', f: '85mm' } },
-  { id: 2, src: '/images/portfolio/portrait2.jpg', category: 'Portraits & Famille', alt: 'Portrait famille', exif: { a: 'f/2.8', s: '1/160s', i: 'ISO 400', f: '50mm' } },
-  { id: 3, src: '/images/portfolio/portrait3.jpg', category: 'Portraits & Famille', alt: 'Portrait individuel', exif: { a: 'f/1.4', s: '1/500s', i: 'ISO 100', f: '85mm' } },
-  { id: 4, src: '/images/portfolio/nature1.jpg',   category: 'Nature & Paysages',   alt: 'Paysage',          exif: { a: 'f/8',   s: '1/125s', i: 'ISO 100', f: '24mm' } },
-  { id: 5, src: '/images/portfolio/nature2.jpg',   category: 'Nature & Paysages',   alt: 'Forêt des Vosges', exif: { a: 'f/5.6', s: '1/60s',  i: 'ISO 200', f: '35mm' } },
-  { id: 6, src: '/images/portfolio/nature3.jpg',   category: 'Nature & Paysages',   alt: 'Lac de Contrex',   exif: { a: 'f/11',  s: '1/250s', i: 'ISO 100', f: '16mm' } },
-  { id: 7, src: '/images/portfolio/concert1.jpg',  category: 'Concerts & Événements', alt: 'Concert',        exif: { a: 'f/2.8', s: '1/500s', i: 'ISO 3200', f: '70mm' } },
-  { id: 8, src: '/images/portfolio/concert2.jpg',  category: 'Concerts & Événements', alt: 'Événement live', exif: { a: 'f/2.8', s: '1/320s', i: 'ISO 1600', f: '135mm' } },
-  { id: 9, src: '/images/portfolio/concert3.jpg',  category: 'Concerts & Événements', alt: 'Concert ambiance', exif: { a: 'f/4', s: '1/250s', i: 'ISO 800', f: '50mm' } },
-]
-
 export default function Portfolio() {
   const [active, setActive] = useState('Tous')
   const [lightbox, setLightbox] = useState(null)
@@ -42,7 +30,7 @@ export default function Portfolio() {
 
   const hiddenIds    = useStorage(getHiddenIds)
   const customPhotos = useStorage(getCustomPhotos)
-  const photos = [...customPhotos.slice().reverse(), ...defaultPhotos].filter(p => !hiddenIds.includes(p.id))
+  const photos = customPhotos.slice().reverse().filter(p => !hiddenIds.includes(p.id))
 
   const filtered = active === 'Tous' ? photos : photos.filter(p => p.category === active)
 
@@ -109,7 +97,7 @@ export default function Portfolio() {
               onClick={() => setLightbox(photo)}
             >
               <img src={photo.src} alt={photo.alt} loading="lazy"
-                onError={(e) => { e.target.parentElement.classList.add('portfolio__item--empty'); e.target.style.display = 'none' }}
+                onError={(e) => { e.target.closest('.portfolio__item').style.display = 'none' }}
               />
               <div className="portfolio__item-overlay">
                 <div className="portfolio__item-meta">
@@ -135,7 +123,7 @@ export default function Portfolio() {
           {filtered.map((photo) => (
             <div key={photo.id} className="portfolio__carousel-item" onClick={() => setLightbox(photo)}>
               <img src={photo.src} alt={photo.alt} loading="lazy"
-                onError={(e) => { e.target.parentElement.classList.add('portfolio__item--empty'); e.target.style.display = 'none' }}
+                onError={(e) => { e.target.closest('.portfolio__carousel-item').style.display = 'none' }}
               />
               <div className="portfolio__carousel-info">
                 <span className="portfolio__carousel-alt">{photo.alt}</span>
