@@ -119,12 +119,6 @@ export default function Portfolio() {
                     <span>{photo.exif.i}</span><span>{photo.exif.f}</span>
                   </div>
                 </div>
-                <div className="portfolio__item-icon">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
-                    <circle cx="12" cy="12" r="9"/><line x1="12" y1="3" x2="12" y2="21"/>
-                    <line x1="3" y1="12" x2="21" y2="12"/><circle cx="12" cy="12" r="3" fill="currentColor"/>
-                  </svg>
-                </div>
               </div>
               <button
                 className={`portfolio__like ${likedByMe.includes(String(photo.id)) ? 'portfolio__like--on' : ''}`}
