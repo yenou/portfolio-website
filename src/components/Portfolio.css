@@ -121,6 +121,52 @@
   align-self: flex-start;
 }
 
+/* ===== LIKE (desktop grid) ===== */
+.portfolio__item .portfolio__like {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(6px);
+  border: none;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px 5px 8px;
+  cursor: pointer;
+  z-index: 5;
+  opacity: 0;
+  transition: opacity 0.2s, transform 0.15s;
+}
+.portfolio__item:hover .portfolio__like,
+.portfolio__item .portfolio__like--on { opacity: 1; }
+.portfolio__like:active { transform: scale(0.9); }
+.portfolio__like-heart {
+  font-size: 0.95rem;
+  line-height: 1;
+  color: rgba(255,255,255,0.7);
+  transition: color 0.2s, transform 0.2s;
+}
+.portfolio__like--on .portfolio__like-heart { color: #ff5c7a; transform: scale(1.15); }
+.portfolio__like-count {
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.75);
+  letter-spacing: 0.03em;
+}
+
+/* Like dans le lightbox */
+.portfolio__like--lb {
+  position: static;
+  opacity: 1 !important;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.1);
+  transition: background 0.2s, transform 0.15s;
+  flex-shrink: 0;
+}
+.portfolio__like--lb:hover { background: rgba(255,255,255,0.12); }
+
 /* ===== LIGHTBOX ===== */
 .lightbox {
   position: fixed;

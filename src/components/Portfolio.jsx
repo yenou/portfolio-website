@@ -126,6 +126,16 @@ export default function Portfolio() {
                   </svg>
                 </div>
               </div>
+              <button
+                className={`portfolio__like ${likedByMe.includes(String(photo.id)) ? 'portfolio__like--on' : ''}`}
+                onClick={(e) => toggleLike(e, photo.id)}
+                aria-label="J'aime"
+              >
+                <span className="portfolio__like-heart">{likedByMe.includes(String(photo.id)) ? '♥' : '♡'}</span>
+                {(likes[String(photo.id)] || 0) > 0 && (
+                  <span className="portfolio__like-count">{likes[String(photo.id)]}</span>
+                )}
+              </button>
             </div>
           ))}
         </div>
@@ -172,6 +182,16 @@ export default function Portfolio() {
               <div className="lightbox__exif">
                 {Object.values(lightbox.exif).map((v, i) => <span key={i}>{v}</span>)}
               </div>
+              <button
+                className={`portfolio__like portfolio__like--lb ${likedByMe.includes(String(lightbox.id)) ? 'portfolio__like--on' : ''}`}
+                onClick={(e) => toggleLike(e, lightbox.id)}
+                aria-label="J'aime"
+              >
+                <span className="portfolio__like-heart">{likedByMe.includes(String(lightbox.id)) ? '♥' : '♡'}</span>
+                {(likes[String(lightbox.id)] || 0) > 0 && (
+                  <span className="portfolio__like-count">{likes[String(lightbox.id)]}</span>
+                )}
+              </button>
             </div>
           </div>
           <button className="lightbox__next" onClick={e => { e.stopPropagation(); navigate(1) }}>›</button>
