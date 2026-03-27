@@ -396,7 +396,7 @@ function TabPhotos() {
   const fileRef = useRef(null)
 
   const { open: openSlide, Input: SlideInput } = useFilePicker((base64) => {
-    compressImage(base64, 900, 0.65).then(compressed => {
+    compressImage(base64, 1600, 0.82).then(compressed => {
       const id = Date.now()
       const newSlide = { src: compressed, location: '', sub: '', _id: id }
       const next = [...getHeroImgs(), newSlide]
