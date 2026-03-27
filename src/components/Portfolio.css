@@ -8,12 +8,13 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-top: 12px;
+  margin-top: 0;
   font-size: 0.65rem;
   letter-spacing: 0.12em;
   color: rgba(255,255,255,0.5);
   text-transform: uppercase;
   animation: heartbeat 2.2s ease-in-out infinite;
+  padding-bottom: 8px;
 }
 
 .portfolio__coming-soon-icon {
@@ -38,12 +39,18 @@
   70%       { transform: scale(1); }
 }
 
+.portfolio__filters-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 48px;
+  border-bottom: 1px solid var(--gray-dark);
+}
+
 .portfolio__filters {
   display: flex;
   flex-wrap: wrap;
   gap: 0;
-  margin-bottom: 48px;
-  border-bottom: 1px solid var(--gray-dark);
 }
 
 .portfolio__filter {
@@ -304,7 +311,22 @@
     justify-content: center;
   }
   .portfolio__header .section-label::before { display: none; }
-  .portfolio__coming-soon { justify-content: center; }
+  .portfolio__filters-row {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    border-bottom: none;
+  }
+  .portfolio__filters {
+    border-bottom: 1px solid var(--gray-dark);
+    width: 100%;
+    justify-content: center;
+  }
+  .portfolio__coming-soon {
+    justify-content: center;
+    padding-bottom: 0;
+    margin-bottom: 8px;
+  }
 
   /* "Portfolio" — typo élégante animée */
   .portfolio__header .section-title {
