@@ -22,6 +22,7 @@ const setLS = (key, val) => localStorage.setItem(key, JSON.stringify(val))
 const configDoc        = doc(db, 'site', 'config')
 const photosDoc        = doc(db, 'site', 'photos')
 const visitsDoc        = doc(db, 'site', 'visits')
+const loginAttemptsDoc = doc(db, 'site', 'loginAttempts')
 const customPhotosCol  = collection(db, 'customPhotos')
 const heroSlidesCol    = collection(db, 'heroSlides')
 
@@ -252,4 +253,25 @@ export async function dbGetGallery(code) {
       .sort((a, b) => a.order - b.order)
     return { ...gallery, photos }
   } catch (e) { return null }
+}
+
+export async function dbAddLoginAttempt(entry) {
+  try {
+    const snap = await getDoc(loginAttemptsDoc)
+    const history = snap.exists() ? (snap.data().history || []) : []
+    const next = [entry, ...history].slice(0, 20)
+    await setDoc(loginAttemptsDoc, { history: next })
+  } catch (e) { console.warn('[Firebase] loginAttempt save failed:', e.message) }
+}
+
+export async function dbGetLoginHistory() {
+  try {
+    const snap = await getDoc(loginAttemptsDoc)
+    return snap.exists() ? (snap.data().history || []) : []
+  } catch (e) { return [] }
+}
+
+export async function dbClearLoginHistory() {
+  try { await setDoc(loginAttemptsDoc, { history: [] }) }
+  catch (e) { console.warn('[Firebase] clear history failed:', e.message) }
 }

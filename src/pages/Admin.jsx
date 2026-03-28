@@ -11,7 +11,7 @@ import {
   updateLastActive,
 } from '../utils/storage'
 import './Admin.css'
-import { dbSaveConfig, dbSaveAboutImg, dbSaveLogoImg, dbSaveCustomPhoto, dbDeleteCustomPhoto, dbSaveAllHeroSlides, dbGetVisitHistory, dbCreateGallery, dbDeleteGallery, dbAddGalleryPhoto, dbDeleteGalleryPhoto, dbGetAllGalleries, dbGetAvailability, dbSaveAvailability } from '../utils/db'
+import { dbSaveConfig, dbSaveAboutImg, dbSaveLogoImg, dbSaveCustomPhoto, dbDeleteCustomPhoto, dbSaveAllHeroSlides, dbGetVisitHistory, dbCreateGallery, dbDeleteGallery, dbAddGalleryPhoto, dbDeleteGalleryPhoto, dbGetAllGalleries, dbGetAvailability, dbSaveAvailability, dbAddLoginAttempt, dbGetLoginHistory, dbClearLoginHistory } from '../utils/db'
 
 const CATEGORIES = ['Portraits & Famille', 'Nature & Paysages', 'Concerts & Événements']
 
@@ -169,7 +169,6 @@ function SavedBadge({ show }) {
 
 // ═══════════════════════════════════════════════════════════════════════════════
 const LOCKOUT_KEY = 'admin_lockout'
-const HISTORY_KEY = 'admin_login_history'
 const MAX_ATTEMPTS = 5
 const LOCKOUT_DURATION = 15 * 60 * 1000 // 15 minutes
 
@@ -178,14 +177,6 @@ function getLockoutState() {
 }
 function saveLockoutState(state) {
   localStorage.setItem(LOCKOUT_KEY, JSON.stringify(state))
-}
-function getLoginHistory() {
-  try { return JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]') } catch { return [] }
-}
-function addLoginHistory(entry) {
-  const history = getLoginHistory()
-  history.unshift(entry)
-  localStorage.setItem(HISTORY_KEY, JSON.stringify(history.slice(0, 20)))
 }
 
 export default function Admin({ onExit }) {
@@ -231,7 +222,7 @@ export default function Admin({ onExit }) {
     } else {
       const newAttempts = attempts + 1
       const locked = newAttempts >= MAX_ATTEMPTS
-      addLoginHistory({ at: Date.now(), attempt: newAttempts, locked })
+      dbAddLoginAttempt({ at: Date.now(), attempt: newAttempts, locked })
       if (locked) {
         const lockedUntil = Date.now() + LOCKOUT_DURATION
         saveLockoutState({ attempts: newAttempts, lockedUntil })
@@ -1431,10 +1422,14 @@ function TabSecurite({ autoLogoutMin, setAutoLogoutMin, onLogout }) {
 }
 
 function LoginHistory() {
-  const [history, setHistory] = useState(getLoginHistory)
+  const [history, setHistory] = useState([])
 
-  const clear = () => {
-    localStorage.removeItem(HISTORY_KEY)
+  useEffect(() => {
+    dbGetLoginHistory().then(setHistory)
+  }, [])
+
+  const clear = async () => {
+    await dbClearLoginHistory()
     setHistory([])
   }
 
