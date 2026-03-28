@@ -1445,23 +1445,6 @@ h2.admin-tab__title { margin-bottom: 32px; }
   to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-/* ===== MOBILE HEADER FIX ===== */
-@media (max-width: 600px) {
-  .admin-header__right .admin-btn span { display: none; }
-  .admin-header__right .admin-btn--ghost {
-    padding: 8px 10px;
-    font-size: 0;
-    min-width: 36px;
-    min-height: 36px;
-  }
-  .admin-header__right .admin-btn--ghost::before { font-size: 0.85rem; }
-  .admin-header__right a.admin-btn--ghost::before  { content: '👁'; }
-  .admin-header__right button.admin-btn--ghost:nth-child(2)::before { content: '⏻'; }
-  .admin-header__right button.admin-btn--ghost:nth-child(3)::before { content: '←'; }
-  .admin-header { padding: 10px 12px; gap: 6px; }
-  .admin-header__brand-sub,
-  .admin-header__brand-sep { display: none; }
-}
 
 /* ===== LOGIN HISTORY ===== */
 .login-history-table {
