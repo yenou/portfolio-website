@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, createContext, useContext } from 'react'
 import {
   getCustomPhotos, saveCustomPhotos, getHiddenIds, saveHiddenIds,
   getHeroImg, getHeroImgs, saveHeroImgs, getAboutImg, saveAboutImg, getLogoImg, saveLogoImg,
@@ -161,10 +161,20 @@ function useFilePicker(onResult) {
   return { open, Input }
 }
 
-// ── SAVED BADGE ───────────────────────────────────────────────────────────────
-function SavedBadge({ show }) {
-  if (!show) return null
-  return <span className="admin-saved">✓ Sauvegardé</span>
+// ── TOAST ─────────────────────────────────────────────────────────────────────
+const ToastCtx = createContext(null)
+function useToast() { return useContext(ToastCtx) }
+
+function ToastContainer({ toasts }) {
+  return (
+    <div className="admin-toasts">
+      {toasts.map(t => (
+        <div key={t.id} className={`admin-toast admin-toast--${t.type}`}>
+          {t.type === 'success' ? '✓' : '✕'} {t.msg}
+        </div>
+      ))}
+    </div>
+  )
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -280,8 +290,17 @@ export default function Admin({ onExit }) {
     { id: 'securite',      label: '🔐 Sécurité' },
   ]
 
+  const [toasts, setToasts] = useState([])
+  const showToast = (msg, type = 'success') => {
+    const id = Date.now() + Math.random()
+    setToasts(prev => [...prev, { id, msg, type }])
+    setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 3000)
+  }
+
   return (
+    <ToastCtx.Provider value={showToast}>
     <div className="admin">
+      <ToastContainer toasts={toasts} />
       <header className="admin-header">
         <div className="admin-header__left">
           <div className="admin-header__brand">
@@ -327,6 +346,7 @@ export default function Admin({ onExit }) {
         </div>
       </div>
     </div>
+    </ToastCtx.Provider>
   )
 }
 
@@ -800,18 +820,17 @@ function TabPhotos() {
 // ═══════════════════════════════════════════════════════════════════════════════
 function TabTextes() {
   const [texts, setTexts] = useState(getTexts)
-  const [saved, setSaved] = useState(false)
+  const toast = useToast()
 
   const update = (key, val) => setTexts(t => ({ ...t, [key]: val }))
-  const save = () => { saveTexts(texts); dbSaveConfig({ texts }); setSaved(true); setTimeout(() => setSaved(false), 2500) }
+  const save = () => { saveTexts(texts); dbSaveConfig({ texts }); toast('Textes sauvegardés') }
 
   return (
     <div className="tab-textes">
       <div className="admin-tab__header">
         <h2 className="admin-tab__title">Modifier les textes</h2>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <SavedBadge show={saved} />
-          <button className="admin-btn admin-btn--solid" onClick={save}>Sauvegarder</button>
+<button className="admin-btn admin-btn--solid" onClick={save}>Sauvegarder</button>
         </div>
       </div>
 
@@ -855,11 +874,11 @@ function TabTextes() {
 // ═══════════════════════════════════════════════════════════════════════════════
 function TabTemoignages() {
   const [items, setItems] = useState(getTestimonials)
-  const [saved, setSaved] = useState(false)
+  const toast = useToast()
   const empty = { id: Date.now(), name: '', context: '', text: '', stars: 5 }
   const [newItem, setNewItem] = useState(empty)
 
-  const save = (list) => { saveTestimonials(list); dbSaveConfig({ testimonials: list }); setItems(list); setSaved(true); setTimeout(() => setSaved(false), 2500) }
+  const save = (list) => { saveTestimonials(list); dbSaveConfig({ testimonials: list }); setItems(list); toast('Témoignage sauvegardé') }
 
   const updateItem = (id, key, val) => {
     const next = items.map(t => t.id === id ? { ...t, [key]: val } : t)
@@ -876,7 +895,6 @@ function TabTemoignages() {
     <div className="tab-temoignages">
       <div className="admin-tab__header">
         <h2 className="admin-tab__title">Témoignages</h2>
-        <SavedBadge show={saved} />
       </div>
 
       <div className="temoignage-list">
@@ -944,9 +962,9 @@ function TabTemoignages() {
 // ═══════════════════════════════════════════════════════════════════════════════
 function TabServices() {
   const [items, setItems] = useState(getServices)
-  const [saved, setSaved] = useState(false)
+  const toast = useToast()
 
-  const save = (list) => { saveServices(list); dbSaveConfig({ services: list }); setItems(list); setSaved(true); setTimeout(() => setSaved(false), 2500) }
+  const save = (list) => { saveServices(list); dbSaveConfig({ services: list }); setItems(list); toast('Service sauvegardé') }
   const update = (id, key, val) => save(items.map(s => s.id === id ? { ...s, [key]: val } : s))
   const updateDetails = (id, val) => update(id, 'details', val.split('\n').filter(Boolean))
   const remove = (id) => save(items.filter(s => s.id !== id))
@@ -955,7 +973,6 @@ function TabServices() {
     <div className="tab-services">
       <div className="admin-tab__header">
         <h2 className="admin-tab__title">Services</h2>
-        <SavedBadge show={saved} />
       </div>
 
       <div className="services-list">
@@ -988,18 +1005,17 @@ function TabServices() {
 // ═══════════════════════════════════════════════════════════════════════════════
 function TabContact() {
   const [data, setData] = useState(getContact)
-  const [saved, setSaved] = useState(false)
+  const toast = useToast()
 
   const update = (key, val) => setData(d => ({ ...d, [key]: val }))
-  const save = () => { saveContact(data); dbSaveConfig({ contact: data }); setSaved(true); setTimeout(() => setSaved(false), 2500) }
+  const save = () => { saveContact(data); dbSaveConfig({ contact: data }); toast('Contact sauvegardé') }
 
   return (
     <div className="tab-contact">
       <div className="admin-tab__header">
         <h2 className="admin-tab__title">Informations de contact</h2>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <SavedBadge show={saved} />
-          <button className="admin-btn admin-btn--solid" onClick={save}>Sauvegarder</button>
+<button className="admin-btn admin-btn--solid" onClick={save}>Sauvegarder</button>
         </div>
       </div>
 
@@ -1034,13 +1050,12 @@ function TabContact() {
 // ═══════════════════════════════════════════════════════════════════════════════
 function TabBanniere() {
   const [banner, setBanner] = useState(getBanner)
-  const [saved, setSaved] = useState(false)
+  const toast = useToast()
 
   function save() {
     saveBanner(banner)
     dbSaveConfig({ banner })
-    setSaved(true)
-    setTimeout(() => setSaved(false), 2000)
+    toast('Bannière sauvegardée')
   }
 
   return (
@@ -1097,7 +1112,6 @@ function TabBanniere() {
 
       <div className="admin-actions">
         <button className="admin-btn admin-btn--solid" onClick={save}>Sauvegarder</button>
-        <SavedBadge show={saved} />
       </div>
     </div>
   )
@@ -1268,7 +1282,7 @@ const DAYS_FR   = ['L','M','M','J','V','S','D']
 
 function TabDisponibilites() {
   const [busy, setBusy] = useState({})
-  const [saved, setSaved] = useState(false)
+  const toast = useToast()
   const [offset, setOffset] = useState(0)
 
   useEffect(() => { dbGetAvailability().then(setBusy) }, [])
@@ -1286,13 +1300,11 @@ function TabDisponibilites() {
       else next[key] = 'busy'
       return next
     })
-    setSaved(false)
   }
 
   const save = async () => {
     await dbSaveAvailability(busy)
-    setSaved(true)
-    setTimeout(() => setSaved(false), 2000)
+    toast('Disponibilités sauvegardées')
   }
 
   return (
@@ -1306,7 +1318,7 @@ function TabDisponibilites() {
           <button className="admin-btn admin-btn--ghost" onClick={() => setOffset(o => o - 3)}>‹</button>
           <button className="admin-btn admin-btn--ghost" onClick={() => setOffset(0)}>Aujourd'hui</button>
           <button className="admin-btn admin-btn--ghost" onClick={() => setOffset(o => o + 3)}>›</button>
-          <button className="admin-btn admin-btn--solid" onClick={save}>{saved ? '✓ Sauvegardé' : 'Sauvegarder'}</button>
+          <button className="admin-btn admin-btn--solid" onClick={save}>Sauvegarder</button>
         </div>
       </div>
 

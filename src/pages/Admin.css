@@ -1404,6 +1404,65 @@ h2.admin-tab__title { margin-bottom: 32px; }
   .avail-admin__months { grid-template-columns: 1fr; }
 }
 
+/* ===== TOAST NOTIFICATIONS ===== */
+.admin-toasts {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.admin-toast {
+  padding: 12px 20px;
+  border-radius: 6px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  font-weight: 500;
+  backdrop-filter: blur(10px);
+  animation: toast-in 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+
+.admin-toast--success {
+  background: rgba(30, 80, 40, 0.92);
+  border: 1px solid rgba(74, 222, 128, 0.3);
+  color: #86efac;
+}
+
+.admin-toast--error {
+  background: rgba(80, 20, 20, 0.92);
+  border: 1px solid rgba(248, 113, 113, 0.3);
+  color: #fca5a5;
+}
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(12px) scale(0.95); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ===== MOBILE HEADER FIX ===== */
+@media (max-width: 600px) {
+  .admin-header__right .admin-btn span { display: none; }
+  .admin-header__right .admin-btn--ghost {
+    padding: 8px 10px;
+    font-size: 0;
+    min-width: 36px;
+    min-height: 36px;
+  }
+  .admin-header__right .admin-btn--ghost::before { font-size: 0.85rem; }
+  .admin-header__right a.admin-btn--ghost::before  { content: '👁'; }
+  .admin-header__right button.admin-btn--ghost:nth-child(2)::before { content: '⏻'; }
+  .admin-header__right button.admin-btn--ghost:nth-child(3)::before { content: '←'; }
+  .admin-header { padding: 10px 12px; gap: 6px; }
+  .admin-header__brand-sub,
+  .admin-header__brand-sep { display: none; }
+}
+
 /* ===== LOGIN HISTORY ===== */
 .login-history-table {
   width: 100%;
