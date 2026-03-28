@@ -259,12 +259,12 @@
   font-size: 0.6rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: #fbbf24;
+  color: #fb7185;
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: rgba(251, 191, 36, 0.08);
-  border: 1px solid rgba(251, 191, 36, 0.25);
+  background: rgba(251, 113, 133, 0.08);
+  border: 1px solid rgba(251, 113, 133, 0.25);
   border-radius: 30px;
   padding: 4px 12px 4px 10px;
   width: fit-content;
@@ -279,7 +279,7 @@
   background: rgba(0,0,0,0.55);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  color: #fbbf24;
+  color: #fb7185;
   font-family: 'Montserrat', sans-serif;
   font-weight: 600;
   font-style: normal;
@@ -288,7 +288,7 @@
   text-transform: uppercase;
   padding: 4px 10px;
   border-radius: 30px;
-  border: 1px solid rgba(251, 191, 36, 0.3);
+  border: 1px solid rgba(251, 113, 133, 0.3);
   pointer-events: none;
 }
 
