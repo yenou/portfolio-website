@@ -169,6 +169,7 @@ function SavedBadge({ show }) {
 
 // ═══════════════════════════════════════════════════════════════════════════════
 const LOCKOUT_KEY = 'admin_lockout'
+const HISTORY_KEY = 'admin_login_history'
 const MAX_ATTEMPTS = 5
 const LOCKOUT_DURATION = 15 * 60 * 1000 // 15 minutes
 
@@ -177,6 +178,14 @@ function getLockoutState() {
 }
 function saveLockoutState(state) {
   localStorage.setItem(LOCKOUT_KEY, JSON.stringify(state))
+}
+function getLoginHistory() {
+  try { return JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]') } catch { return [] }
+}
+function addLoginHistory(entry) {
+  const history = getLoginHistory()
+  history.unshift(entry)
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(history.slice(0, 20)))
 }
 
 export default function Admin({ onExit }) {
@@ -221,7 +230,9 @@ export default function Admin({ onExit }) {
       setPwdError(false)
     } else {
       const newAttempts = attempts + 1
-      if (newAttempts >= MAX_ATTEMPTS) {
+      const locked = newAttempts >= MAX_ATTEMPTS
+      addLoginHistory({ at: Date.now(), attempt: newAttempts, locked })
+      if (locked) {
         const lockedUntil = Date.now() + LOCKOUT_DURATION
         saveLockoutState({ attempts: newAttempts, lockedUntil })
         setLoginDisabled(true)
@@ -1413,6 +1424,64 @@ function TabSecurite({ autoLogoutMin, setAutoLogoutMin, onLogout }) {
           Se déconnecter maintenant
         </button>
       </div>
+
+      <LoginHistory />
+    </div>
+  )
+}
+
+function LoginHistory() {
+  const [history, setHistory] = useState(getLoginHistory)
+
+  const clear = () => {
+    localStorage.removeItem(HISTORY_KEY)
+    setHistory([])
+  }
+
+  const fmt = (ts) => {
+    const d = new Date(ts)
+    const now = new Date()
+    const isToday = d.toDateString() === now.toDateString()
+    const yesterday = new Date(now); yesterday.setDate(now.getDate() - 1)
+    const isYesterday = d.toDateString() === yesterday.toDateString()
+    const time = d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
+    if (isToday) return `Aujourd'hui ${time}`
+    if (isYesterday) return `Hier ${time}`
+    return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }) + ' ' + time
+  }
+
+  return (
+    <div className="admin-fields-group">
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <h3 className="admin-group-title" style={{ border: 'none', paddingBottom: 0 }}>Tentatives de connexion échouées</h3>
+        {history.length > 0 && (
+          <button className="admin-btn-sm admin-btn-sm--delete" onClick={clear}>Effacer</button>
+        )}
+      </div>
+      {history.length === 0 ? (
+        <p className="admin-hint">Aucune tentative échouée enregistrée.</p>
+      ) : (
+        <table className="login-history-table">
+          <thead>
+            <tr>
+              <th>Date / heure</th>
+              <th>Essai n°</th>
+              <th>Statut</th>
+            </tr>
+          </thead>
+          <tbody>
+            {history.map((h, i) => (
+              <tr key={i}>
+                <td>{fmt(h.at)}</td>
+                <td>{h.attempt}</td>
+                <td className={h.locked ? 'login-history__locked' : 'login-history__fail'}>
+                  {h.locked ? '🔒 Bloqué 15 min' : '✗ Échec'}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
     </div>
   )
 }

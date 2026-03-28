@@ -1403,3 +1403,33 @@ h2.admin-tab__title { margin-bottom: 32px; }
 @media (max-width: 900px) {
   .avail-admin__months { grid-template-columns: 1fr; }
 }
+
+/* ===== LOGIN HISTORY ===== */
+.login-history-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.72rem;
+  margin-top: 8px;
+}
+
+.login-history-table th {
+  text-align: left;
+  font-size: 0.58rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.2);
+  padding: 6px 10px 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  font-weight: 400;
+}
+
+.login-history-table td {
+  padding: 9px 10px;
+  color: rgba(255,255,255,0.45);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+
+.login-history-table tr:last-child td { border-bottom: none; }
+
+.login-history__locked { color: #e63946 !important; }
+.login-history__fail   { color: rgba(255,180,50,0.8) !important; }
