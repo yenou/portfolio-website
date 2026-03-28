@@ -278,17 +278,19 @@ export default function Admin({ onExit }) {
     </div>
   )
 
+  const [mobileMenu, setMobileMenu] = useState(false)
+
   const TABS = [
-    { id: 'dashboard',     label: '📊 Tableau de bord' },
-    { id: 'galleries',     label: '🔒 Galeries clients' },
-    { id: 'photos',        label: '🖼 Photos' },
-    { id: 'textes',        label: '✍️ Textes' },
-    { id: 'temoignages',   label: '💬 Témoignages' },
-    { id: 'services',      label: '🎯 Services' },
-    { id: 'contact',       label: '📞 Contact' },
-    { id: 'banniere',      label: '📢 Bannière' },
-    { id: 'disponibilites', label: '📅 Disponibilités' },
-    { id: 'securite',      label: '🔐 Sécurité' },
+    { id: 'dashboard',     label: '📊 Tableau de bord', short: '📊 Board' },
+    { id: 'galleries',     label: '🔒 Galeries clients', short: '🔒 Galeries' },
+    { id: 'photos',        label: '🖼 Photos',           short: '🖼 Photos' },
+    { id: 'textes',        label: '✍️ Textes',           short: '✍️ Textes' },
+    { id: 'temoignages',   label: '💬 Témoignages',      short: '💬 Avis' },
+    { id: 'services',      label: '🎯 Services',          short: '🎯 Services' },
+    { id: 'contact',       label: '📞 Contact',           short: '📞 Contact' },
+    { id: 'banniere',      label: '📢 Bannière',          short: '📢 Bannière' },
+    { id: 'disponibilites', label: '📅 Disponibilités',  short: '📅 Dispo' },
+    { id: 'securite',      label: '🔐 Sécurité',         short: '🔐 Sécu' },
   ]
 
   const showToast = (msg, type = 'success') => {
@@ -315,10 +317,20 @@ export default function Admin({ onExit }) {
         </div>
         <div className="admin-header__right">
           <a href="/" target="_blank" rel="noreferrer" className="admin-btn admin-btn--ghost">
-            👁 Voir le site
+            <span className="admin-header__btn-icon">👁</span>
+            <span className="admin-header__btn-label"> Voir le site</span>
           </a>
-          <button className="admin-btn admin-btn--ghost" onClick={() => setAuth(false)}>Déconnexion</button>
-          <button className="admin-btn admin-btn--ghost" onClick={onExit}>← Retour</button>
+          <button className="admin-btn admin-btn--ghost admin-header__btn-desktop" onClick={() => setAuth(false)}>Déconnexion</button>
+          <button className="admin-btn admin-btn--ghost admin-header__btn-desktop" onClick={onExit}>← Retour</button>
+          <div className="admin-header__more">
+            <button className="admin-header__more-btn" onClick={() => setMobileMenu(m => !m)}>⋮</button>
+            {mobileMenu && (
+              <div className="admin-header__dropdown">
+                <button onClick={() => { setAuth(false); setMobileMenu(false) }}>⏻ Déconnexion</button>
+                <button onClick={() => { onExit(); setMobileMenu(false) }}>← Retour au site</button>
+              </div>
+            )}
+          </div>
         </div>
       </header>
 
@@ -327,7 +339,8 @@ export default function Admin({ onExit }) {
           {TABS.map(t => (
             <button key={t.id} className={`admin-nav__item ${tab === t.id ? 'active' : ''}`}
               onClick={() => setTab(t.id)}>
-              {t.label}
+              <span className="admin-nav__label">{t.label}</span>
+              <span className="admin-nav__short">{t.short}</span>
             </button>
           ))}
         </nav>

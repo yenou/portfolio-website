@@ -1057,7 +1057,69 @@ h2.admin-tab__title { margin-bottom: 32px; }
   .admin-header__brand-sub,
   .admin-header__brand-sep { display: none; }
   .admin-header__brand-name { font-size: 0.72rem; }
+
+  /* Nav : labels courts sur mobile */
+  .admin-nav__label { display: none; }
+  .admin-nav__short { display: inline; }
+
+  /* Header : cacher boutons desktop, afficher ⋮ */
+  .admin-header__btn-desktop { display: none; }
+  .admin-header__btn-label { display: none; }
+  .admin-header__more { display: flex; }
 }
+
+/* Sur desktop : inverser */
+.admin-nav__label { display: inline; }
+.admin-nav__short { display: none; }
+.admin-header__btn-desktop { display: inline-flex; }
+.admin-header__more { display: none; position: relative; }
+
+/* ===== MOBILE MENU ⋮ ===== */
+.admin-header__more {
+  position: relative;
+}
+.admin-header__more-btn {
+  background: none;
+  border: 1px solid rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.7);
+  font-size: 1.2rem;
+  width: 34px;
+  height: 34px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+.admin-header__dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: #1a1a1a;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  min-width: 160px;
+  z-index: 200;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+}
+.admin-header__dropdown button {
+  display: block;
+  width: 100%;
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.7);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  padding: 13px 16px;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.admin-header__dropdown button:hover { background: rgba(255,255,255,0.06); color: white; }
+.admin-header__dropdown button + button { border-top: 1px solid rgba(255,255,255,0.06); }
 
 /* ===== BANNIÈRE ===== */
 .admin-section__desc {
