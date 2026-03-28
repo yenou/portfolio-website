@@ -60,12 +60,40 @@ export default function Portfolio() {
     setCarouselIdx(idx)
   }
 
-  // Fullscreen
+  // Fullscreen + slideshow
+  const navigateNext = useRef(null)
+  navigateNext.current = () => {
+    setLightbox(current => {
+      if (!current) return current
+      const idx = filtered.findIndex(p => p.id === current.id)
+      return filtered[(idx + 1 + filtered.length) % filtered.length]
+    })
+  }
+
   useEffect(() => {
     const onFsChange = () => setIsFullscreen(!!document.fullscreenElement)
     document.addEventListener('fullscreenchange', onFsChange)
     return () => document.removeEventListener('fullscreenchange', onFsChange)
   }, [])
+
+  // Slideshow automatique en plein écran (5s par photo)
+  useEffect(() => {
+    if (!isFullscreen) return
+    const timer = setInterval(() => navigateNext.current?.(), 5000)
+    return () => clearInterval(timer)
+  }, [isFullscreen])
+
+  // Navigation clavier dans la lightbox
+  useEffect(() => {
+    const onKey = (e) => {
+      if (!lightbox) return
+      if (e.key === 'ArrowRight') navigate(1)
+      if (e.key === 'ArrowLeft')  navigate(-1)
+      if (e.key === 'Escape')     closeLightbox()
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [lightbox])
 
   const closeLightbox = () => {
     if (document.fullscreenElement) document.exitFullscreen()
@@ -220,6 +248,11 @@ export default function Portfolio() {
             </div>
           </div>
           <button className="lightbox__next" onClick={e => { e.stopPropagation(); navigate(1) }}>›</button>
+          {isFullscreen && (
+            <div className="lightbox__progress" key={lightbox.id}>
+              <div className="lightbox__progress-bar" />
+            </div>
+          )}
           <div className="lightbox__mobile-nav" onClick={e => e.stopPropagation()}>
             <button onClick={() => navigate(-1)}>‹</button>
             <span className="lightbox__counter">

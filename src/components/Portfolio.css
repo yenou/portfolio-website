@@ -322,6 +322,26 @@
 }
 .lightbox__close:hover { color: white; }
 
+/* Barre de progression slideshow */
+.lightbox__progress {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: rgba(255,255,255,0.08);
+  z-index: 5;
+  pointer-events: none;
+}
+.lightbox__progress-bar {
+  height: 100%;
+  background: rgba(255,255,255,0.6);
+  width: 0;
+  animation: lb-progress 5s linear forwards;
+}
+@keyframes lb-progress {
+  from { width: 0; }
+  to   { width: 100%; }
+}
+
 .lightbox__fullscreen {
   position: absolute;
   top: 24px; left: 30px;
