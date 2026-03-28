@@ -198,6 +198,7 @@ export default function Admin({ onExit }) {
   const [lockoutRemaining, setLockoutRemaining] = useState(0)
   const [loginDisabled, setLoginDisabled] = useState(false)
   const [toasts, setToasts] = useState([])
+  const [mobileMenu, setMobileMenu] = useState(false)
   useAutoLogout(auth ? autoLogoutMin : 0, () => setAuth(false))
 
   // Check lockout on mount and on timer
@@ -277,8 +278,6 @@ export default function Admin({ onExit }) {
       </div>
     </div>
   )
-
-  const [mobileMenu, setMobileMenu] = useState(false)
 
   const TABS = [
     { id: 'dashboard',     label: '📊 Tableau de bord', short: '📊 Board' },
