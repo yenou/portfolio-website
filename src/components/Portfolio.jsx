@@ -8,8 +8,10 @@ const categories = ['Portraits & Famille', 'Nature & Paysages', 'Concerts & Év�
 export default function Portfolio() {
   const [active, setActive] = useState(categories[0])
   const [lightbox, setLightbox] = useState(null)
+  const [isFullscreen, setIsFullscreen] = useState(false)
   const [carouselIdx, setCarouselIdx] = useState(0)
   const carouselRef = useRef(null)
+  const lightboxRef = useRef(null)
   const [likes, setLikes] = useState({})
   const [likedByMe, setLikedByMe] = useState(() => {
     try { return JSON.parse(localStorage.getItem('yenou_likes') || '[]') } catch { return [] }
@@ -56,6 +58,27 @@ export default function Portfolio() {
     if (!carouselRef.current) return
     const idx = Math.round(carouselRef.current.scrollLeft / carouselRef.current.clientWidth)
     setCarouselIdx(idx)
+  }
+
+  // Fullscreen
+  useEffect(() => {
+    const onFsChange = () => setIsFullscreen(!!document.fullscreenElement)
+    document.addEventListener('fullscreenchange', onFsChange)
+    return () => document.removeEventListener('fullscreenchange', onFsChange)
+  }, [])
+
+  const closeLightbox = () => {
+    if (document.fullscreenElement) document.exitFullscreen()
+    setLightbox(null)
+  }
+
+  const toggleFullscreen = (e) => {
+    e.stopPropagation()
+    if (!document.fullscreenElement) {
+      lightboxRef.current?.requestFullscreen()
+    } else {
+      document.exitFullscreen()
+    }
   }
 
   // Swipe mobile (lightbox)
@@ -163,8 +186,19 @@ export default function Portfolio() {
       </div>
 
       {lightbox && (
-        <div className="lightbox" onClick={() => setLightbox(null)} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
-          <button className="lightbox__close" onClick={() => setLightbox(null)}>✕</button>
+        <div className="lightbox" ref={lightboxRef} onClick={closeLightbox} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
+          <button className="lightbox__close" onClick={closeLightbox}>✕</button>
+          <button className="lightbox__fullscreen" onClick={toggleFullscreen} aria-label={isFullscreen ? 'Quitter le plein écran' : 'Plein écran'}>
+            {isFullscreen ? (
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/>
+              </svg>
+            ) : (
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+              </svg>
+            )}
+          </button>
           <button className="lightbox__prev" onClick={e => { e.stopPropagation(); navigate(-1) }}>‹</button>
           <div className="lightbox__inner" onClick={e => e.stopPropagation()}>
             <img src={lightbox.src} alt={lightbox.alt} />
