@@ -246,9 +246,40 @@
 
 .lightbox__info {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 4px;
   padding: 0 4px;
+}
+
+/* Badge coup de cœur dans la lightbox */
+.lightbox__cdc {
+  font-family: var(--font-heading);
+  font-style: italic;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  color: rgba(255, 210, 100, 0.85);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Badge coup de cœur sur les photos (grille + carousel) */
+.portfolio__cdc-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 4;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(6px);
+  color: rgba(255, 210, 100, 0.9);
+  font-family: var(--font-heading);
+  font-style: italic;
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  padding: 4px 9px;
+  border-radius: 30px;
+  border: 1px solid rgba(255, 210, 100, 0.25);
+  pointer-events: none;
 }
 
 .lightbox__alt {

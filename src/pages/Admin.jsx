@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, createContext, useContext } from 'react'
 import {
-  getCustomPhotos, saveCustomPhotos, getHiddenIds, saveHiddenIds,
+  getCustomPhotos, saveCustomPhotos, getHiddenIds, saveHiddenIds, getCoupsDeCoeur, saveCoupsDeCoeur,
   getHeroImg, getHeroImgs, saveHeroImgs, getAboutImg, saveAboutImg, getLogoImg, saveLogoImg,
   getTexts, saveTexts,
   getTestimonials, saveTestimonials,
@@ -509,8 +509,9 @@ function SlidePreview({ slide }) {
 }
 
 function TabPhotos() {
-  const [customPhotos, setCustomPhotos] = useState(getCustomPhotos)
-  const [hiddenIds, setHiddenIds]       = useState(getHiddenIds)
+  const [customPhotos, setCustomPhotos]       = useState(getCustomPhotos)
+  const [hiddenIds, setHiddenIds]             = useState(getHiddenIds)
+  const [coupsDeCoeur, setCoupsDeCoeur]       = useState(getCoupsDeCoeur)
   const [heroImgs, setHeroImgsState]    = useState(() => {
     const imgs = getHeroImgs()
     // Migration : strings → objets
@@ -580,6 +581,12 @@ function TabPhotos() {
     const next = hiddenIds.includes(id) ? hiddenIds.filter(h => h !== id) : [...hiddenIds, id]
     setHiddenIds(next); saveHiddenIds(next)
     dbSaveConfig({ hiddenIds: next })
+  }
+
+  const toggleCoupDeCoeur = (id) => {
+    const next = coupsDeCoeur.includes(id) ? coupsDeCoeur.filter(c => c !== id) : [...coupsDeCoeur, id]
+    setCoupsDeCoeur(next); saveCoupsDeCoeur(next)
+    dbSaveConfig({ coupsDeCoeur: next })
   }
   const deleteCustom = (id) => {
     const next = customPhotos.filter(p => p.id !== id)
@@ -798,6 +805,13 @@ function TabPhotos() {
                         />
                       )}
                       <div className="admin-card__actions">
+                        <button
+                          className={`admin-btn-sm ${coupsDeCoeur.includes(photo.id) ? 'admin-btn-sm--cdc-on' : 'admin-btn-sm--cdc'}`}
+                          onClick={() => toggleCoupDeCoeur(photo.id)}
+                          title="Coup de cœur"
+                        >
+                          {coupsDeCoeur.includes(photo.id) ? '★ Coup de cœur' : '☆ Coup de cœur'}
+                        </button>
                         {photo.isDefault ? (
                           <button className={`admin-btn-sm ${isHidden ? 'admin-btn-sm--show' : 'admin-btn-sm--hide'}`} onClick={() => toggleHide(photo.id)}>
                             {isHidden ? '👁 Afficher' : '🙈 Masquer'}

@@ -433,9 +433,13 @@
   flex-shrink: 0;
 }
 
-.admin-btn-sm--hide:hover { border-color: #f59e0b; color: #f59e0b; }
-.admin-btn-sm--show:hover { border-color: #4ade80; color: #4ade80; }
+.admin-btn-sm--hide:hover   { border-color: #f59e0b; color: #f59e0b; }
+.admin-btn-sm--show:hover   { border-color: #4ade80; color: #4ade80; }
 .admin-btn-sm--delete:hover { border-color: #e63946; color: #e63946; }
+.admin-btn-sm--cdc     { color: rgba(255,210,100,0.4); border-color: rgba(255,210,100,0.15); }
+.admin-btn-sm--cdc:hover { color: rgba(255,210,100,0.85); border-color: rgba(255,210,100,0.4); }
+.admin-btn-sm--cdc-on  { color: rgba(255,210,100,0.9); border-color: rgba(255,210,100,0.5); background: rgba(255,210,100,0.07); }
+.admin-btn-sm--cdc-on:hover { background: rgba(255,210,100,0.12); }
 
 /* ===== RESPONSIVE (original) ===== */
 @media (max-width: 700px) {

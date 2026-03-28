@@ -15,6 +15,7 @@ export function useStorage(getter) {
 const KEYS = {
   PHOTOS: 'yenou_portfolio_photos',
   HIDDEN: 'yenou_hidden_photos',
+  COUPS_DE_COEUR: 'yenou_coups_de_coeur',
   PHOTO_ORDER: 'yenou_photo_order',
   TEXTS: 'yenou_texts',
   TESTIMONIALS: 'yenou_testimonials',
@@ -44,6 +45,8 @@ export const getCustomPhotos = () => get(KEYS.PHOTOS, [])
 export const saveCustomPhotos = (v) => set(KEYS.PHOTOS, v)
 export const getHiddenIds = () => get(KEYS.HIDDEN, [])
 export const saveHiddenIds = (v) => set(KEYS.HIDDEN, v)
+export const getCoupsDeCoeur = () => get(KEYS.COUPS_DE_COEUR, [])
+export const saveCoupsDeCoeur = (v) => set(KEYS.COUPS_DE_COEUR, v)
 export const getPhotoOrder = () => get(KEYS.PHOTO_ORDER, [])
 export const savePhotoOrder = (v) => set(KEYS.PHOTO_ORDER, v)
 

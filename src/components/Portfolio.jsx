@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { getCustomPhotos, getHiddenIds, useStorage } from '../utils/storage'
+import { getCustomPhotos, getHiddenIds, getCoupsDeCoeur, useStorage } from '../utils/storage'
 import { dbGetPhotoLikes, dbLikePhoto, dbUnlikePhoto } from '../utils/db'
 import './Portfolio.css'
 
@@ -29,6 +29,7 @@ export default function Portfolio() {
   }
 
   const hiddenIds    = useStorage(getHiddenIds)
+  const coupsDeCoeur = useStorage(getCoupsDeCoeur)
   const customPhotos = useStorage(getCustomPhotos)
   const photos = customPhotos.slice().reverse().filter(p => !hiddenIds.includes(p.id))
 
@@ -105,6 +106,9 @@ export default function Portfolio() {
               <img src={photo.src} alt={photo.alt} loading="lazy"
                 onError={(e) => { e.target.closest('.portfolio__item').style.display = 'none' }}
               />
+              {coupsDeCoeur.includes(photo.id) && (
+                <span className="portfolio__cdc-badge">✦ Coup de cœur</span>
+              )}
               <div className="portfolio__item-overlay">
                 <div className="portfolio__item-meta">
                   <span className="portfolio__item-alt">{photo.alt}</span>
@@ -131,6 +135,9 @@ export default function Portfolio() {
               <img src={photo.src} alt={photo.alt} loading="lazy"
                 onError={(e) => { e.target.closest('.portfolio__carousel-item').style.display = 'none' }}
               />
+              {coupsDeCoeur.includes(photo.id) && (
+                <span className="portfolio__cdc-badge">✦ Coup de cœur</span>
+              )}
               <div className="portfolio__carousel-info">
                 <span className="portfolio__carousel-alt">{photo.alt}</span>
                 <span className="portfolio__carousel-cat">{photo.category}</span>
@@ -172,6 +179,9 @@ export default function Portfolio() {
               )}
             </button>
             <div className="lightbox__info">
+              {coupsDeCoeur.includes(lightbox.id) && (
+                <span className="lightbox__cdc">✦ Coup de cœur</span>
+              )}
               <span className="lightbox__alt">{lightbox.alt}</span>
             </div>
           </div>
