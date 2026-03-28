@@ -741,7 +741,7 @@ function TabPhotos() {
         const photos = allPhotos.filter(p => p.category === cat)
         return (
           <div key={cat} className="admin-cat">
-            <h4 className="admin-cat__title">{cat}</h4>
+            <h4 className="admin-cat__title">{cat} <span className="admin-cat__count">{photos.length} photo{photos.length !== 1 ? 's' : ''}</span></h4>
             <div className="admin-grid">
               {photos.map(photo => {
                 const isHidden = hiddenIds.includes(photo.id)
