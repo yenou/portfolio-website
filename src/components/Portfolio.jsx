@@ -107,7 +107,7 @@ export default function Portfolio() {
                 onError={(e) => { e.target.closest('.portfolio__item').style.display = 'none' }}
               />
               {coupsDeCoeur.includes(photo.id) && (
-                <span className="portfolio__cdc-badge">✦ Coup de cœur</span>
+                <span className="portfolio__cdc-badge">♥ Coup de cœur</span>
               )}
               <div className="portfolio__item-overlay">
                 <div className="portfolio__item-meta">
@@ -136,7 +136,7 @@ export default function Portfolio() {
                 onError={(e) => { e.target.closest('.portfolio__carousel-item').style.display = 'none' }}
               />
               {coupsDeCoeur.includes(photo.id) && (
-                <span className="portfolio__cdc-badge">✦ Coup de cœur</span>
+                <span className="portfolio__cdc-badge">♥ Coup de cœur</span>
               )}
               <div className="portfolio__carousel-info">
                 <span className="portfolio__carousel-alt">{photo.alt}</span>
@@ -180,7 +180,7 @@ export default function Portfolio() {
             </button>
             <div className="lightbox__info">
               {coupsDeCoeur.includes(lightbox.id) && (
-                <span className="lightbox__cdc">✦ Coup de cœur</span>
+                <span className="lightbox__cdc">♥ Coup de cœur</span>
               )}
               <span className="lightbox__alt">{lightbox.alt}</span>
             </div>
