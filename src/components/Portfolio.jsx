@@ -83,6 +83,25 @@ export default function Portfolio() {
     return () => clearInterval(timer)
   }, [isFullscreen])
 
+  // Curseur auto-masqué après 3s d'inactivité en plein écran
+  useEffect(() => {
+    if (!isFullscreen) return
+    let timer
+    const el = lightboxRef.current
+    const show = () => {
+      if (el) el.style.cursor = 'default'
+      clearTimeout(timer)
+      timer = setTimeout(() => { if (el) el.style.cursor = 'none' }, 3000)
+    }
+    show()
+    document.addEventListener('mousemove', show)
+    return () => {
+      document.removeEventListener('mousemove', show)
+      clearTimeout(timer)
+      if (el) el.style.cursor = ''
+    }
+  }, [isFullscreen])
+
   // Navigation clavier dans la lightbox
   useEffect(() => {
     const onKey = (e) => {
