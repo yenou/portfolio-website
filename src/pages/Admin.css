@@ -484,6 +484,12 @@
 .admin-nav__item:hover { color: rgba(255,255,255,0.7); background: rgba(255,255,255,0.03); }
 .admin-nav__item.active { color: white; border-left-color: white; background: rgba(255,255,255,0.05); }
 
+/* Desktop : emoji inline avant le label */
+.admin-nav__emoji { margin-right: 7px; }
+.admin-nav__label { /* inline par défaut */ }
+.admin-btn__icon { /* inline par défaut */ }
+.admin-btn__text { /* inline par défaut */ }
+
 
 
 .admin-content {
@@ -980,43 +986,105 @@ h2.admin-tab__title { margin-bottom: 32px; }
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 900px) {
-  /* Layout */
+  /* Layout : une seule colonne, espace pour la bottom nav */
   .admin-layout { grid-template-columns: 1fr; }
 
-  /* Nav horizontale scrollable centrée */
+  /* ── Header slim ── */
+  .admin-header { height: 50px; padding: 0 14px; gap: 6px; }
+  .admin-header__brand-sub,
+  .admin-header__brand-sep { display: none; }
+  .admin-header__brand-name { font-size: 0.7rem; letter-spacing: 0.1em; }
+  .admin-header__brand-icon { opacity: 0.7; }
+
+  /* Boutons icon-only dans le header */
+  .admin-btn__text { display: none; }
+  .admin-header__right { gap: 4px; flex-shrink: 0; }
+  .admin-header__right .admin-btn {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    font-size: 1rem;
+    letter-spacing: 0;
+    flex-shrink: 0;
+  }
+
+  /* ── Bottom tab bar ── */
   .admin-nav {
-    position: static;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: auto;
     height: auto;
+    z-index: 100;
+    background: rgba(8,8,8,0.97);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-right: none;
+    border-top: 1px solid rgba(255,255,255,0.07);
     flex-direction: row;
     flex-wrap: nowrap;
     overflow-x: auto;
-    padding: 10px 12px;
-    gap: 6px;
+    overflow-y: visible;
+    padding: 6px 4px calc(6px + env(safe-area-inset-bottom, 0px));
+    gap: 2px;
     justify-content: flex-start;
-    border-right: none;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
+    align-items: center;
     scrollbar-width: none;
   }
   .admin-nav::-webkit-scrollbar { display: none; }
+
   .admin-nav__item {
-    padding: 8px 14px;
-    font-size: 0.62rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    padding: 7px 10px 6px;
     border-left: none;
-    border-bottom: 2px solid transparent;
-    border-radius: 4px;
-    white-space: nowrap;
+    border-bottom: none;
+    border-radius: 12px;
     flex-shrink: 0;
-    background: rgba(255,255,255,0.03);
+    min-width: 56px;
+    text-align: center;
+    white-space: nowrap;
+    font-size: 0;
+    background: transparent;
+    transition: background 0.18s, color 0.18s, transform 0.12s;
   }
+  .admin-nav__emoji {
+    font-size: 1.35rem;
+    line-height: 1;
+    display: block;
+    margin-right: 0;
+    transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .admin-nav__label {
+    font-size: 0.42rem;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    display: block;
+    color: inherit;
+    max-width: 62px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .admin-nav__item:active { transform: scale(0.9); }
   .admin-nav__item.active {
-    border-left: none;
-    border-bottom-color: white;
-    background: rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.11);
     color: white;
+    border-left: none;
+    border-bottom: none;
+  }
+  .admin-nav__item.active .admin-nav__emoji {
+    transform: scale(1.18) translateY(-1px);
   }
 
-  /* Contenu */
-  .admin-content { padding: 20px 14px; }
+  /* Contenu : padding bas pour la bottom nav */
+  .admin-content { padding: 20px 14px 90px; }
 
   /* Dashboard */
   .dashboard-stats { grid-template-columns: 1fr 1fr; }
@@ -1044,19 +1112,6 @@ h2.admin-tab__title { margin-bottom: 32px; }
 
   /* Services */
   .services-list { grid-template-columns: 1fr; }
-
-  /* Header admin */
-  .admin-header { gap: 8px; padding: 10px 12px; overflow: hidden; }
-  .admin-header__right { gap: 6px; flex-shrink: 0; }
-  .admin-header__right .admin-btn {
-    padding: 6px 10px;
-    font-size: 0.6rem;
-    letter-spacing: 0.08em;
-    white-space: nowrap;
-  }
-  .admin-header__brand-sub,
-  .admin-header__brand-sep { display: none; }
-  .admin-header__brand-name { font-size: 0.72rem; }
 }
 
 /* ===== BANNIÈRE ===== */

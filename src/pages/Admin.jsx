@@ -279,16 +279,16 @@ export default function Admin({ onExit }) {
   )
 
   const TABS = [
-    { id: 'dashboard',     label: '📊 Tableau de bord' },
-    { id: 'galleries',     label: '🔒 Galeries clients' },
-    { id: 'photos',        label: '🖼 Photos' },
-    { id: 'textes',        label: '✍️ Textes' },
-    { id: 'temoignages',   label: '💬 Témoignages' },
-    { id: 'services',      label: '🎯 Services' },
-    { id: 'contact',       label: '📞 Contact' },
-    { id: 'banniere',      label: '📢 Bannière' },
-    { id: 'disponibilites', label: '📅 Disponibilités' },
-    { id: 'securite',      label: '🔐 Sécurité' },
+    { id: 'dashboard',      emoji: '📊', label: 'Tableau de bord' },
+    { id: 'galleries',      emoji: '🔒', label: 'Galeries' },
+    { id: 'photos',         emoji: '🖼',  label: 'Photos' },
+    { id: 'textes',         emoji: '✍️',  label: 'Textes' },
+    { id: 'temoignages',    emoji: '💬', label: 'Avis' },
+    { id: 'services',       emoji: '🎯', label: 'Services' },
+    { id: 'contact',        emoji: '📞', label: 'Contact' },
+    { id: 'banniere',       emoji: '📢', label: 'Bannière' },
+    { id: 'disponibilites', emoji: '📅', label: 'Dispo' },
+    { id: 'securite',       emoji: '🔐', label: 'Sécurité' },
   ]
 
   const showToast = (msg, type = 'success') => {
@@ -315,10 +315,14 @@ export default function Admin({ onExit }) {
         </div>
         <div className="admin-header__right">
           <a href="/" target="_blank" rel="noreferrer" className="admin-btn admin-btn--ghost">
-            👁 Voir le site
+            <span className="admin-btn__icon">👁</span><span className="admin-btn__text"> Voir le site</span>
           </a>
-          <button className="admin-btn admin-btn--ghost" onClick={() => setAuth(false)}>Déconnexion</button>
-          <button className="admin-btn admin-btn--ghost" onClick={onExit}>← Retour</button>
+          <button className="admin-btn admin-btn--ghost" onClick={() => setAuth(false)}>
+            <span className="admin-btn__icon">⏻</span><span className="admin-btn__text"> Déconnexion</span>
+          </button>
+          <button className="admin-btn admin-btn--ghost" onClick={onExit}>
+            <span className="admin-btn__icon">←</span><span className="admin-btn__text"> Retour</span>
+          </button>
         </div>
       </header>
 
@@ -327,7 +331,8 @@ export default function Admin({ onExit }) {
           {TABS.map(t => (
             <button key={t.id} className={`admin-nav__item ${tab === t.id ? 'active' : ''}`}
               onClick={() => setTab(t.id)}>
-              {t.label}
+              <span className="admin-nav__emoji">{t.emoji}</span>
+              <span className="admin-nav__label">{t.label}</span>
             </button>
           ))}
         </nav>
