@@ -197,6 +197,7 @@ export default function Admin({ onExit }) {
   const [autoLogoutMin, setAutoLogoutMin] = useState(30)
   const [lockoutRemaining, setLockoutRemaining] = useState(0)
   const [loginDisabled, setLoginDisabled] = useState(false)
+  const [toasts, setToasts] = useState([])
   useAutoLogout(auth ? autoLogoutMin : 0, () => setAuth(false))
 
   // Check lockout on mount and on timer
@@ -290,7 +291,6 @@ export default function Admin({ onExit }) {
     { id: 'securite',      label: '🔐 Sécurité' },
   ]
 
-  const [toasts, setToasts] = useState([])
   const showToast = (msg, type = 'success') => {
     const id = Date.now() + Math.random()
     setToasts(prev => [...prev, { id, msg, type }])
