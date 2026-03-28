@@ -1069,10 +1069,12 @@ h2.admin-tab__title { margin-bottom: 32px; }
 }
 
 /* Sur desktop : inverser */
-.admin-nav__label { display: inline; }
-.admin-nav__short { display: none; }
-.admin-header__btn-desktop { display: inline-flex; }
-.admin-header__more { display: none; position: relative; }
+@media (min-width: 901px) {
+  .admin-nav__label { display: inline; }
+  .admin-nav__short { display: none; }
+  .admin-header__btn-desktop { display: inline-flex; }
+  .admin-header__more { display: none; }
+}
 
 /* ===== MOBILE MENU ⋮ ===== */
 .admin-header__more {
