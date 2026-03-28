@@ -723,14 +723,16 @@
   .cg__code-badge { display: flex; }
   .cg__code-label { font-size: 0.55rem; }
   .cg__code-value { font-size: 0.72rem; }
-  .cg__hero { padding: 48px 24px 36px; }
+  .cg__hero { padding: 28px 20px 24px; }
+  .cg__hero-secure { display: none; }
   .cg__hero-name { font-size: 2rem; }
-  .cg__main { padding: 0 8px 120px; }
+  .cg__hero-welcome { font-size: 0.65rem; line-height: 1.6; margin-top: 14px; }
+  .cg__main { padding: 0 0 120px; }
   .cg__grid {
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: 3px;
+    gap: 2px;
   }
-  .cg__check { opacity: 1; transform: scale(1); }
+  .cg__check { opacity: 1; transform: scale(1); width: 36px; height: 36px; font-size: 0.9rem; }
   .cg__item--selected { transform: none; }
   .cg__num { opacity: 1; }
 
