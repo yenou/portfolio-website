@@ -986,7 +986,7 @@ h2.admin-tab__title { margin-bottom: 32px; }
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 900px) {
-  /* Layout : une seule colonne, hauteur auto pour scroll naturel de la page */
+  /* Layout : une seule colonne */
   .admin-layout { grid-template-columns: 1fr; min-height: auto; }
 
   /* ── Header slim ── */
@@ -1012,79 +1012,64 @@ h2.admin-tab__title { margin-bottom: 32px; }
     flex-shrink: 0;
   }
 
-  /* ── Bottom tab bar ── */
+  /* ── Nav horizontale scrollable en haut ── */
   .admin-nav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    top: auto;
+    position: static;
     height: auto;
-    z-index: 100;
-    background: rgba(8,8,8,0.97);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
-    border-right: none;
-    border-top: 1px solid rgba(255,255,255,0.07);
     flex-direction: row;
     flex-wrap: nowrap;
     overflow-x: auto;
     overflow-y: visible;
-    padding: 6px 4px calc(6px + env(safe-area-inset-bottom, 0px));
-    gap: 2px;
+    padding: 8px 10px;
+    gap: 4px;
     justify-content: flex-start;
     align-items: center;
+    border-right: none;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    background: #050505;
     scrollbar-width: none;
   }
   .admin-nav::-webkit-scrollbar { display: none; }
 
   .admin-nav__item {
-    display: flex;
-    flex-direction: column;
+    display: inline-flex;
     align-items: center;
-    gap: 3px;
-    padding: 7px 10px 6px;
+    gap: 6px;
+    padding: 7px 13px;
     border-left: none;
-    border-bottom: none;
-    border-radius: 12px;
+    border-bottom: 2px solid transparent;
+    border-radius: 8px;
     flex-shrink: 0;
-    min-width: 56px;
-    text-align: center;
     white-space: nowrap;
-    font-size: 0;
-    background: transparent;
+    font-size: 0.62rem;
+    letter-spacing: 0.06em;
+    background: rgba(255,255,255,0.03);
     transition: background 0.18s, color 0.18s, transform 0.12s;
   }
   .admin-nav__emoji {
-    font-size: 1.35rem;
+    font-size: 1rem;
     line-height: 1;
-    display: block;
     margin-right: 0;
     transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1);
   }
   .admin-nav__label {
-    font-size: 0.42rem;
-    letter-spacing: 0.07em;
-    text-transform: uppercase;
-    display: block;
-    color: inherit;
-    max-width: 62px;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    font-size: inherit;
+    letter-spacing: inherit;
+    display: inline;
   }
-  .admin-nav__item:active { transform: scale(0.9); }
+  .admin-nav__item:active { transform: scale(0.93); }
   .admin-nav__item.active {
-    background: rgba(255,255,255,0.11);
+    background: rgba(255,255,255,0.1);
     color: white;
     border-left: none;
-    border-bottom: none;
+    border-bottom-color: white;
   }
   .admin-nav__item.active .admin-nav__emoji {
-    transform: scale(1.18) translateY(-1px);
+    transform: scale(1.15);
   }
 
-  /* Contenu : laisser la page scroller (pas la div) pour que position:fixed fonctionne partout */
-  .admin-content { padding: 20px 14px 90px; overflow-y: visible; }
+  /* Contenu */
+  .admin-content { padding: 20px 14px 40px; overflow-y: visible; }
 
   /* Dashboard */
   .dashboard-stats { grid-template-columns: 1fr 1fr; }
