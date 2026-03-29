@@ -19,6 +19,7 @@ export default function ClientGallery() {
   const [codeVisible, setCodeVisible] = useState(false)
   const [barVisible, setBarVisible] = useState(true)
   const touchStart = useRef(null)
+  const touchStartY = useRef(null)
   const scrollTimer = useRef(null)
 
   useEffect(() => {
@@ -96,12 +97,17 @@ export default function ClientGallery() {
     await dbSaveGallerySelection(code, [])
   }
 
-  const onTouchStart = (e) => { touchStart.current = e.touches[0].clientX }
+  const onTouchStart = (e) => {
+    touchStart.current = e.touches[0].clientX
+    touchStartY.current = e.touches[0].clientY
+  }
   const onTouchEnd = (e) => {
     if (touchStart.current === null) return
-    const diff = touchStart.current - e.changedTouches[0].clientX
-    if (Math.abs(diff) > 50) navigate(diff > 0 ? 1 : -1)
+    const diffX = touchStart.current - e.changedTouches[0].clientX
+    const diffY = touchStartY.current - e.changedTouches[0].clientY
+    if (Math.abs(diffX) > 80 && Math.abs(diffX) > Math.abs(diffY)) navigate(diffX > 0 ? 1 : -1)
     touchStart.current = null
+    touchStartY.current = null
   }
 
   if (loading) return (
