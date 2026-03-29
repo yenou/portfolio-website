@@ -739,12 +739,19 @@
 
   /* Bloc sélection validée — version compacte mobile */
   .cg__validated-msg {
-    margin-top: 24px;
-    padding: 16px 20px;
+    position: fixed;
+    bottom: 16px;
+    left: 16px;
+    right: 16px;
+    margin: 0;
+    padding: 14px 16px;
     gap: 14px;
-    background: rgba(34,197,94,0.08);
-    border: 1px solid rgba(74,222,128,0.3);
-    box-shadow: none;
+    background: rgba(10,30,15,0.96);
+    border: 1px solid rgba(74,222,128,0.35);
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.6);
+    backdrop-filter: blur(16px);
+    z-index: 50;
     flex-wrap: wrap;
   }
   .cg__validated-icon {
