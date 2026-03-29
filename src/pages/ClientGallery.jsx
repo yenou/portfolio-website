@@ -17,7 +17,19 @@ export default function ClientGallery() {
   const [validated, setValidated] = useState(false)
   const [validating, setValidating] = useState(false)
   const [codeVisible, setCodeVisible] = useState(false)
+  const [barVisible, setBarVisible] = useState(true)
   const touchStart = useRef(null)
+  const scrollTimer = useRef(null)
+
+  useEffect(() => {
+    const onScroll = () => {
+      setBarVisible(false)
+      clearTimeout(scrollTimer.current)
+      scrollTimer.current = setTimeout(() => setBarVisible(true), 800)
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => { window.removeEventListener('scroll', onScroll); clearTimeout(scrollTimer.current) }
+  }, [])
 
   useEffect(() => {
     if (!code) { setLoading(false); return }
@@ -208,7 +220,7 @@ export default function ClientGallery() {
 
             {/* Barre de validation */}
             {!validated ? (
-              <div className="cg__validate-bar">
+              <div className={`cg__validate-bar${barVisible ? '' : ' cg__bar--hidden'}`}>
                 <div className="cg__validate-left">
                   <span className="cg__validate-count">
                     {selected.length === 0
@@ -230,7 +242,7 @@ export default function ClientGallery() {
                 </button>
               </div>
             ) : (
-              <div className="cg__validated-msg">
+              <div className={`cg__validated-msg${barVisible ? '' : ' cg__bar--hidden'}`}>
                 <span className="cg__validated-icon">✓</span>
                 <div style={{ flex: 1 }}>
                   <p className="cg__validated-title">Sélection envoyée !</p>
