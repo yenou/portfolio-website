@@ -717,6 +717,7 @@
 
 /* ── Mobile ── */
 @media (max-width: 768px) {
+  .cg__header { position: relative; }
   .cg__header-inner { padding: 12px 20px; gap: 12px; }
   .cg__logo { height: 36px; width: 36px; }
   .cg__client-name { font-size: 0.75rem; }
