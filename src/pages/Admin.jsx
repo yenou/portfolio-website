@@ -1259,15 +1259,27 @@ function TabGalleries() {
 
 function GalleryCard({ gallery, expanded, onToggle, onDelete, onCopyLink, onAddPhoto, onRemovePhoto }) {
   const url = `${window.location.origin}/galerie/${gallery.code}`
+  const fileInputRef = useRef(null)
+  const [uploadProgress, setUploadProgress] = useState(null) // "3/8" or null
 
-  const { open: openPhoto, Input: PhotoInput } = useFilePicker((base64) => {
-    compressImage(base64, 900, 0.7)
-      .then(addWatermark)
-      .then(watermarked => {
-        const photo = { id: Date.now(), galleryCode: gallery.code, src: watermarked, caption: '', order: (gallery.photos || []).length }
-        dbAddGalleryPhoto(photo).then(() => onAddPhoto(photo))
+  const handleFiles = async (e) => {
+    const files = Array.from(e.target.files)
+    if (!files.length) return
+    e.target.value = ''
+    for (let i = 0; i < files.length; i++) {
+      setUploadProgress(`${i + 1}/${files.length}`)
+      const base64 = await new Promise(resolve => {
+        const reader = new FileReader()
+        reader.onload = ev => resolve(ev.target.result)
+        reader.readAsDataURL(files[i])
       })
-  })
+      const watermarked = await compressImage(base64, 900, 0.7).then(addWatermark)
+      const photo = { id: Date.now() + i, galleryCode: gallery.code, src: watermarked, caption: '', order: (gallery.photos || []).length + i }
+      await dbAddGalleryPhoto(photo)
+      onAddPhoto(photo)
+    }
+    setUploadProgress(null)
+  }
 
   return (
     <div className={`gallery-card ${expanded ? 'gallery-card--open' : ''}`}>
@@ -1308,12 +1320,12 @@ function GalleryCard({ gallery, expanded, onToggle, onDelete, onCopyLink, onAddP
                 </div>
               )
             })}
-            <button className="gallery-add-photo" onClick={openPhoto}>
-              <span>+</span>
-              <span>Ajouter</span>
+            <button className="gallery-add-photo" onClick={() => fileInputRef.current?.click()} disabled={!!uploadProgress}>
+              <span>{uploadProgress ? `⏳ ${uploadProgress}` : '+'}</span>
+              <span>{uploadProgress ? 'Ajout en cours…' : 'Ajouter'}</span>
             </button>
           </div>
-          <PhotoInput />
+          <input ref={fileInputRef} type="file" accept="image/*" multiple onChange={handleFiles} style={{ display: 'none' }} />
         </div>
       )}
     </div>
