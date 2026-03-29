@@ -1,4 +1,6 @@
 import { useState, useRef, useEffect, createContext, useContext } from 'react'
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, updatePassword, EmailAuthProvider, reauthenticateWithCredential } from 'firebase/auth'
+import { auth } from '../firebase'
 import {
   getCustomPhotos, saveCustomPhotos, getHiddenIds, saveHiddenIds, getCoupsDeCoeur, saveCoupsDeCoeur,
   getHeroImg, getHeroImgs, saveHeroImgs, getAboutImg, saveAboutImg, getLogoImg, saveLogoImg,
@@ -181,6 +183,17 @@ function ToastContainer({ toasts }) {
 const LOCKOUT_KEY = 'admin_lockout'
 const MAX_ATTEMPTS = 5
 const LOCKOUT_DURATION = 15 * 60 * 1000 // 15 minutes
+const ADMIN_EMAIL = 'admin@yenouphotographie.fr'
+
+async function firebaseLogin(password) {
+  try {
+    await signInWithEmailAndPassword(auth, ADMIN_EMAIL, password)
+  } catch (e) {
+    if (e.code === 'auth/user-not-found' || e.code === 'auth/invalid-credential' || e.code === 'auth/invalid-email') {
+      try { await createUserWithEmailAndPassword(auth, ADMIN_EMAIL, password) } catch { /* ignore */ }
+    }
+  }
+}
 
 function getLockoutState() {
   try { return JSON.parse(localStorage.getItem(LOCKOUT_KEY) || '{}') } catch { return {} }
@@ -198,7 +211,8 @@ export default function Admin({ onExit }) {
   const [lockoutRemaining, setLockoutRemaining] = useState(0)
   const [loginDisabled, setLoginDisabled] = useState(false)
   const [toasts, setToasts] = useState([])
-  useAutoLogout(auth ? autoLogoutMin : 0, () => setAuth(false))
+  const handleLogout = () => { signOut(auth).catch(() => {}); setAuth(false) }
+  useAutoLogout(auth ? autoLogoutMin : 0, handleLogout)
 
   // Check lockout on mount and on timer
   useEffect(() => {
@@ -239,6 +253,7 @@ export default function Admin({ onExit }) {
         const h = await savePassword(pwd)
         dbSaveConfig({ password: h })
       }
+      await firebaseLogin(pwd)
       saveLockoutState({})
       setAuth(true)
       setPwdError(false)
@@ -329,7 +344,7 @@ export default function Admin({ onExit }) {
           <a href="/" target="_blank" rel="noreferrer" className="admin-btn admin-btn--ghost">
             <span className="admin-btn__icon">👁</span><span className="admin-btn__text"> Voir le site</span>
           </a>
-          <button className="admin-btn admin-btn--ghost" onClick={() => setAuth(false)}>
+          <button className="admin-btn admin-btn--ghost" onClick={handleLogout}>
             <span className="admin-btn__icon">⏻</span><span className="admin-btn__text"> Déconnexion</span>
           </button>
           <button className="admin-btn admin-btn--ghost" onClick={onExit}>
@@ -359,7 +374,7 @@ export default function Admin({ onExit }) {
           {tab === 'contact'     && <TabContact />}
           {tab === 'banniere'    && <TabBanniere />}
           {tab === 'disponibilites' && <TabDisponibilites />}
-          {tab === 'securite'    && <TabSecurite autoLogoutMin={autoLogoutMin} setAutoLogoutMin={setAutoLogoutMin} onLogout={() => setAuth(false)} />}
+          {tab === 'securite'    && <TabSecurite autoLogoutMin={autoLogoutMin} setAutoLogoutMin={setAutoLogoutMin} onLogout={handleLogout} />}
         </div>
       </div>
     </div>
@@ -1413,6 +1428,15 @@ function TabSecurite({ autoLogoutMin, setAutoLogoutMin, onLogout }) {
     if (newPwd !== confPwd) { setPwdMsg({ type: 'error', text: 'Les mots de passe ne correspondent pas.' }); return }
     const h = await savePassword(newPwd)
     dbSaveConfig({ password: h })
+    // Update Firebase Auth password
+    try {
+      const user = auth.currentUser
+      if (user) {
+        const cred = EmailAuthProvider.credential(ADMIN_EMAIL, oldPwd)
+        await reauthenticateWithCredential(user, cred)
+        await updatePassword(user, newPwd)
+      }
+    } catch { /* ignore — Firebase Auth password update is best-effort */ }
     setOldPwd(''); setNewPwd(''); setConfPwd('')
     setPwdMsg({ type: 'success', text: '✓ Mot de passe modifié avec succès.' })
     setTimeout(() => setPwdMsg(null), 3000)
