@@ -720,7 +720,7 @@
   .cg__header-inner { padding: 12px 20px; gap: 12px; }
   .cg__logo { height: 36px; width: 36px; }
   .cg__client-name { font-size: 0.75rem; }
-  .cg__code-badge { display: flex; }
+  .cg__code-badge { display: none; }
   .cg__code-label { font-size: 0.55rem; }
   .cg__code-value { font-size: 0.72rem; }
   .cg__hero { padding: 28px 20px 24px; }
