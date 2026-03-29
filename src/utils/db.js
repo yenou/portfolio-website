@@ -41,7 +41,7 @@ export async function syncFromFirestore() {
       if (d.testimonials) { setLS(K.TESTIMONIALS, d.testimonials); updated = true }
       if (d.password) {
         const hashed = isHashed(d.password) ? d.password : await hashPassword(d.password)
-        setLS(K.PASSWORD, JSON.stringify(hashed))
+        setLS(K.PASSWORD, hashed)
         if (!isHashed(d.password)) {
           // Migrate plain-text password in Firestore to hash
           setDoc(configDoc, { password: hashed }, { merge: true }).catch(() => {})
