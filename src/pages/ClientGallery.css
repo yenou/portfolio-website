@@ -212,7 +212,7 @@
   color: rgba(255,255,255,0.8);
 }
 .cg__code-badge {
-  display: flex;
+  display: none;
   flex-direction: column;
   align-items: center;
   flex-shrink: 0;
@@ -266,6 +266,7 @@
   margin: 28px auto 0;
 }
 .cg__hero-secure {
+  display: none;
   font-size: 0.6rem;
   letter-spacing: 0.1em;
   color: rgba(255,255,255,0.35);
