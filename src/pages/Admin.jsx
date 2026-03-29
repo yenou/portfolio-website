@@ -231,11 +231,11 @@ export default function Admin({ onExit }) {
     // Match hashed input against stored value; also support plain-text migration
     const match = stored
       ? (hashedInput === stored || (!isHashed(stored) && pwd === stored))
-      : pwd === 'yenou2025'
+      : false
 
     if (match) {
-      // Auto-migrate: if stored was plain text or null, save hash now
-      if (!stored || !isHashed(stored)) {
+      // Auto-migrate: if stored was plain text, save hash now
+      if (!isHashed(stored)) {
         const h = await savePassword(pwd)
         dbSaveConfig({ password: h })
       }
@@ -1407,7 +1407,7 @@ function TabSecurite({ autoLogoutMin, setAutoLogoutMin, onLogout }) {
     const hashedOld = await hashPassword(oldPwd)
     const oldMatch = stored
       ? (hashedOld === stored || (!isHashed(stored) && oldPwd === stored))
-      : oldPwd === 'yenou2025'
+      : false
     if (!oldMatch) { setPwdMsg({ type: 'error', text: 'Ancien mot de passe incorrect.' }); return }
     if (newPwd.length < 4) { setPwdMsg({ type: 'error', text: 'Le nouveau mot de passe doit faire au moins 4 caractères.' }); return }
     if (newPwd !== confPwd) { setPwdMsg({ type: 'error', text: 'Les mots de passe ne correspondent pas.' }); return }
