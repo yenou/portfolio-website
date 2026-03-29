@@ -77,6 +77,7 @@ export default function ClientGallery() {
     setSelected(prev => {
       const next = prev.includes(photoId) ? prev.filter(id => id !== photoId) : [...prev, photoId]
       dbSaveGallerySelection(code, next)
+      if (next.length === 0) setValidated(false)
       return next
     })
   }
