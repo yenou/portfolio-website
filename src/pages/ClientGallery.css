@@ -487,6 +487,13 @@
   pointer-events: none !important;
   transform: translateY(12px) !important;
 }
+@media (min-width: 769px) {
+  .cg__validated-msg.cg__bar--hidden {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    transform: none !important;
+  }
+}
 .cg__validate-bar {
   position: fixed;
   transition: opacity 0.25s ease, transform 0.25s ease;
