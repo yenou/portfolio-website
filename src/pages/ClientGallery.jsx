@@ -1,4 +1,6 @@
 import { useEffect, useState, useRef } from 'react'
+import { signInAnonymously } from 'firebase/auth'
+import { auth } from '../firebase'
 import { dbGetGallery, dbIncrementGalleryView, dbSaveGallerySelection } from '../utils/db'
 import './ClientGallery.css'
 
@@ -19,6 +21,7 @@ export default function ClientGallery() {
 
   useEffect(() => {
     if (!code) { setLoading(false); return }
+    signInAnonymously(auth).catch(() => {}).finally(() => {
     dbGetGallery(code).then(g => {
       setGallery(g)
       setLoading(false)
@@ -27,6 +30,7 @@ export default function ClientGallery() {
         setSelected(g.selectedPhotos)
         setValidated(true)
       }
+    })
     })
   }, [code])
 
