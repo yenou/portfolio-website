@@ -123,11 +123,12 @@
     display: block;
     position: fixed;
     inset: 0;
+    background: rgb(8,8,8);
     background: linear-gradient(
       135deg,
-      rgba(8,8,8,0.82) 0%,
-      rgba(8,8,8,0.65) 50%,
-      rgba(8,8,8,0.75) 100%
+      rgba(8,8,8,0.97) 0%,
+      rgba(8,8,8,0.93) 50%,
+      rgba(8,8,8,0.95) 100%
     );
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
