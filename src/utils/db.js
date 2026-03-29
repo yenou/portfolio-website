@@ -1,5 +1,6 @@
 import { doc, getDoc, setDoc, deleteDoc, getDocs, collection, increment } from 'firebase/firestore'
 import { db } from '../firebase'
+import { hashPassword, isHashed } from './storage'
 
 // ── LocalStorage keys (same as storage.js) ───────────────────────────────────
 const K = {
@@ -38,7 +39,15 @@ export async function syncFromFirestore() {
       if (d.contact)      { setLS(K.CONTACT, d.contact);           updated = true }
       if (d.services)     { setLS(K.SERVICES, d.services);         updated = true }
       if (d.testimonials) { setLS(K.TESTIMONIALS, d.testimonials); updated = true }
-      if (d.password)     { setLS(K.PASSWORD, d.password);         updated = true }
+      if (d.password) {
+        const hashed = isHashed(d.password) ? d.password : await hashPassword(d.password)
+        setLS(K.PASSWORD, JSON.stringify(hashed))
+        if (!isHashed(d.password)) {
+          // Migrate plain-text password in Firestore to hash
+          setDoc(configDoc, { password: hashed }, { merge: true }).catch(() => {})
+        }
+        updated = true
+      }
       if (d.hiddenIds)    { setLS(K.HIDDEN, d.hiddenIds);                    updated = true }
       if (d.coupsDeCoeur) { setLS(K.COUPS_DE_COEUR, d.coupsDeCoeur);         updated = true }
       if (d.banner)       { setLS(K.BANNER, d.banner);             updated = true }

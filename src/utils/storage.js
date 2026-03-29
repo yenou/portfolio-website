@@ -98,9 +98,21 @@ const DEFAULT_CONTACT = {
 export const getContact = () => ({ ...DEFAULT_CONTACT, ...get(KEYS.CONTACT, {}) })
 export const saveContact = (v) => set(KEYS.CONTACT, v)
 
-// Password
-export const getPassword = () => get(KEYS.PASSWORD, 'yenou2025')
-export const savePassword = (v) => set(KEYS.PASSWORD, v)
+// Password (stored as SHA-256 hash)
+export async function hashPassword(pwd) {
+  const buf = new TextEncoder().encode(pwd)
+  const hash = await crypto.subtle.digest('SHA-256', buf)
+  return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('')
+}
+export function isHashed(str) {
+  return typeof str === 'string' && str.length === 64 && /^[0-9a-f]+$/.test(str)
+}
+export const getPassword = () => get(KEYS.PASSWORD, null)
+export async function savePassword(v) {
+  const hashed = isHashed(v) ? v : await hashPassword(v)
+  set(KEYS.PASSWORD, hashed)
+  return hashed
+}
 
 // Visits
 export const getVisits = () => get(KEYS.VISITS, 0)

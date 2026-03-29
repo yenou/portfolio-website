@@ -6,7 +6,7 @@ import {
   getTestimonials, saveTestimonials,
   getServices, saveServices,
   getContact, saveContact,
-  getPassword, savePassword,
+  getPassword, savePassword, hashPassword, isHashed,
   getBanner, saveBanner,
   updateLastActive,
 } from '../utils/storage'
@@ -219,14 +219,26 @@ export default function Admin({ onExit }) {
   }, [])
 
   // ── LOGIN ──────────────────────────────────────────────────────────────────
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault()
     if (loginDisabled) return
 
     const state = getLockoutState()
     const attempts = state.attempts || 0
+    const stored = getPassword()
+    const hashedInput = await hashPassword(pwd)
 
-    if (pwd === getPassword()) {
+    // Match hashed input against stored value; also support plain-text migration
+    const match = stored
+      ? (hashedInput === stored || (!isHashed(stored) && pwd === stored))
+      : pwd === 'yenou2025'
+
+    if (match) {
+      // Auto-migrate: if stored was plain text or null, save hash now
+      if (!stored || !isHashed(stored)) {
+        const h = await savePassword(pwd)
+        dbSaveConfig({ password: h })
+      }
       saveLockoutState({})
       setAuth(true)
       setPwdError(false)
@@ -1389,12 +1401,18 @@ function TabSecurite({ autoLogoutMin, setAutoLogoutMin, onLogout }) {
   const [pwdMsg, setPwdMsg]   = useState(null)
   const [logoutMin, setLogoutMin] = useState(autoLogoutMin)
 
-  const changePwd = (e) => {
+  const changePwd = async (e) => {
     e.preventDefault()
-    if (oldPwd !== getPassword()) { setPwdMsg({ type: 'error', text: 'Ancien mot de passe incorrect.' }); return }
+    const stored = getPassword()
+    const hashedOld = await hashPassword(oldPwd)
+    const oldMatch = stored
+      ? (hashedOld === stored || (!isHashed(stored) && oldPwd === stored))
+      : oldPwd === 'yenou2025'
+    if (!oldMatch) { setPwdMsg({ type: 'error', text: 'Ancien mot de passe incorrect.' }); return }
     if (newPwd.length < 4) { setPwdMsg({ type: 'error', text: 'Le nouveau mot de passe doit faire au moins 4 caractères.' }); return }
     if (newPwd !== confPwd) { setPwdMsg({ type: 'error', text: 'Les mots de passe ne correspondent pas.' }); return }
-    savePassword(newPwd); dbSaveConfig({ password: newPwd })
+    const h = await savePassword(newPwd)
+    dbSaveConfig({ password: h })
     setOldPwd(''); setNewPwd(''); setConfPwd('')
     setPwdMsg({ type: 'success', text: '✓ Mot de passe modifié avec succès.' })
     setTimeout(() => setPwdMsg(null), 3000)
