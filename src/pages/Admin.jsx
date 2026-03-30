@@ -1262,6 +1262,70 @@ function GalleryCard({ gallery, expanded, onToggle, onDelete, onCopyLink, onAddP
   const fileInputRef = useRef(null)
   const [uploadProgress, setUploadProgress] = useState(null) // "3/8" or null
 
+  const exportSelection = async () => {
+    const selected = (gallery.selectedPhotos || [])
+    const photos = (gallery.photos || []).filter(p => selected.includes(p.id))
+    if (!photos.length) return
+
+    const COLS = 3
+    const THUMB = 400
+    const PAD = 16
+    const HEADER = 60
+    const rows = Math.ceil(photos.length / COLS)
+    const W = COLS * THUMB + (COLS + 1) * PAD
+    const H = HEADER + rows * THUMB + (rows + 1) * PAD
+
+    const canvas = document.createElement('canvas')
+    canvas.width = W
+    canvas.height = H
+    const ctx = canvas.getContext('2d')
+
+    ctx.fillStyle = '#0a0a0a'
+    ctx.fillRect(0, 0, W, H)
+
+    ctx.fillStyle = 'rgba(255,255,255,0.9)'
+    ctx.font = 'bold 22px sans-serif'
+    ctx.fillText(`${gallery.clientName} — Sélection (${photos.length} photo${photos.length > 1 ? 's' : ''})`, PAD, 38)
+
+    await Promise.all(photos.map((photo, i) => new Promise(resolve => {
+      const img = new Image()
+      img.crossOrigin = 'anonymous'
+      img.onload = () => {
+        const col = i % COLS
+        const row = Math.floor(i / COLS)
+        const x = PAD + col * (THUMB + PAD)
+        const y = HEADER + PAD + row * (THUMB + PAD)
+        // draw photo cropped to square-ish
+        const scale = Math.max(THUMB / img.width, THUMB / img.height)
+        const sw = THUMB / scale, sh = THUMB / scale
+        const sx = (img.width - sw) / 2, sy = (img.height - sh) / 2
+        ctx.drawImage(img, sx, sy, sw, sh, x, y, THUMB, THUMB)
+        // number badge
+        ctx.fillStyle = 'rgba(0,0,0,0.6)'
+        ctx.fillRect(x + 6, y + 6, 32, 20)
+        ctx.fillStyle = 'white'
+        ctx.font = 'bold 12px sans-serif'
+        ctx.fillText(`#${i + 1}`, x + 10, y + 20)
+        // filename
+        if (photo.filename) {
+          ctx.fillStyle = 'rgba(0,0,0,0.55)'
+          ctx.fillRect(x, y + THUMB - 22, THUMB, 22)
+          ctx.fillStyle = 'rgba(255,255,255,0.85)'
+          ctx.font = '11px sans-serif'
+          ctx.fillText(photo.filename.slice(0, 40), x + 6, y + THUMB - 7)
+        }
+        resolve()
+      }
+      img.onerror = resolve
+      img.src = photo.src
+    })))
+
+    const link = document.createElement('a')
+    link.download = `selection-${gallery.clientName.replace(/\s+/g, '-')}.png`
+    link.href = canvas.toDataURL('image/png')
+    link.click()
+  }
+
   const handleFiles = async (e) => {
     const files = Array.from(e.target.files)
     if (!files.length) return
@@ -1297,6 +1361,9 @@ function GalleryCard({ gallery, expanded, onToggle, onDelete, onCopyLink, onAddP
         <div className="gallery-card__actions" onClick={e => e.stopPropagation()}>
           {gallery.password && (
             <span className="gallery-card__pwd" title="Mot de passe client">🔑 <strong>{gallery.password}</strong></span>
+          )}
+          {gallery.selectionValidated && (gallery.selectedPhotos || []).length > 0 && (
+            <button className="admin-btn admin-btn--ghost" onClick={exportSelection} title="Exporter la sélection">⬇ Sélection</button>
           )}
           <button className="admin-btn admin-btn--ghost" onClick={onCopyLink} title="Copier le lien">🔗 Lien</button>
           <button className="admin-btn admin-btn--danger" onClick={onDelete}>Supprimer</button>
