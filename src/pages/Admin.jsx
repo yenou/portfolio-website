@@ -446,6 +446,7 @@ function VisitChart({ history, period }) {
   const H = labelY + 10
   const slotW = W / period
   const barW = Math.min(slotW * 0.52, 28)
+  const labelEvery = period <= 7 ? 1 : period <= 14 ? 2 : 5
 
   return (
     <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{ display: 'block' }}>
@@ -468,11 +469,13 @@ function VisitChart({ history, period }) {
                 {d.count}
               </text>
             )}
-            <text x={i * slotW + slotW / 2} y={labelY} textAnchor="middle"
-              fill={d.isToday ? 'rgba(255,255,255,0.6)' : 'rgba(255,255,255,0.2)'}
-              fontSize="9" fontFamily="inherit">
-              {d.key.slice(8)}/{d.key.slice(5, 7)}
-            </text>
+            {(i % labelEvery === 0 || d.isToday) && (
+              <text x={i * slotW + slotW / 2} y={labelY} textAnchor="middle"
+                fill={d.isToday ? 'rgba(255,255,255,0.6)' : 'rgba(255,255,255,0.2)'}
+                fontSize="9" fontFamily="inherit">
+                {d.key.slice(8)}/{d.key.slice(5, 7)}
+              </text>
+            )}
           </g>
         )
       })}
