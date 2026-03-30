@@ -524,6 +524,94 @@
 .admin-btn__icon { /* inline par défaut */ }
 .admin-btn__text { /* inline par défaut */ }
 
+/* ===== MOBILE ADMIN ===== */
+@media (max-width: 768px) {
+  /* Header simplifié */
+  .admin-header {
+    padding: 10px 16px;
+  }
+  .admin-header__brand-name,
+  .admin-header__brand-sep,
+  .admin-header__brand-sub { display: none; }
+  .admin-btn__text { display: none; }
+  .admin-btn {
+    padding: 9px 12px;
+    min-width: 0;
+  }
+  .admin-header__right { gap: 8px; }
+
+  /* Layout : 1 colonne, nav en bas */
+  .admin-layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr auto;
+  }
+
+  /* Sidebar → bottom bar */
+  .admin-nav {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: auto;
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: visible;
+    padding: 0;
+    border-right: none;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    background: rgba(5,5,5,0.97);
+    backdrop-filter: blur(12px);
+    z-index: 100;
+    scrollbar-width: none;
+    gap: 0;
+  }
+  .admin-nav::-webkit-scrollbar { display: none; }
+
+  /* Pill masqué sur mobile (indicateur différent) */
+  .admin-nav__pill { display: none; }
+
+  .admin-nav__item {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 10px 6px 8px;
+    flex: 0 0 auto;
+    min-width: 62px;
+    border-left: none;
+    border-top: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .admin-nav__item.active {
+    border-top-color: white;
+    color: white;
+  }
+  .admin-nav__icon { opacity: 1; }
+  .admin-nav__item.active .admin-nav__icon { opacity: 1; }
+  .admin-nav__label {
+    font-size: 0.48rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  /* Content full width avec padding bottom pour la nav */
+  .admin-content {
+    padding: 20px 16px 90px;
+    min-height: calc(100vh - 57px);
+  }
+
+  /* Dashboard stats 2 colonnes */
+  .dashboard-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Tab title plus petit */
+  .admin-tab__title { font-size: 1.5rem; }
+
+  /* Upload 1 colonne */
+  .admin-upload { grid-template-columns: 1fr; }
+  .admin-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
+}
+
 /* Dashboard stat icons SVG */
 .dashboard-stat__icon {
   display: flex;
