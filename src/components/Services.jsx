@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react'
 import './Services.css'
 import { getServices, useStorage } from '../utils/storage'
 
@@ -30,6 +31,17 @@ const ICONS = [
 
 export default function Services() {
   const services = useStorage(getServices)
+  const outroRef = useRef(null)
+
+  useEffect(() => {
+    const el = outroRef.current
+    if (!el) return
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) { el.classList.add('services__outro--visible'); observer.disconnect() }
+    }, { threshold: 0.25 })
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
 
   return (
     <section id="services" className="services">
@@ -70,6 +82,18 @@ export default function Services() {
             </div>
           ))}
         </div>
+
+        <div className="services__outro" ref={outroRef}>
+          <div className="services__outro-line" />
+          <p className="services__outro-text">
+            Après la prise de vue, chaque image est minutieusement traitée pour révéler toute sa richesse&nbsp;: couleurs équilibrées, contrastes travaillés et rendu fidèle à l'émotion du moment.
+          </p>
+          <p className="services__outro-text">
+            Je vous propose ensuite, selon vos envies, la transmission de vos photos en format HD, idéales pour le web ou l'impression, ainsi que des tirages photo et impressions Fine Art sur des supports haut de gamme. De quoi sublimer vos images et les conserver durablement, sous la forme qui vous correspond le mieux.
+          </p>
+          <div className="services__outro-line" />
+        </div>
+
       </div>
     </section>
   )
