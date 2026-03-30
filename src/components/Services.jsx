@@ -32,6 +32,8 @@ const ICONS = [
 export default function Services() {
   const services = useStorage(getServices)
   const outroRef = useRef(null)
+  const grainRef = useRef(null)
+  const rafRef   = useRef(null)
 
   useEffect(() => {
     const el = outroRef.current
@@ -41,6 +43,43 @@ export default function Services() {
     }, { threshold: 0.25 })
     observer.observe(el)
     return () => observer.disconnect()
+  }, [])
+
+  useEffect(() => {
+    const canvas = grainRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+    let opacity = 0
+    let dir = 1
+    let frame = 0
+
+    const resize = () => {
+      canvas.width  = canvas.offsetWidth
+      canvas.height = canvas.offsetHeight
+    }
+    resize()
+    window.addEventListener('resize', resize)
+
+    const draw = () => {
+      frame++
+      // opacity oscillates 0 → 0.18 → 0 over ~120 frames
+      opacity += dir * 0.003
+      if (opacity >= 0.18) dir = -1
+      if (opacity <= 0)    dir =  1
+
+      const { width, height } = canvas
+      const imageData = ctx.createImageData(width, height)
+      const data = imageData.data
+      for (let i = 0; i < data.length; i += 4) {
+        const v = Math.random() * 255 | 0
+        data[i] = data[i+1] = data[i+2] = v
+        data[i+3] = opacity * 255 | 0
+      }
+      ctx.putImageData(imageData, 0, 0)
+      rafRef.current = requestAnimationFrame(draw)
+    }
+    draw()
+    return () => { cancelAnimationFrame(rafRef.current); window.removeEventListener('resize', resize) }
   }, [])
 
   return (
@@ -122,7 +161,12 @@ export default function Services() {
           <div className="services__outro-line" />
         </div>
 
-</div>
+      </div>
+
+      <div className="services__grain-wrap">
+        <canvas ref={grainRef} className="services__grain-canvas" />
+        <div className="services__grain-fade" />
+      </div>
     </section>
   )
 }
