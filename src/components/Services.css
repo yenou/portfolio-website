@@ -238,6 +238,35 @@
   to   { transform: rotate(-360deg); }
 }
 
+/* ===== TRANSITION BOKEH ===== */
+.services__bokeh-transition {
+  position: relative;
+  height: 160px;
+  overflow: hidden;
+  margin-top: 80px;
+  pointer-events: none;
+}
+.services__bokeh-transition span {
+  position: absolute;
+  bottom: 20px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0) 70%);
+  filter: blur(18px);
+  animation: bokehFloat linear infinite;
+  transform: translateY(0);
+}
+.services__bokeh-fade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent 0%, var(--bg-secondary) 40%, var(--bg-primary) 100%);
+}
+@keyframes bokehFloat {
+  0%   { transform: translateY(0px);   opacity: 0; }
+  15%  { opacity: 1; }
+  85%  { opacity: 0.6; }
+  100% { transform: translateY(-140px); opacity: 0; }
+}
+
 @media (max-width: 900px) {
   .services__grid {
     grid-template-columns: 1fr;
