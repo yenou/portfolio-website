@@ -1344,6 +1344,20 @@ h2.admin-tab__title { margin-bottom: 32px; }
 }
 .gallery-photo-thumb:hover .admin-slide-thumb__del { opacity: 1; }
 .gallery-photo-thumb--chosen { outline: 2px solid rgba(80,200,80,0.7); outline-offset: -2px; }
+.gallery-photo-name {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  font-size: 0.48rem;
+  color: rgba(255,255,255,0.75);
+  background: rgba(0,0,0,0.65);
+  padding: 2px 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+}
 .gallery-photo-num {
   position: absolute;
   top: 4px;

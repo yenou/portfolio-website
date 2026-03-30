@@ -1274,7 +1274,8 @@ function GalleryCard({ gallery, expanded, onToggle, onDelete, onCopyLink, onAddP
         reader.readAsDataURL(files[i])
       })
       const watermarked = await compressImage(base64, 900, 0.7).then(addWatermark)
-      const photo = { id: Date.now() + i, galleryCode: gallery.code, src: watermarked, caption: '', order: (gallery.photos || []).length + i }
+      const filename = files[i].name.replace(/\.[^.]+$/, '') // sans extension
+      const photo = { id: Date.now() + i, galleryCode: gallery.code, src: watermarked, caption: '', order: (gallery.photos || []).length + i, filename }
       await dbAddGalleryPhoto(photo)
       onAddPhoto(photo)
     }
@@ -1316,6 +1317,7 @@ function GalleryCard({ gallery, expanded, onToggle, onDelete, onCopyLink, onAddP
                   <img src={photo.src} alt={`Photo ${i + 1}`} />
                   <span className="gallery-photo-num">{i + 1}</span>
                   {isChosen && <span className="gallery-photo-check">✓</span>}
+                  {photo.filename && <span className="gallery-photo-name" title={photo.filename}>{photo.filename}</span>}
                   <button className="admin-slide-thumb__del" onClick={() => onRemovePhoto(photo.id)}>×</button>
                 </div>
               )
