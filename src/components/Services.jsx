@@ -122,15 +122,7 @@ export default function Services() {
           <div className="services__outro-line" />
         </div>
 
-      <div className="services__bokeh-transition">
-        <span style={{ width: 180, height: 180, left: '10%',  animationDelay: '0s',    animationDuration: '7s'  }} />
-        <span style={{ width: 80,  height: 80,  left: '30%',  animationDelay: '1.5s',  animationDuration: '9s'  }} />
-        <span style={{ width: 260, height: 260, left: '55%',  animationDelay: '0.8s',  animationDuration: '11s' }} />
-        <span style={{ width: 60,  height: 60,  left: '72%',  animationDelay: '2.5s',  animationDuration: '8s'  }} />
-        <span style={{ width: 120, height: 120, left: '85%',  animationDelay: '0.3s',  animationDuration: '10s' }} />
-        <div className="services__bokeh-fade" />
-      </div>
-      </div>
+</div>
     </section>
   )
 }
