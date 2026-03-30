@@ -286,3 +286,42 @@ export async function dbClearLoginHistory() {
   try { await setDoc(loginAttemptsDoc, { history: [] }) }
   catch (e) { console.warn('[Firebase] clear history failed:', e.message) }
 }
+
+// ── Firestore latency ping ────────────────────────────────────────────────────
+export async function dbPingFirestore() {
+  const start = performance.now()
+  try {
+    await getDoc(configDoc)
+    return { ok: true, ms: Math.round(performance.now() - start) }
+  } catch (e) {
+    return { ok: false, ms: null }
+  }
+}
+
+// ── Admin sessions ────────────────────────────────────────────────────────────
+const adminSessionsDoc = doc(db, 'site', 'adminSessions')
+
+export async function dbCreateSession(session) {
+  try {
+    const snap = await getDoc(adminSessionsDoc)
+    const sessions = snap.exists() ? (snap.data().list || []) : []
+    // Keep last 10 sessions only
+    const next = [session, ...sessions].slice(0, 10)
+    await setDoc(adminSessionsDoc, { list: next })
+  } catch (e) { /* silent */ }
+}
+
+export async function dbGetSessions() {
+  try {
+    const snap = await getDoc(adminSessionsDoc)
+    return snap.exists() ? (snap.data().list || []) : []
+  } catch (e) { return [] }
+}
+
+export async function dbDeleteSession(sessionId) {
+  try {
+    const snap = await getDoc(adminSessionsDoc)
+    const sessions = snap.exists() ? (snap.data().list || []) : []
+    await setDoc(adminSessionsDoc, { list: sessions.filter(s => s.id !== sessionId) })
+  } catch (e) { /* silent */ }
+}

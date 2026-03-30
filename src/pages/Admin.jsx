@@ -13,7 +13,7 @@ import {
   updateLastActive,
 } from '../utils/storage'
 import './Admin.css'
-import { dbSaveConfig, dbSaveAboutImg, dbSaveLogoImg, dbSaveCustomPhoto, dbDeleteCustomPhoto, dbSaveAllHeroSlides, dbGetVisitHistory, dbCreateGallery, dbDeleteGallery, dbAddGalleryPhoto, dbDeleteGalleryPhoto, dbGetAllGalleries, dbGetAvailability, dbSaveAvailability, dbAddLoginAttempt, dbGetLoginHistory, dbClearLoginHistory } from '../utils/db'
+import { dbSaveConfig, dbSaveAboutImg, dbSaveLogoImg, dbSaveCustomPhoto, dbDeleteCustomPhoto, dbSaveAllHeroSlides, dbGetVisitHistory, dbCreateGallery, dbDeleteGallery, dbAddGalleryPhoto, dbDeleteGalleryPhoto, dbGetAllGalleries, dbGetAvailability, dbSaveAvailability, dbAddLoginAttempt, dbGetLoginHistory, dbClearLoginHistory, dbPingFirestore, dbCreateSession, dbGetSessions, dbDeleteSession } from '../utils/db'
 
 const CATEGORIES = ['Portraits & Famille', 'Nature & Paysages', 'Concerts & Événements']
 
@@ -251,7 +251,12 @@ export default function Admin({ onExit }) {
   const [toasts, setToasts] = useState([])
   const navRef = useRef(null)
   const [pillStyle, setPillStyle] = useState({ top: 0, height: 0 })
-  const handleLogout = () => { signOut(auth).catch(() => {}); setAuth(false) }
+  const handleLogout = () => {
+    signOut(auth).catch(() => {})
+    const sid = localStorage.getItem('yenou_session_id')
+    if (sid) { dbDeleteSession(sid); localStorage.removeItem('yenou_session_id') }
+    setAuth(false)
+  }
   useAutoLogout(auth ? autoLogoutMin : 0, handleLogout)
 
   useEffect(() => {
@@ -303,6 +308,10 @@ export default function Admin({ onExit }) {
       saveLockoutState({})
       setAuth(true)
       setPwdError(false)
+      // Register session
+      const sessionId = (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()))
+      localStorage.setItem('yenou_session_id', sessionId)
+      dbCreateSession({ id: sessionId, ua: navigator.userAgent, loginAt: Date.now() })
     } else {
       const newAttempts = attempts + 1
       const locked = newAttempts >= MAX_ATTEMPTS
@@ -1550,6 +1559,41 @@ function TabDisponibilites() {
 // ═══════════════════════════════════════════════════════════════════════════════
 // TAB: SÉCURITÉ
 // ═══════════════════════════════════════════════════════════════════════════════
+function getPwdStrength(pwd) {
+  if (!pwd) return { score: 0, label: '', color: 'transparent' }
+  let score = 0
+  if (pwd.length >= 8)  score++
+  if (pwd.length >= 12) score++
+  if (/[A-Z]/.test(pwd)) score++
+  if (/[0-9]/.test(pwd)) score++
+  if (/[^A-Za-z0-9]/.test(pwd)) score++
+  const levels = [
+    { label: 'Très faible', color: '#e63946' },
+    { label: 'Faible',      color: '#e63946' },
+    { label: 'Moyen',       color: '#f59e0b' },
+    { label: 'Fort',        color: '#4ade80' },
+    { label: 'Très fort',   color: '#4ade80' },
+    { label: 'Excellent',   color: '#00d4aa' },
+  ]
+  return { score, ...levels[score] }
+}
+
+function parseUA(ua = '') {
+  const mobile  = /iPhone|Android.*Mobile/i.test(ua)
+  const tablet  = /iPad|Android(?!.*Mobile)/i.test(ua)
+  const device  = tablet ? 'Tablette' : mobile ? 'Mobile' : 'Ordinateur'
+  const browser = /Edg\//.test(ua) ? 'Edge'
+    : /Chrome\//.test(ua) ? 'Chrome'
+    : /Firefox\//.test(ua) ? 'Firefox'
+    : /Safari\//.test(ua) ? 'Safari' : ''
+  const os = /Windows/.test(ua) ? 'Windows'
+    : /iPhone|iPad/.test(ua) ? 'iOS'
+    : /Android/.test(ua) ? 'Android'
+    : /Mac OS/.test(ua) ? 'macOS'
+    : /Linux/.test(ua) ? 'Linux' : ''
+  return { device, browser, os }
+}
+
 function TabSecurite({ autoLogoutMin, setAutoLogoutMin, onLogout }) {
   const [oldPwd, setOldPwd]   = useState('')
   const [newPwd, setNewPwd]   = useState('')
@@ -1601,6 +1645,20 @@ function TabSecurite({ autoLogoutMin, setAutoLogoutMin, onLogout }) {
           <div className="admin-field">
             <label>Nouveau mot de passe</label>
             <input type="password" value={newPwd} onChange={e => setNewPwd(e.target.value)} required />
+            {newPwd && (() => {
+              const s = getPwdStrength(newPwd)
+              return (
+                <div className="pwd-strength">
+                  <div className="pwd-strength__bar">
+                    {[1,2,3,4,5].map(i => (
+                      <div key={i} className="pwd-strength__seg"
+                        style={{ background: i <= s.score ? s.color : 'rgba(255,255,255,0.08)' }} />
+                    ))}
+                  </div>
+                  <span className="pwd-strength__label" style={{ color: s.color }}>{s.label}</span>
+                </div>
+              )
+            })()}
           </div>
           <div className="admin-field">
             <label>Confirmer le nouveau mot de passe</label>
@@ -1630,7 +1688,109 @@ function TabSecurite({ autoLogoutMin, setAutoLogoutMin, onLogout }) {
         </button>
       </div>
 
+      <FirestoreHealth />
+      <ConnectedDevices />
       <LoginHistory />
+    </div>
+  )
+}
+
+function FirestoreHealth() {
+  const [status, setStatus] = useState(null) // null = not checked yet
+  const [loading, setLoading] = useState(false)
+
+  const check = async () => {
+    setLoading(true)
+    const result = await dbPingFirestore()
+    setStatus(result)
+    setLoading(false)
+  }
+
+  useEffect(() => { check() }, [])
+
+  // Auto-refresh every 30s
+  useEffect(() => {
+    const t = setInterval(check, 30000)
+    return () => clearInterval(t)
+  }, [])
+
+  const dot = !status ? '#666'
+    : !status.ok ? '#e63946'
+    : status.ms < 300 ? '#4ade80'
+    : status.ms < 800 ? '#f59e0b'
+    : '#e63946'
+
+  const label = !status ? 'Vérification…'
+    : !status.ok ? 'Hors ligne'
+    : status.ms < 300 ? 'Excellent'
+    : status.ms < 800 ? 'Correct'
+    : 'Lent'
+
+  return (
+    <div className="admin-fields-group">
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <h3 className="admin-group-title" style={{ border: 'none', paddingBottom: 0 }}>État de santé Firebase</h3>
+        <button className="admin-btn-sm" onClick={check} disabled={loading}>
+          {loading ? '…' : 'Actualiser'}
+        </button>
+      </div>
+      <div className="health-row">
+        <span className="health-dot" style={{ background: dot, boxShadow: `0 0 8px ${dot}` }} />
+        <span className="health-service">Firestore</span>
+        <span className="health-label" style={{ color: dot }}>{label}</span>
+        {status?.ok && <span className="health-ms">{status.ms} ms</span>}
+      </div>
+    </div>
+  )
+}
+
+function ConnectedDevices() {
+  const [sessions, setSessions] = useState([])
+  const currentId = localStorage.getItem('yenou_session_id')
+
+  useEffect(() => { dbGetSessions().then(setSessions) }, [])
+
+  const revoke = async (id) => {
+    await dbDeleteSession(id)
+    setSessions(prev => prev.filter(s => s.id !== id))
+  }
+
+  const fmt = (ts) => new Date(ts).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
+
+  return (
+    <div className="admin-fields-group">
+      <h3 className="admin-group-title">Appareils connectés</h3>
+      {sessions.length === 0 ? (
+        <p className="admin-hint">Aucune session enregistrée.</p>
+      ) : (
+        <div className="devices-list">
+          {sessions.map(s => {
+            const { device, browser, os } = parseUA(s.ua)
+            const isCurrent = s.id === currentId
+            return (
+              <div key={s.id} className={`device-row ${isCurrent ? 'device-row--current' : ''}`}>
+                <div className="device-icon">
+                  {device === 'Mobile' ? (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" width="16" height="16"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18.01"/></svg>
+                  ) : device === 'Tablette' ? (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" width="16" height="16"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18.01"/></svg>
+                  ) : (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" width="16" height="16"><rect x="2" y="4" width="20" height="14" rx="2"/><line x1="8" y1="22" x2="16" y2="22"/><line x1="12" y1="18" x2="12" y2="22"/></svg>
+                  )}
+                </div>
+                <div className="device-info">
+                  <span className="device-name">{device}{browser ? ` · ${browser}` : ''}{os ? ` · ${os}` : ''}</span>
+                  <span className="device-date">{fmt(s.loginAt)}</span>
+                </div>
+                {isCurrent
+                  ? <span className="device-current">Session actuelle</span>
+                  : <button className="admin-btn-sm admin-btn-sm--delete" onClick={() => revoke(s.id)}>Révoquer</button>
+                }
+              </div>
+            )
+          })}
+        </div>
+      )}
     </div>
   )
 }

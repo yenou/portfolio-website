@@ -1580,3 +1580,116 @@ h2.admin-tab__title { margin-bottom: 32px; }
 
 .login-history__locked { color: #e63946 !important; }
 .login-history__fail   { color: rgba(255,180,50,0.8) !important; }
+
+/* ===== PASSWORD STRENGTH ===== */
+.pwd-strength {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+.pwd-strength__bar {
+  display: flex;
+  gap: 4px;
+  flex: 1;
+}
+.pwd-strength__seg {
+  height: 3px;
+  flex: 1;
+  border-radius: 2px;
+  transition: background 0.3s ease;
+}
+.pwd-strength__label {
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: color 0.3s ease;
+}
+
+/* ===== FIRESTORE HEALTH ===== */
+.health-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0 4px;
+}
+.health-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  transition: background 0.4s, box-shadow 0.4s;
+}
+.health-service {
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.6);
+  letter-spacing: 0.05em;
+  flex: 1;
+}
+.health-label {
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 500;
+  transition: color 0.4s;
+}
+.health-ms {
+  font-size: 0.65rem;
+  color: rgba(255,255,255,0.25);
+  letter-spacing: 0.05em;
+}
+
+/* ===== CONNECTED DEVICES ===== */
+.devices-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 4px;
+}
+.device-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid rgba(255,255,255,0.05);
+  transition: background 0.2s;
+}
+.device-row--current {
+  border-color: rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.03);
+}
+.device-icon {
+  color: rgba(255,255,255,0.3);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+.device-row--current .device-icon { color: rgba(255,255,255,0.6); }
+.device-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+  min-width: 0;
+}
+.device-name {
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.6);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.device-row--current .device-name { color: rgba(255,255,255,0.85); }
+.device-date {
+  font-size: 0.62rem;
+  color: rgba(255,255,255,0.25);
+  letter-spacing: 0.05em;
+}
+.device-current {
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #4ade80;
+  white-space: nowrap;
+}
