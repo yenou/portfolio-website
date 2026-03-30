@@ -1581,6 +1581,100 @@ h2.admin-tab__title { margin-bottom: 32px; }
 .login-history__locked { color: #e63946 !important; }
 .login-history__fail   { color: rgba(255,180,50,0.8) !important; }
 
+/* ===== LOGOUT ZONE ===== */
+.admin-logout-zone {
+  background: #0a0505;
+  border: 1px solid rgba(230, 57, 70, 0.2);
+  padding: 28px 28px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  position: relative;
+  overflow: hidden;
+}
+.admin-logout-zone::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 120%, rgba(230,57,70,0.07) 0%, transparent 65%);
+  pointer-events: none;
+}
+.admin-logout-zone__label {
+  font-size: 0.6rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(230, 57, 70, 0.5);
+}
+
+.admin-logout-btn {
+  position: relative;
+  width: 100%;
+  padding: 16px 28px;
+  background: none;
+  border: 1px solid rgba(230, 57, 70, 0.35);
+  cursor: pointer;
+  overflow: hidden;
+  transition: border-color 0.35s ease;
+}
+.admin-logout-btn:hover {
+  border-color: rgba(230, 57, 70, 0.9);
+}
+
+/* Fond qui monte au hover */
+.admin-logout-btn__bg {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(230,57,70,0.12) 0%, rgba(180,20,30,0.18) 100%);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+.admin-logout-btn:hover .admin-logout-btn__bg { opacity: 1; }
+
+/* Ligne de scan qui traverse au hover */
+.admin-logout-btn__scan {
+  position: absolute;
+  top: 0; left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(230,57,70,0.12), transparent);
+  transition: none;
+}
+.admin-logout-btn:hover .admin-logout-btn__scan {
+  animation: logout-scan 0.55s ease forwards;
+}
+@keyframes logout-scan {
+  from { left: -60%; }
+  to   { left: 110%; }
+}
+
+/* Contenu centré */
+.admin-logout-btn__content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(230, 57, 70, 0.7);
+  transition: color 0.3s ease;
+}
+.admin-logout-btn:hover .admin-logout-btn__content { color: #e63946; }
+
+.admin-logout-btn__icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.admin-logout-btn:hover .admin-logout-btn__icon {
+  transform: translateX(3px);
+}
+
 /* ===== PASSWORD STRENGTH ===== */
 .pwd-strength {
   display: flex;

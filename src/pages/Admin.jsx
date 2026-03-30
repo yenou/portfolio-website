@@ -1681,10 +1681,19 @@ function TabSecurite({ autoLogoutMin, setAutoLogoutMin, onLogout }) {
         </div>
       </div>
 
-      <div className="admin-fields-group">
-        <h3 className="admin-group-title">Session</h3>
-        <button className="admin-btn admin-btn--ghost" onClick={onLogout} style={{ borderColor: '#e63946', color: '#e63946' }}>
-          Se déconnecter maintenant
+      <div className="admin-logout-zone">
+        <div className="admin-logout-zone__label">Session active</div>
+        <button className="admin-logout-btn" onClick={onLogout}>
+          <span className="admin-logout-btn__bg" />
+          <span className="admin-logout-btn__scan" />
+          <span className="admin-logout-btn__content">
+            <svg className="admin-logout-btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+              <polyline points="16 17 21 12 16 7"/>
+              <line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+            <span>Se déconnecter</span>
+          </span>
         </button>
       </div>
 
