@@ -471,28 +471,75 @@
   position: relative;
 }
 
+/* Pill glissant */
+.admin-nav__pill {
+  position: absolute;
+  left: 0;
+  right: 0;
+  background: rgba(255,255,255,0.055);
+  border-left: 2px solid rgba(255,255,255,0.85);
+  transition: top 0.38s cubic-bezier(0.16, 1, 0.3, 1), height 0.38s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+  z-index: 0;
+}
+
 .admin-nav__item {
   background: none;
   border: none;
+  border-left: 2px solid transparent;
   color: rgba(255,255,255,0.35);
   font-family: 'Montserrat', sans-serif;
   font-size: 0.72rem;
   letter-spacing: 0.1em;
   text-align: left;
-  padding: 12px 24px;
+  padding: 12px 20px;
   cursor: pointer;
-  transition: all 0.2s;
-  border-left: 2px solid transparent;
+  transition: color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+  z-index: 1;
 }
 
-.admin-nav__item:hover { color: rgba(255,255,255,0.7); background: rgba(255,255,255,0.03); }
-.admin-nav__item.active { color: white; border-left-color: white; background: rgba(255,255,255,0.05); }
+.admin-nav__item:hover { color: rgba(255,255,255,0.7); }
+.admin-nav__item.active { color: white; }
 
-/* Desktop : emoji inline avant le label */
-.admin-nav__emoji { margin-right: 7px; }
+/* SVG icon dans le nav */
+.admin-nav__icon {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+.admin-nav__icon svg { width: 15px; height: 15px; }
+.admin-nav__item.active .admin-nav__icon { opacity: 1; }
+.admin-nav__item:hover .admin-nav__icon { opacity: 0.85; }
+
 .admin-nav__label { /* inline par défaut */ }
 .admin-btn__icon { /* inline par défaut */ }
 .admin-btn__text { /* inline par défaut */ }
+
+/* Dashboard stat icons SVG */
+.dashboard-stat__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255,255,255,0.3);
+}
+
+/* Tab content enter animation */
+@keyframes tab-enter {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.admin-tab-anim {
+  animation: tab-enter 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
 
 
 

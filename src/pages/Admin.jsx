@@ -147,6 +147,44 @@ function useAutoLogout(timeoutMinutes, onLogout) {
   }, [timeoutMinutes, onLogout])
 }
 
+// ── Count-up animation hook ───────────────────────────────────────────────────
+function useCountUp(target, duration = 900) {
+  const [val, setVal] = useState(0)
+  useEffect(() => {
+    if (!target) { setVal(0); return }
+    let start = null
+    let raf
+    const step = (ts) => {
+      if (!start) start = ts
+      const p = Math.min((ts - start) / duration, 1)
+      setVal(Math.round((1 - Math.pow(1 - p, 3)) * target))
+      if (p < 1) raf = requestAnimationFrame(step)
+    }
+    raf = requestAnimationFrame(step)
+    return () => cancelAnimationFrame(raf)
+  }, [target, duration])
+  return val
+}
+
+function StatNumber({ value }) {
+  const n = useCountUp(value)
+  return <span className="dashboard-stat__num">{n}</span>
+}
+
+// ── Nav SVG icons ─────────────────────────────────────────────────────────────
+const NAV_ICONS = {
+  dashboard: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>,
+  galleries: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>,
+  photos: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><rect x="2" y="7" width="20" height="15" rx="2"/><path d="M16 7l-2-4H10L8 7"/><circle cx="12" cy="14" r="3"/></svg>,
+  textes: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>,
+  temoignages: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>,
+  services: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>,
+  contact: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>,
+  banniere: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>,
+  disponibilites: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>,
+  securite: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>,
+}
+
 // ── File picker helper ────────────────────────────────────────────────────────
 function useFilePicker(onResult) {
   const ref = useRef(null)
@@ -211,8 +249,16 @@ export default function Admin({ onExit }) {
   const [lockoutRemaining, setLockoutRemaining] = useState(0)
   const [loginDisabled, setLoginDisabled] = useState(false)
   const [toasts, setToasts] = useState([])
+  const navRef = useRef(null)
+  const [pillStyle, setPillStyle] = useState({ top: 0, height: 0 })
   const handleLogout = () => { signOut(auth).catch(() => {}); setAuth(false) }
   useAutoLogout(auth ? autoLogoutMin : 0, handleLogout)
+
+  useEffect(() => {
+    if (!navRef.current) return
+    const el = navRef.current.querySelector(`[data-tab-id="${tab}"]`)
+    if (el) setPillStyle({ top: el.offsetTop, height: el.offsetHeight })
+  }, [tab])
 
   // Check lockout on mount and on timer
   useEffect(() => {
@@ -306,16 +352,16 @@ export default function Admin({ onExit }) {
   )
 
   const TABS = [
-    { id: 'dashboard',      emoji: '📊', label: 'Tableau de bord' },
-    { id: 'galleries',      emoji: '🔒', label: 'Galeries' },
-    { id: 'photos',         emoji: '🖼',  label: 'Photos' },
-    { id: 'textes',         emoji: '✍️',  label: 'Textes' },
-    { id: 'temoignages',    emoji: '💬', label: 'Avis' },
-    { id: 'services',       emoji: '🎯', label: 'Services' },
-    { id: 'contact',        emoji: '📞', label: 'Contact' },
-    { id: 'banniere',       emoji: '📢', label: 'Bannière' },
-    { id: 'disponibilites', emoji: '📅', label: 'Dispo' },
-    { id: 'securite',       emoji: '🔐', label: 'Sécurité' },
+    { id: 'dashboard',      label: 'Tableau de bord' },
+    { id: 'galleries',      label: 'Galeries' },
+    { id: 'photos',         label: 'Photos' },
+    { id: 'textes',         label: 'Textes' },
+    { id: 'temoignages',    label: 'Avis' },
+    { id: 'services',       label: 'Services' },
+    { id: 'contact',        label: 'Contact' },
+    { id: 'banniere',       label: 'Bannière' },
+    { id: 'disponibilites', label: 'Dispo' },
+    { id: 'securite',       label: 'Sécurité' },
   ]
 
   const showToast = (msg, type = 'success') => {
@@ -354,27 +400,30 @@ export default function Admin({ onExit }) {
       </header>
 
       <div className="admin-layout">
-        <nav className="admin-nav">
+        <nav className="admin-nav" ref={navRef}>
+          <div className="admin-nav__pill" style={{ top: pillStyle.top, height: pillStyle.height }} />
           {TABS.map(t => (
-            <button key={t.id} className={`admin-nav__item ${tab === t.id ? 'active' : ''}`}
+            <button key={t.id} data-tab-id={t.id} className={`admin-nav__item ${tab === t.id ? 'active' : ''}`}
               onClick={() => setTab(t.id)}>
-              <span className="admin-nav__emoji">{t.emoji}</span>
+              <span className="admin-nav__icon">{NAV_ICONS[t.id]}</span>
               <span className="admin-nav__label">{t.label}</span>
             </button>
           ))}
         </nav>
 
         <div className="admin-content">
-          {tab === 'dashboard'   && <TabDashboard onExit={onExit} />}
-          {tab === 'galleries'   && <TabGalleries />}
-          {tab === 'photos'      && <TabPhotos />}
-          {tab === 'textes'      && <TabTextes />}
-          {tab === 'temoignages' && <TabTemoignages />}
-          {tab === 'services'    && <TabServices />}
-          {tab === 'contact'     && <TabContact />}
-          {tab === 'banniere'    && <TabBanniere />}
-          {tab === 'disponibilites' && <TabDisponibilites />}
-          {tab === 'securite'    && <TabSecurite autoLogoutMin={autoLogoutMin} setAutoLogoutMin={setAutoLogoutMin} onLogout={handleLogout} />}
+          <div key={tab} className="admin-tab-anim">
+            {tab === 'dashboard'   && <TabDashboard onExit={onExit} />}
+            {tab === 'galleries'   && <TabGalleries />}
+            {tab === 'photos'      && <TabPhotos />}
+            {tab === 'textes'      && <TabTextes />}
+            {tab === 'temoignages' && <TabTemoignages />}
+            {tab === 'services'    && <TabServices />}
+            {tab === 'contact'     && <TabContact />}
+            {tab === 'banniere'    && <TabBanniere />}
+            {tab === 'disponibilites' && <TabDisponibilites />}
+            {tab === 'securite'    && <TabSecurite autoLogoutMin={autoLogoutMin} setAutoLogoutMin={setAutoLogoutMin} onLogout={handleLogout} />}
+          </div>
         </div>
       </div>
     </div>
@@ -463,23 +512,31 @@ function TabDashboard() {
 
       <div className="dashboard-stats">
         <div className="dashboard-stat">
-          <span className="dashboard-stat__icon">👁</span>
-          <span className="dashboard-stat__num">{totalVisits}</span>
+          <span className="dashboard-stat__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" width="22" height="22"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </span>
+          <StatNumber value={totalVisits} />
           <span className="dashboard-stat__label">Visites totales</span>
         </div>
         <div className="dashboard-stat">
-          <span className="dashboard-stat__icon">📅</span>
-          <span className="dashboard-stat__num">{todayVisits}</span>
+          <span className="dashboard-stat__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" width="22" height="22"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          </span>
+          <StatNumber value={todayVisits} />
           <span className="dashboard-stat__label">Aujourd'hui</span>
         </div>
         <div className="dashboard-stat">
-          <span className="dashboard-stat__icon">🖼</span>
-          <span className="dashboard-stat__num">{totalPhotos}</span>
+          <span className="dashboard-stat__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" width="22" height="22"><rect x="2" y="7" width="20" height="15" rx="2"/><path d="M16 7l-2-4H10L8 7"/><circle cx="12" cy="14" r="3"/></svg>
+          </span>
+          <StatNumber value={totalPhotos} />
           <span className="dashboard-stat__label">Photos actives</span>
         </div>
         <div className="dashboard-stat">
-          <span className="dashboard-stat__icon">📷</span>
-          <span className="dashboard-stat__num">{hiddenIds.length}</span>
+          <span className="dashboard-stat__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" width="22" height="22"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+          </span>
+          <StatNumber value={hiddenIds.length} />
           <span className="dashboard-stat__label">Photo masquée</span>
         </div>
       </div>
