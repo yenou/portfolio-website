@@ -84,6 +84,34 @@ export default function Services() {
         </div>
 
         <div className="services__outro" ref={outroRef}>
+          <div className="services__outro-icon">
+            <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+              {/* Outer ring */}
+              <circle cx="40" cy="40" r="36" stroke="rgba(255,255,255,0.15)" strokeWidth="1"/>
+              {/* Rotating aperture ring */}
+              <g className="lens-rotate">
+                <circle cx="40" cy="40" r="28" stroke="rgba(255,255,255,0.25)" strokeWidth="0.8" strokeDasharray="4 3"/>
+              </g>
+              {/* Aperture blades */}
+              <g className="lens-spin">
+                <path d="M40 18 L43 32 L40 40 L37 32 Z" fill="rgba(255,255,255,0.12)"/>
+                <path d="M62 40 L48 43 L40 40 L48 37 Z" fill="rgba(255,255,255,0.12)"/>
+                <path d="M40 62 L37 48 L40 40 L43 48 Z" fill="rgba(255,255,255,0.12)"/>
+                <path d="M18 40 L32 37 L40 40 L32 43 Z" fill="rgba(255,255,255,0.12)"/>
+                <path d="M55.6 24.4 L45.2 35.2 L40 40 L37 33 Z" fill="rgba(255,255,255,0.08)"/>
+                <path d="M55.6 55.6 L44.8 45.2 L40 40 L47 37 Z" fill="rgba(255,255,255,0.08)"/>
+                <path d="M24.4 55.6 L34.8 44.8 L40 40 L43 47 Z" fill="rgba(255,255,255,0.08)"/>
+                <path d="M24.4 24.4 L35.2 34.8 L40 40 L33 43 Z" fill="rgba(255,255,255,0.08)"/>
+              </g>
+              {/* Inner lens */}
+              <circle cx="40" cy="40" r="14" stroke="rgba(255,255,255,0.3)" strokeWidth="1"/>
+              <circle cx="40" cy="40" r="10" stroke="rgba(255,255,255,0.15)" strokeWidth="0.8"/>
+              {/* Center dot */}
+              <circle cx="40" cy="40" r="3" fill="rgba(255,255,255,0.5)"/>
+              {/* Light reflection */}
+              <circle cx="34" cy="34" r="2" fill="rgba(255,255,255,0.2)"/>
+            </svg>
+          </div>
           <div className="services__outro-line" />
           <p className="services__outro-text">
             Après la prise de vue, chaque image est minutieusement traitée pour révéler toute sa richesse&nbsp;: couleurs équilibrées, contrastes travaillés et rendu fidèle à l'émotion du moment.
