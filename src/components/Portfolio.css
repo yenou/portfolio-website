@@ -120,6 +120,22 @@
   transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/* ===== SKELETON LOADER ===== */
+.portfolio__skeleton {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, #181818 25%, #242424 50%, #181818 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  z-index: 1;
+}
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+.portfolio__img--loading { opacity: 0; }
+.portfolio__img--loaded  { opacity: 1; transition: opacity 0.4s ease; }
+
 .portfolio__item:hover img { transform: scale(1.06); }
 
 /* ===== OVERLAY ===== */

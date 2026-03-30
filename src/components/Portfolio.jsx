@@ -12,6 +12,8 @@ export default function Portfolio() {
   const [carouselIdx, setCarouselIdx] = useState(0)
   const carouselRef = useRef(null)
   const lightboxRef = useRef(null)
+  const [loadedImgs, setLoadedImgs] = useState(new Set())
+  const markLoaded = (id) => setLoadedImgs(prev => new Set([...prev, id]))
   const [likes, setLikes] = useState({})
   const [likedByMe, setLikedByMe] = useState(() => {
     try { return JSON.parse(localStorage.getItem('yenou_likes') || '[]') } catch { return [] }
@@ -173,8 +175,11 @@ export default function Portfolio() {
               data-delay={String(Math.min(i % 3 + 1, 4))}
               onClick={() => setLightbox(photo)}
             >
+              {!loadedImgs.has(photo.id) && <div className="portfolio__skeleton" />}
               <img src={photo.src} alt={photo.alt} loading="lazy"
-                onError={(e) => { e.target.closest('.portfolio__item').style.display = 'none' }}
+                className={loadedImgs.has(photo.id) ? 'portfolio__img--loaded' : 'portfolio__img--loading'}
+                onLoad={() => markLoaded(photo.id)}
+                onError={(e) => { markLoaded(photo.id); e.target.closest('.portfolio__item').style.display = 'none' }}
               />
               {coupsDeCoeur.includes(photo.id) && (
                 <span className="portfolio__cdc-badge">♥ Coup de cœur</span>
@@ -202,8 +207,11 @@ export default function Portfolio() {
         <div className="portfolio__carousel" ref={carouselRef} onScroll={onCarouselScroll}>
           {filtered.map((photo) => (
             <div key={photo.id} className="portfolio__carousel-item" onClick={() => setLightbox(photo)}>
+              {!loadedImgs.has(photo.id) && <div className="portfolio__skeleton" />}
               <img src={photo.src} alt={photo.alt} loading="lazy"
-                onError={(e) => { e.target.closest('.portfolio__carousel-item').style.display = 'none' }}
+                className={loadedImgs.has(photo.id) ? 'portfolio__img--loaded' : 'portfolio__img--loading'}
+                onLoad={() => markLoaded(photo.id)}
+                onError={(e) => { markLoaded(photo.id); e.target.closest('.portfolio__carousel-item').style.display = 'none' }}
               />
               {coupsDeCoeur.includes(photo.id) && (
                 <span className="portfolio__cdc-badge">♥ Coup de cœur</span>
