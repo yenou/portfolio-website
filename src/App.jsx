@@ -64,6 +64,7 @@ export default function App() {
 
   const exitAdmin = () => {
     window.location.hash = ''
+    document.body.classList.remove('admin-page')
     setShowAdmin(false)
     syncPhotosFromFirestore()
   }
@@ -111,6 +112,7 @@ export default function App() {
 
   // Page admin
   if (showAdmin) {
+    document.body.classList.add('admin-page')
     return (
       <>
         <Admin onExit={exitAdmin} />

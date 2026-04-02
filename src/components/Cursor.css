@@ -1,5 +1,5 @@
 @media (min-width: 1024px) {
-  * { cursor: none !important; }
+  body:not(.admin-page) * { cursor: none !important; }
 }
 
 .cursor-dot {
