@@ -1,6 +1,21 @@
 import { doc, getDoc, setDoc, deleteDoc, getDocs, collection, increment, updateDoc, deleteField } from 'firebase/firestore'
-import { ref, uploadString, getDownloadURL, deleteObject } from 'firebase/storage'
-import { db, auth, storage } from '../firebase'
+import { db, auth } from '../firebase'
+
+const CLOUDINARY_CLOUD = 'dc6hknkqp'
+const CLOUDINARY_PRESET = 'yenou_portfolio'
+
+async function uploadToCloudinary(base64) {
+  const formData = new FormData()
+  formData.append('file', base64)
+  formData.append('upload_preset', CLOUDINARY_PRESET)
+  const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`, {
+    method: 'POST',
+    body: formData
+  })
+  if (!res.ok) throw new Error('Cloudinary upload failed')
+  const data = await res.json()
+  return data.secure_url
+}
 import { cachePhotosInMemory, cacheHeroImgsInMemory, isHashed, hashPassword } from './storage'
 
 // ── LocalStorage keys (same as storage.js) ───────────────────────────────────
@@ -110,11 +125,9 @@ export async function dbSaveLogoImg(base64) {
   catch (e) { console.warn('[Firebase] Logo img save failed:', e.message) }
 }
 
-// ── Save a single custom portfolio photo (upload to Storage, save URL to Firestore) ───
+// ── Save a single custom portfolio photo (upload to Cloudinary, save URL to Firestore) ─
 export async function dbSaveCustomPhoto(photo) {
-  const storageRef = ref(storage, `portfolio/${photo.id}`)
-  await uploadString(storageRef, photo.src, 'data_url')
-  const url = await getDownloadURL(storageRef)
+  const url = await uploadToCloudinary(photo.src)
   const photoData = { ...photo, src: url }
   await setDoc(doc(customPhotosCol, String(photo.id)), photoData)
   return photoData
@@ -122,8 +135,8 @@ export async function dbSaveCustomPhoto(photo) {
 
 // ── Delete a custom portfolio photo ───────────────────────────────────────────
 export async function dbDeleteCustomPhoto(id) {
-  try { await deleteDoc(doc(customPhotosCol, String(id))) } catch { }
-  try { await deleteObject(ref(storage, `portfolio/${id}`)) } catch { }
+  try { await deleteDoc(doc(customPhotosCol, String(id))) }
+  catch (e) { console.warn('[Firebase] Custom photo delete failed:', e.message) }
 }
 
 // ── Save a hero slide ──────────────────────────────────────────────────────────
