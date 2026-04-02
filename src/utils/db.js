@@ -1,6 +1,6 @@
 import { doc, getDoc, setDoc, deleteDoc, getDocs, collection, increment } from 'firebase/firestore'
 import { db } from '../firebase'
-import { hashPassword, isHashed } from './storage'
+import { hashPassword, isHashed, cachePhotosInMemory } from './storage'
 
 // ── LocalStorage keys (same as storage.js) ───────────────────────────────────
 const K = {
@@ -75,7 +75,9 @@ export async function syncPhotosFromFirestore() {
     const photosSnap2 = await getDocs(customPhotosCol)
     if (!photosSnap2.empty) {
       const photos = photosSnap2.docs.map(d => d.data()).sort((a, b) => a.id - b.id)
-      setLS(K.PHOTOS, photos); updated = true
+      cachePhotosInMemory(photos)
+      try { setLS(K.PHOTOS, photos) } catch { /* localStorage plein — cache mémoire utilisé */ }
+      updated = true
     }
 
     // Hero slideshow (each slide in own document)

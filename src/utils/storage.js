@@ -40,10 +40,17 @@ function set(key, value) {
   window.dispatchEvent(new CustomEvent('yenou:updated'))
 }
 
-// Photos
-export const getCustomPhotos = () => get(KEYS.PHOTOS, [])
+// Photos — cache mémoire quand localStorage est trop plein (base64 volumineuses)
+let _photosMemCache = null
+export function cachePhotosInMemory(photos) { _photosMemCache = photos }
+export const getCustomPhotos = () => {
+  const fromLS = get(KEYS.PHOTOS, [])
+  if (fromLS.length > 0) return fromLS
+  return _photosMemCache || []
+}
 export function saveCustomPhotos(v) {
-  try { set(KEYS.PHOTOS, v) } catch { /* localStorage plein — Firestore est la source de vérité */ }
+  _photosMemCache = v
+  try { set(KEYS.PHOTOS, v) } catch { window.dispatchEvent(new CustomEvent('yenou:updated')) }
 }
 export const getHiddenIds = () => get(KEYS.HIDDEN, [])
 export const saveHiddenIds = (v) => set(KEYS.HIDDEN, v)
