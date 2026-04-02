@@ -1,6 +1,6 @@
-import { doc, getDoc, setDoc, deleteDoc, getDocs, collection, increment } from 'firebase/firestore'
+import { doc, getDoc, setDoc, deleteDoc, getDocs, collection, increment, updateDoc, deleteField } from 'firebase/firestore'
 import { db } from '../firebase'
-import { hashPassword, isHashed, cachePhotosInMemory } from './storage'
+import { cachePhotosInMemory } from './storage'
 
 // ── LocalStorage keys (same as storage.js) ───────────────────────────────────
 const K = {
@@ -39,15 +39,8 @@ export async function syncFromFirestore() {
       if (d.contact)      { setLS(K.CONTACT, d.contact);           updated = true }
       if (d.services)     { setLS(K.SERVICES, d.services);         updated = true }
       if (d.testimonials) { setLS(K.TESTIMONIALS, d.testimonials); updated = true }
-      if (d.password) {
-        const hashed = isHashed(d.password) ? d.password : await hashPassword(d.password)
-        setLS(K.PASSWORD, hashed)
-        if (!isHashed(d.password)) {
-          // Migrate plain-text password in Firestore to hash
-          setDoc(configDoc, { password: hashed }, { merge: true }).catch(() => {})
-        }
-        updated = true
-      }
+      // password field intentionally not synced from Firestore (security)
+      localStorage.removeItem('yenou_password')
       if (d.hiddenIds)    { setLS(K.HIDDEN, d.hiddenIds);                    updated = true }
       if (d.coupsDeCoeur) { setLS(K.COUPS_DE_COEUR, d.coupsDeCoeur);         updated = true }
       if (d.banner)       { setLS(K.BANNER, d.banner);             updated = true }
@@ -325,4 +318,10 @@ export async function dbDeleteSession(sessionId) {
     const sessions = snap.exists() ? (snap.data().list || []) : []
     await setDoc(adminSessionsDoc, { list: sessions.filter(s => s.id !== sessionId) })
   } catch (e) { /* silent */ }
+}
+
+// ── Remove password field from Firestore (one-time security migration) ────────
+export async function dbRemovePassword() {
+  try { await updateDoc(configDoc, { password: deleteField() }) }
+  catch (e) { /* silent — field may already be absent */ }
 }
