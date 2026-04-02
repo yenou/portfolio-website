@@ -62,8 +62,15 @@ export const savePhotoOrder = (v) => set(KEYS.PHOTO_ORDER, v)
 // Hero & About images
 export const getHeroImg = () => get(KEYS.HERO_IMG, null)
 export const saveHeroImg = (v) => set(KEYS.HERO_IMG, v)
-export const getHeroImgs = () => get(KEYS.HERO_IMGS, [])
+let _heroImgsMemCache = null
+export function cacheHeroImgsInMemory(slides) { _heroImgsMemCache = slides }
+export const getHeroImgs = () => {
+  const fromLS = get(KEYS.HERO_IMGS, [])
+  if (fromLS.length > 0) return fromLS
+  return _heroImgsMemCache || []
+}
 export const saveHeroImgs = (v) => {
+  _heroImgsMemCache = v
   try { set(KEYS.HERO_IMGS, v) } catch { window.dispatchEvent(new CustomEvent('yenou:updated')) }
 }
 export const getAboutImg = () => get(KEYS.ABOUT_IMG, null)

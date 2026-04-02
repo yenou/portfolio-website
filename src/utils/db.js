@@ -1,6 +1,6 @@
 import { doc, getDoc, setDoc, deleteDoc, getDocs, collection, increment, updateDoc, deleteField } from 'firebase/firestore'
 import { db, auth } from '../firebase'
-import { cachePhotosInMemory, isHashed, hashPassword } from './storage'
+import { cachePhotosInMemory, cacheHeroImgsInMemory, isHashed, hashPassword } from './storage'
 
 // ── LocalStorage keys (same as storage.js) ───────────────────────────────────
 const K = {
@@ -81,7 +81,9 @@ export async function syncPhotosFromFirestore() {
     const slidesSnap = await getDocs(heroSlidesCol)
     if (!slidesSnap.empty) {
       const slides = slidesSnap.docs.map(d => d.data()).sort((a, b) => a._order - b._order)
-      setLS(K.HERO_IMGS, slides); updated = true
+      cacheHeroImgsInMemory(slides)
+      try { setLS(K.HERO_IMGS, slides) } catch { /* localStorage plein — cache mémoire utilisé */ }
+      updated = true
     }
 
     if (updated) window.dispatchEvent(new CustomEvent('yenou:updated'))
