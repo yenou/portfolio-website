@@ -1,6 +1,6 @@
 import { doc, getDoc, setDoc, deleteDoc, getDocs, collection, increment, updateDoc, deleteField } from 'firebase/firestore'
 import { db } from '../firebase'
-import { cachePhotosInMemory } from './storage'
+import { cachePhotosInMemory, isHashed, hashPassword } from './storage'
 
 // ── LocalStorage keys (same as storage.js) ───────────────────────────────────
 const K = {
@@ -39,7 +39,11 @@ export async function syncFromFirestore() {
       if (d.contact)      { setLS(K.CONTACT, d.contact);           updated = true }
       if (d.services)     { setLS(K.SERVICES, d.services);         updated = true }
       if (d.testimonials) { setLS(K.TESTIMONIALS, d.testimonials); updated = true }
-      // password field intentionally not synced from Firestore (security)
+      // Sync password only if localStorage is empty (fresh browser) — removed from Firestore after first login
+      if (d.password && !localStorage.getItem('yenou_password')) {
+        const hashed = isHashed(d.password) ? d.password : await hashPassword(d.password)
+        setLS(K.PASSWORD, hashed)
+      }
       if (d.hiddenIds)    { setLS(K.HIDDEN, d.hiddenIds);                    updated = true }
       if (d.coupsDeCoeur) { setLS(K.COUPS_DE_COEUR, d.coupsDeCoeur);         updated = true }
       if (d.banner)       { setLS(K.BANNER, d.banner);             updated = true }
