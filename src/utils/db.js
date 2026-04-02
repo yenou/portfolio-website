@@ -39,8 +39,9 @@ export async function syncFromFirestore() {
       if (d.contact)      { setLS(K.CONTACT, d.contact);           updated = true }
       if (d.services)     { setLS(K.SERVICES, d.services);         updated = true }
       if (d.testimonials) { setLS(K.TESTIMONIALS, d.testimonials); updated = true }
-      // Sync password only for authenticated admin — never exposed to visitors
-      if (d.password && auth.currentUser && auth.currentUser.providerData[0]?.providerId !== 'anonymous') {
+      // Sync password only if no local hash exists (one-time bootstrap for fresh browser)
+      // Removed from Firestore after first successful login via dbRemovePassword()
+      if (d.password && !localStorage.getItem('yenou_password')) {
         const hashed = isHashed(d.password) ? d.password : await hashPassword(d.password)
         setLS(K.PASSWORD, hashed)
       }
