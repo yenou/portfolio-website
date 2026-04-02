@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react'
-import { signInAnonymously } from 'firebase/auth'
+import { signInAnonymously, onAuthStateChanged } from 'firebase/auth'
 import { auth } from './firebase'
 import Cursor from './components/Cursor'
 import Loader from './components/Loader'
@@ -36,11 +36,13 @@ export default function App() {
   const visitedRef = useRef(false)
 
   useEffect(() => {
-    const user = auth.currentUser
-    const needsAnon = !user || user.isAnonymous
-    const signIn = needsAnon ? signInAnonymously(auth).catch(() => {}) : Promise.resolve()
-    signIn.finally(() => {
-      Promise.all([syncFromFirestore(), syncPhotosFromFirestore()]).finally(() => setSyncDone(true))
+    const unsub = onAuthStateChanged(auth, (user) => {
+      unsub()
+      const needsAnon = !user || user.isAnonymous
+      const signIn = needsAnon ? signInAnonymously(auth).catch(() => {}) : Promise.resolve()
+      signIn.finally(() => {
+        Promise.all([syncFromFirestore(), syncPhotosFromFirestore()]).finally(() => setSyncDone(true))
+      })
     })
     if (!visitedRef.current) {
       visitedRef.current = true
