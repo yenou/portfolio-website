@@ -226,10 +226,12 @@ const ADMIN_EMAIL = 'admin@yenouphotographie.fr'
 async function firebaseLogin(password) {
   try {
     await signInWithEmailAndPassword(auth, ADMIN_EMAIL, password)
+    return true
   } catch (e) {
     if (e.code === 'auth/user-not-found' || e.code === 'auth/invalid-credential' || e.code === 'auth/invalid-email') {
-      try { await createUserWithEmailAndPassword(auth, ADMIN_EMAIL, password) } catch { /* ignore */ }
+      try { await createUserWithEmailAndPassword(auth, ADMIN_EMAIL, password); return true } catch { /* ignore */ }
     }
+    return false
   }
 }
 
@@ -291,14 +293,10 @@ export default function Admin({ onExit }) {
     const state = getLockoutState()
     const attempts = state.attempts || 0
 
-    // Try Firebase Auth as primary verification
-    let firebaseOk = false
-    try {
-      await signInWithEmailAndPassword(auth, ADMIN_EMAIL, pwd)
-      firebaseOk = true
-    } catch { /* fall through to local hash check */ }
+    // Try Firebase Auth as primary (firebaseLogin uses the imported auth, not local state)
+    const firebaseOk = await firebaseLogin(pwd)
 
-    // Fallback: local hash check (for browsers that already have the hash cached)
+    // Fallback: local hash check
     let localOk = false
     if (!firebaseOk) {
       const stored = getPassword()
@@ -306,7 +304,6 @@ export default function Admin({ onExit }) {
       localOk = stored
         ? (hashedInput === stored || (!isHashed(stored) && pwd === stored))
         : false
-      if (localOk) await firebaseLogin(pwd)
     }
 
     if (firebaseOk || localOk) {
