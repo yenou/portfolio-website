@@ -1,8 +1,4 @@
-import { useEffect, useState, useRef, lazy, Suspense } from 'react'
-import { signInAnonymously } from 'firebase/auth'
-import { auth } from './firebase'
-import { incrementVisits } from './utils/storage'
-import { syncFromFirestore, syncPhotosFromFirestore, dbIncrementVisit } from './utils/db'
+import { useEffect, useState, useRef } from 'react'
 import Cursor from './components/Cursor'
 import Loader from './components/Loader'
 import Navbar from './components/Navbar'
@@ -15,9 +11,10 @@ import Contact from './components/Contact'
 import Availability from './components/Availability'
 import Footer from './components/Footer'
 import Banner from './components/Banner'
-
-const Admin = lazy(() => import('./pages/Admin'))
-const ClientGallery = lazy(() => import('./pages/ClientGallery'))
+import Admin from './pages/Admin'
+import ClientGallery from './pages/ClientGallery'
+import { incrementVisits } from './utils/storage'
+import { syncFromFirestore, syncPhotosFromFirestore, dbIncrementVisit } from './utils/db'
 
 function isAdminRoute() {
   return window.location.pathname === '/admin' || window.location.hash === '#admin'
@@ -37,9 +34,7 @@ export default function App() {
   const visitedRef = useRef(false)
 
   useEffect(() => {
-    signInAnonymously(auth).catch(() => {}).finally(() => {
-      Promise.all([syncFromFirestore(), syncPhotosFromFirestore()]).finally(() => setSyncDone(true))
-    })
+    Promise.all([syncFromFirestore(), syncPhotosFromFirestore()]).finally(() => setSyncDone(true))
     if (!visitedRef.current) {
       visitedRef.current = true
       incrementVisits()
@@ -61,8 +56,6 @@ export default function App() {
   const exitAdmin = () => {
     window.location.hash = ''
     setShowAdmin(false)
-    // Resync depuis Firestore pour que le portfolio reflète les ajouts de l'admin
-    syncPhotosFromFirestore()
   }
 
   // Scroll progress bar + show-top button
@@ -101,9 +94,7 @@ export default function App() {
     return (
       <>
         <Cursor />
-        <Suspense fallback={null}>
-          <ClientGallery />
-        </Suspense>
+        <ClientGallery />
       </>
     )
   }
@@ -113,9 +104,7 @@ export default function App() {
     return (
       <>
         <Cursor />
-        <Suspense fallback={null}>
-          <Admin onExit={exitAdmin} />
-        </Suspense>
+        <Admin onExit={exitAdmin} />
       </>
     )
   }

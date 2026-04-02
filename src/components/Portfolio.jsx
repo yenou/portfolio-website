@@ -1,9 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
-import { signInAnonymously } from 'firebase/auth'
-import { auth } from '../firebase'
 import { getCustomPhotos, getHiddenIds, getCoupsDeCoeur, useStorage } from '../utils/storage'
 import { dbGetPhotoLikes, dbLikePhoto, dbUnlikePhoto } from '../utils/db'
-import { syncPhotosFromFirestore } from '../utils/db'
 import './Portfolio.css'
 
 const categories = ['Portraits & Famille', 'Nature & Paysages', 'Concerts & Événements']
@@ -21,13 +18,6 @@ export default function Portfolio() {
   })
 
   useEffect(() => { dbGetPhotoLikes().then(setLikes) }, [])
-
-  // Si localStorage vide, re-sync depuis Firestore
-  useEffect(() => {
-    if (getCustomPhotos().length === 0) {
-      signInAnonymously(auth).catch(() => {}).finally(() => syncPhotosFromFirestore())
-    }
-  }, [])
 
   const toggleLike = (e, photoId) => {
     e.stopPropagation()
