@@ -709,15 +709,20 @@ function TabPhotos() {
     e.preventDefault()
     if (!preview || !newAlt) return
     setUploading(true)
-    const id = Date.now()
-    const newPhoto = { id, src: preview, category: newCat, alt: newAlt, isDefault: false, exif: { a: 'f/2.8', s: '1/250s', i: 'ISO 400', f: '50mm' } }
-    const next = [...customPhotos, newPhoto]
-    setCustomPhotos(next); saveCustomPhotos(next)
-    setPreview(null); setNewAlt(''); setNewCat(CATEGORIES[0])
-    if (fileRef.current) fileRef.current.value = ''
-    setUploading(false); setSuccess(true)
-    setTimeout(() => setSuccess(false), 3000)
-    dbSaveCustomPhoto(newPhoto)
+    try {
+      const id = Date.now()
+      const newPhoto = { id, src: preview, category: newCat, alt: newAlt, isDefault: false, exif: { a: 'f/2.8', s: '1/250s', i: 'ISO 400', f: '50mm' } }
+      const next = [...customPhotos, newPhoto]
+      setCustomPhotos(next)
+      try { saveCustomPhotos(next) } catch { /* localStorage plein — Firestore garde la photo */ }
+      setPreview(null); setNewAlt(''); setNewCat(CATEGORIES[0])
+      if (fileRef.current) fileRef.current.value = ''
+      setSuccess(true)
+      setTimeout(() => setSuccess(false), 3000)
+      dbSaveCustomPhoto(newPhoto)
+    } finally {
+      setUploading(false)
+    }
   }
 
   // Drag & drop reorder (custom photos only)
