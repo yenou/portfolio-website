@@ -18,15 +18,13 @@ export default function Hero() {
     ? rawSlides.map(s => typeof s === 'string' ? { src: s, location: 'Contrexéville', sub: 'Vosges, France' } : s)
     : [{ src: '/images/hero.jpg', location: 'Contrexéville', sub: 'Vosges, France' }]
 
-  const [failedSrcs, setFailedSrcs] = useState(new Set())
-  const validSlides = slides.filter(s => !failedSrcs.has(s.src))
   const [current, setCurrent]   = useState(0)
   const [prev, setPrev]         = useState(null)
   const [transitioning, setTransitioning] = useState(false)
 
   // Slideshow timer
   useEffect(() => {
-    if (validSlides.length <= 1) return
+    if (slides.length <= 1) return
     const t = setInterval(() => {
       setCurrent(c => {
         setPrev(c)
@@ -37,10 +35,10 @@ export default function Hero() {
       })
     }, INTERVAL)
     return () => clearInterval(t)
-  }, [validSlides.length])
+  }, [slides.length])
 
   // Reset to slide 0 if slides change
-  useEffect(() => { setCurrent(0); setPrev(null) }, [validSlides.length])
+  useEffect(() => { setCurrent(0); setPrev(null) }, [slides.length])
 
   // Mouse parallax + scroll parallax on bg container
   useEffect(() => {
@@ -78,14 +76,12 @@ export default function Hero() {
     <section id="accueil" className="hero">
       {/* Background slideshow */}
       <div className="hero__bg" ref={bgRef}>
-        {validSlides.map((slide, i) => (
+        {slides.map((slide, i) => (
           <div
             key={slide.src}
             className={`hero__slide ${i === current ? 'hero__slide--active' : ''} ${i === prev ? 'hero__slide--prev' : ''}`}
             style={{ backgroundImage: `url(${slide.src})`, backgroundPosition: `center ${slide.posY ?? 50}%`, backgroundSize: (slide.scale != null && slide.scale !== 100) ? `${slide.scale}%` : 'cover' }}
-          >
-            <img src={slide.src} alt="" style={{ display: 'none' }} onError={() => setFailedSrcs(prev => new Set([...prev, slide.src]))} />
-          </div>
+          />
         ))}
         <div className="hero__overlay" />
         <div className="hero__scan" />
@@ -132,9 +128,9 @@ export default function Hero() {
       </div>
 
       {/* Slideshow indicators */}
-      {validSlides.length > 1 && (
+      {slides.length > 1 && (
         <div className="hero__indicators">
-          {validSlides.map((_, i) => (
+          {slides.map((_, i) => (
             <button
               key={i}
               className={`hero__indicator ${i === current ? 'hero__indicator--active' : ''}`}
