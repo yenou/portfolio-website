@@ -50,7 +50,8 @@ export const getCustomPhotos = () => {
 }
 export function saveCustomPhotos(v) {
   _photosMemCache = v
-  try { set(KEYS.PHOTOS, v) } catch { window.dispatchEvent(new CustomEvent('yenou:updated')) }
+  localStorage.removeItem(KEYS.PHOTOS)
+  window.dispatchEvent(new CustomEvent('yenou:updated'))
 }
 export const getHiddenIds = () => get(KEYS.HIDDEN, [])
 export const saveHiddenIds = (v) => set(KEYS.HIDDEN, v)
@@ -71,10 +72,11 @@ export const getHeroImgs = () => {
 }
 export const saveHeroImgs = (v) => {
   _heroImgsMemCache = v
-  try { set(KEYS.HERO_IMGS, v) } catch { window.dispatchEvent(new CustomEvent('yenou:updated')) }
+  localStorage.removeItem(KEYS.HERO_IMGS)
+  window.dispatchEvent(new CustomEvent('yenou:updated'))
 }
 export const getAboutImg = () => get(KEYS.ABOUT_IMG, null)
-export const saveAboutImg = (v) => set(KEYS.ABOUT_IMG, v)
+export const saveAboutImg = (v) => { localStorage.removeItem(KEYS.ABOUT_IMG); set(KEYS.ABOUT_IMG, v) }
 
 // Texts
 const DEFAULT_TEXTS = {
@@ -147,4 +149,4 @@ export const saveBanner = (v) => set(KEYS.BANNER, v)
 
 // Logo
 export const getLogoImg = () => get(KEYS.LOGO_IMG, null)
-export const saveLogoImg = (v) => set(KEYS.LOGO_IMG, v)
+export const saveLogoImg = (v) => { localStorage.removeItem(KEYS.LOGO_IMG); set(KEYS.LOGO_IMG, v) }
