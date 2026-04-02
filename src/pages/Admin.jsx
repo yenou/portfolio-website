@@ -13,7 +13,7 @@ import {
   updateLastActive,
 } from '../utils/storage'
 import './Admin.css'
-import { dbSaveConfig, dbSaveAboutImg, dbSaveLogoImg, dbSaveCustomPhoto, dbDeleteCustomPhoto, dbSaveAllHeroSlides, dbGetVisitHistory, dbCreateGallery, dbDeleteGallery, dbAddGalleryPhoto, dbDeleteGalleryPhoto, dbGetAllGalleries, dbGetAvailability, dbSaveAvailability, dbAddLoginAttempt, dbGetLoginHistory, dbClearLoginHistory, dbPingFirestore, dbCreateSession, dbGetSessions, dbDeleteSession, dbRemovePassword, dbMigrateBase64ToCloudinary } from '../utils/db'
+import { dbSaveConfig, dbSaveAboutImg, dbSaveLogoImg, dbSaveCustomPhoto, dbDeleteCustomPhoto, dbSaveAllHeroSlides, dbGetVisitHistory, dbCreateGallery, dbDeleteGallery, dbAddGalleryPhoto, dbDeleteGalleryPhoto, dbGetAllGalleries, dbGetAvailability, dbSaveAvailability, dbAddLoginAttempt, dbGetLoginHistory, dbClearLoginHistory, dbPingFirestore, dbCreateSession, dbGetSessions, dbDeleteSession, dbRemovePassword, dbMigrateBase64ToCloudinary, dbMigrateHeroSlidesToCloudinary } from '../utils/db'
 
 const CATEGORIES = ['Portraits & Famille', 'Nature & Paysages', 'Concerts & Événements']
 
@@ -310,6 +310,7 @@ export default function Admin({ onExit }) {
       await savePassword(pwd)
       dbRemovePassword()
       dbMigrateBase64ToCloudinary()
+      dbMigrateHeroSlidesToCloudinary()
       saveLockoutState({})
       setAuth(true)
       setPwdError(false)

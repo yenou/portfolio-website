@@ -165,17 +165,32 @@ export async function dbDeleteHeroSlide(id) {
   catch (e) { console.warn('[Firebase] Hero slide delete failed:', e.message) }
 }
 
-// ── Save all hero slides (full replace) ───────────────────────────────────────
+// ── Save all hero slides (full replace, upload base64 to Cloudinary) ─────────
 export async function dbSaveAllHeroSlides(slides) {
   try {
-    // Delete all existing slides first
     const snap = await getDocs(heroSlidesCol)
     await Promise.all(snap.docs.map(d => deleteDoc(d.ref)))
-    // Save new slides
-    await Promise.all(slides.map((s, i) =>
-      setDoc(doc(heroSlidesCol, String(s._id || i)), { ...s, _order: i })
-    ))
+    await Promise.all(slides.map(async (s, i) => {
+      let src = s.src
+      if (src && src.startsWith('data:image')) {
+        src = await uploadToCloudinary(src)
+      }
+      await setDoc(doc(heroSlidesCol, String(s._id || i)), { ...s, src, _order: i })
+    }))
   } catch (e) { console.warn('[Firebase] Hero slides save failed:', e.message) }
+}
+
+// ── Migrate base64 hero slides to Cloudinary (one-time, runs silently on admin login) ─
+export async function dbMigrateHeroSlidesToCloudinary() {
+  try {
+    const snap = await getDocs(heroSlidesCol)
+    const base64Slides = snap.docs.map(d => ({ id: d.id, ...d.data() })).filter(s => s.src?.startsWith('data:image'))
+    for (const slide of base64Slides) {
+      const url = await uploadToCloudinary(slide.src)
+      await setDoc(doc(heroSlidesCol, slide.id), { ...slide, src: url })
+    }
+    if (base64Slides.length > 0) console.info(`[Migration] ${base64Slides.length} slide(s) hero migrée(s) vers Cloudinary`)
+  } catch (e) { console.warn('[Migration Hero] Échec:', e.message) }
 }
 
 // ── Increment today's visit count in Firestore ────────────────────────────────
