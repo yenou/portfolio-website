@@ -85,6 +85,7 @@ export async function syncPhotosFromFirestore() {
     }
 
     // Custom portfolio photos (each in own document)
+    localStorage.removeItem('yenou_portfolio_photos')
     const photosSnap2 = await getDocs(customPhotosCol)
     if (!photosSnap2.empty) {
       const photos = photosSnap2.docs.map(d => d.data()).sort((a, b) => a.id - b.id)
