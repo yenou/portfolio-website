@@ -40,7 +40,6 @@ export async function syncFromFirestore() {
       if (d.services)     { setLS(K.SERVICES, d.services);         updated = true }
       if (d.testimonials) { setLS(K.TESTIMONIALS, d.testimonials); updated = true }
       // password field intentionally not synced from Firestore (security)
-      localStorage.removeItem('yenou_password')
       if (d.hiddenIds)    { setLS(K.HIDDEN, d.hiddenIds);                    updated = true }
       if (d.coupsDeCoeur) { setLS(K.COUPS_DE_COEUR, d.coupsDeCoeur);         updated = true }
       if (d.banner)       { setLS(K.BANNER, d.banner);             updated = true }
