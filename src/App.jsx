@@ -36,7 +36,10 @@ export default function App() {
   const visitedRef = useRef(false)
 
   useEffect(() => {
-    signInAnonymously(auth).catch(() => {}).finally(() => {
+    const user = auth.currentUser
+    const needsAnon = !user || user.isAnonymous
+    const signIn = needsAnon ? signInAnonymously(auth).catch(() => {}) : Promise.resolve()
+    signIn.finally(() => {
       Promise.all([syncFromFirestore(), syncPhotosFromFirestore()]).finally(() => setSyncDone(true))
     })
     if (!visitedRef.current) {
