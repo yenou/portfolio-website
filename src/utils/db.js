@@ -110,8 +110,7 @@ export async function dbSaveLogoImg(base64) {
 
 // ── Save a single custom portfolio photo ──────────────────────────────────────
 export async function dbSaveCustomPhoto(photo) {
-  try { await setDoc(doc(customPhotosCol, String(photo.id)), photo) }
-  catch (e) { console.warn('[Firebase] Custom photo save failed:', e.message) }
+  await setDoc(doc(customPhotosCol, String(photo.id)), photo)
 }
 
 // ── Delete a custom portfolio photo ───────────────────────────────────────────

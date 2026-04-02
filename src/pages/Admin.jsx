@@ -705,13 +705,16 @@ function TabPhotos() {
     reader.readAsDataURL(file)
   }
 
-  const handleAdd = (e) => {
+  const handleAdd = async (e) => {
     e.preventDefault()
     if (!preview || !newAlt) return
     setUploading(true)
     try {
       const id = Date.now()
       const newPhoto = { id, src: preview, category: newCat, alt: newAlt, isDefault: false, exif: { a: 'f/2.8', s: '1/250s', i: 'ISO 400', f: '50mm' } }
+      // Sauvegarder dans Firestore EN PREMIER — source de vérité
+      await dbSaveCustomPhoto(newPhoto)
+      // Puis mettre à jour l'état local et localStorage
       const next = [...customPhotos, newPhoto]
       setCustomPhotos(next)
       saveCustomPhotos(next)
@@ -719,7 +722,8 @@ function TabPhotos() {
       if (fileRef.current) fileRef.current.value = ''
       setSuccess(true)
       setTimeout(() => setSuccess(false), 3000)
-      dbSaveCustomPhoto(newPhoto)
+    } catch (err) {
+      showToast('Erreur lors de la sauvegarde. Réessaie.', 'error')
     } finally {
       setUploading(false)
     }
