@@ -608,6 +608,7 @@ function SlidePreview({ slide }) {
 }
 
 function TabPhotos() {
+  const showToast = useToast()
   const [customPhotos, setCustomPhotos]       = useState(getCustomPhotos)
   const [hiddenIds, setHiddenIds]             = useState(getHiddenIds)
   const [coupsDeCoeur, setCoupsDeCoeur]       = useState(getCoupsDeCoeur)
