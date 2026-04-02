@@ -688,10 +688,10 @@ function TabPhotos() {
     setCoupsDeCoeur(next); saveCoupsDeCoeur(next)
     dbSaveConfig({ coupsDeCoeur: next })
   }
-  const deleteCustom = (id) => {
+  const deleteCustom = async (id) => {
+    await dbDeleteCustomPhoto(id)
     const next = customPhotos.filter(p => p.id !== id)
     setCustomPhotos(next); saveCustomPhotos(next)
-    dbDeleteCustomPhoto(id)
   }
 
   const renamePhoto = (id, newAlt) => {
