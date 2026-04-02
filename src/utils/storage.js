@@ -63,7 +63,9 @@ export const savePhotoOrder = (v) => set(KEYS.PHOTO_ORDER, v)
 export const getHeroImg = () => get(KEYS.HERO_IMG, null)
 export const saveHeroImg = (v) => set(KEYS.HERO_IMG, v)
 export const getHeroImgs = () => get(KEYS.HERO_IMGS, [])
-export const saveHeroImgs = (v) => set(KEYS.HERO_IMGS, v)
+export const saveHeroImgs = (v) => {
+  try { set(KEYS.HERO_IMGS, v) } catch { window.dispatchEvent(new CustomEvent('yenou:updated')) }
+}
 export const getAboutImg = () => get(KEYS.ABOUT_IMG, null)
 export const saveAboutImg = (v) => set(KEYS.ABOUT_IMG, v)
 
