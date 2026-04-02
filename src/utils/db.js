@@ -1,5 +1,6 @@
 import { doc, getDoc, setDoc, deleteDoc, getDocs, collection, increment, updateDoc, deleteField } from 'firebase/firestore'
-import { db, auth } from '../firebase'
+import { ref, uploadString, getDownloadURL, deleteObject } from 'firebase/storage'
+import { db, auth, storage } from '../firebase'
 import { cachePhotosInMemory, cacheHeroImgsInMemory, isHashed, hashPassword } from './storage'
 
 // ── LocalStorage keys (same as storage.js) ───────────────────────────────────
@@ -109,15 +110,20 @@ export async function dbSaveLogoImg(base64) {
   catch (e) { console.warn('[Firebase] Logo img save failed:', e.message) }
 }
 
-// ── Save a single custom portfolio photo ──────────────────────────────────────
+// ── Save a single custom portfolio photo (upload to Storage, save URL to Firestore) ───
 export async function dbSaveCustomPhoto(photo) {
-  await setDoc(doc(customPhotosCol, String(photo.id)), photo)
+  const storageRef = ref(storage, `portfolio/${photo.id}`)
+  await uploadString(storageRef, photo.src, 'data_url')
+  const url = await getDownloadURL(storageRef)
+  const photoData = { ...photo, src: url }
+  await setDoc(doc(customPhotosCol, String(photo.id)), photoData)
+  return photoData
 }
 
 // ── Delete a custom portfolio photo ───────────────────────────────────────────
 export async function dbDeleteCustomPhoto(id) {
-  try { await deleteDoc(doc(customPhotosCol, String(id))) }
-  catch (e) { console.warn('[Firebase] Custom photo delete failed:', e.message) }
+  try { await deleteDoc(doc(customPhotosCol, String(id))) } catch { }
+  try { await deleteObject(ref(storage, `portfolio/${id}`)) } catch { }
 }
 
 // ── Save a hero slide ──────────────────────────────────────────────────────────

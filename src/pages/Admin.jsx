@@ -716,10 +716,9 @@ function TabPhotos() {
     try {
       const id = Date.now()
       const newPhoto = { id, src: preview, category: newCat, alt: newAlt, isDefault: false, exif: { a: 'f/2.8', s: '1/250s', i: 'ISO 400', f: '50mm' } }
-      // Sauvegarder dans Firestore EN PREMIER — source de vérité
-      await dbSaveCustomPhoto(newPhoto)
-      // Puis mettre à jour l'état local et localStorage
-      const next = [...customPhotos, newPhoto]
+      // Upload vers Firebase Storage, récupère l'URL publique
+      const savedPhoto = await dbSaveCustomPhoto(newPhoto)
+      const next = [...customPhotos, savedPhoto]
       setCustomPhotos(next)
       saveCustomPhotos(next)
       setPreview(null); setNewAlt(''); setNewCat(CATEGORIES[0])
