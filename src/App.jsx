@@ -57,6 +57,8 @@ export default function App() {
   const exitAdmin = () => {
     window.location.hash = ''
     setShowAdmin(false)
+    // Resync depuis Firestore pour que le portfolio reflète les ajouts de l'admin
+    syncPhotosFromFirestore()
   }
 
   // Scroll progress bar + show-top button

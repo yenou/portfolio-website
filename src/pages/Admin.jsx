@@ -714,7 +714,7 @@ function TabPhotos() {
       const newPhoto = { id, src: preview, category: newCat, alt: newAlt, isDefault: false, exif: { a: 'f/2.8', s: '1/250s', i: 'ISO 400', f: '50mm' } }
       const next = [...customPhotos, newPhoto]
       setCustomPhotos(next)
-      try { saveCustomPhotos(next) } catch { /* localStorage plein — Firestore garde la photo */ }
+      saveCustomPhotos(next)
       setPreview(null); setNewAlt(''); setNewCat(CATEGORIES[0])
       if (fileRef.current) fileRef.current.value = ''
       setSuccess(true)

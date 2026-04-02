@@ -42,7 +42,17 @@ function set(key, value) {
 
 // Photos
 export const getCustomPhotos = () => get(KEYS.PHOTOS, [])
-export const saveCustomPhotos = (v) => set(KEYS.PHOTOS, v)
+export function saveCustomPhotos(v) {
+  try {
+    set(KEYS.PHOTOS, v)
+  } catch (e) {
+    if (e.name === 'QuotaExceededError' || e.code === 22) {
+      // Libère l'espace en vidant la clé photos, puis réessaie
+      localStorage.removeItem(KEYS.PHOTOS)
+      try { set(KEYS.PHOTOS, v) } catch { /* si toujours plein, Firestore est la source de vérité */ }
+    }
+  }
+}
 export const getHiddenIds = () => get(KEYS.HIDDEN, [])
 export const saveHiddenIds = (v) => set(KEYS.HIDDEN, v)
 export const getCoupsDeCoeur = () => get(KEYS.COUPS_DE_COEUR, [])
