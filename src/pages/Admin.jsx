@@ -290,26 +290,31 @@ export default function Admin({ onExit }) {
 
     const state = getLockoutState()
     const attempts = state.attempts || 0
-    const stored = getPassword()
-    const hashedInput = await hashPassword(pwd)
 
-    // Match hashed input against stored value; also support plain-text migration
-    const match = stored
-      ? (hashedInput === stored || (!isHashed(stored) && pwd === stored))
-      : false
+    // Try Firebase Auth as primary verification
+    let firebaseOk = false
+    try {
+      await signInWithEmailAndPassword(auth, ADMIN_EMAIL, pwd)
+      firebaseOk = true
+    } catch { /* fall through to local hash check */ }
 
-    if (match) {
-      // Auto-migrate: if stored was plain text, save hash now
-      if (!isHashed(stored)) {
-        const h = await savePassword(pwd)
-        dbSaveConfig({ password: h })
-      }
-      await firebaseLogin(pwd)
+    // Fallback: local hash check (for browsers that already have the hash cached)
+    let localOk = false
+    if (!firebaseOk) {
+      const stored = getPassword()
+      const hashedInput = await hashPassword(pwd)
+      localOk = stored
+        ? (hashedInput === stored || (!isHashed(stored) && pwd === stored))
+        : false
+      if (localOk) await firebaseLogin(pwd)
+    }
+
+    if (firebaseOk || localOk) {
+      await savePassword(pwd)
       dbRemovePassword()
       saveLockoutState({})
       setAuth(true)
       setPwdError(false)
-      // Register session
       const sessionId = (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()))
       localStorage.setItem('yenou_session_id', sessionId)
       dbCreateSession({ id: sessionId, ua: navigator.userAgent, loginAt: Date.now() })
