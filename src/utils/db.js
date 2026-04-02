@@ -133,6 +133,19 @@ export async function dbSaveCustomPhoto(photo) {
   return photoData
 }
 
+// ── Migrate base64 photos to Cloudinary (one-time, runs silently on admin login) ─
+export async function dbMigrateBase64ToCloudinary() {
+  try {
+    const snap = await getDocs(customPhotosCol)
+    const base64Photos = snap.docs.map(d => d.data()).filter(p => p.src?.startsWith('data:image'))
+    for (const photo of base64Photos) {
+      const url = await uploadToCloudinary(photo.src)
+      await setDoc(doc(customPhotosCol, String(photo.id)), { ...photo, src: url })
+    }
+    if (base64Photos.length > 0) console.info(`[Migration] ${base64Photos.length} photo(s) migrées vers Cloudinary`)
+  } catch (e) { console.warn('[Migration] Échec:', e.message) }
+}
+
 // ── Delete a custom portfolio photo ───────────────────────────────────────────
 export async function dbDeleteCustomPhoto(id) {
   try { await deleteDoc(doc(customPhotosCol, String(id))) }
