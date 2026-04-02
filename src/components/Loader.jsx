@@ -6,7 +6,7 @@ export default function Loader({ onDone, syncDone }) {
   const [exiting, setExiting]   = useState(false)
 
   useEffect(() => {
-    const t = setTimeout(() => setAnimDone(true), 2200)
+    const t = setTimeout(() => setAnimDone(true), 1200)
     return () => clearTimeout(t)
   }, [])
 
