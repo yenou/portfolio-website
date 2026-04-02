@@ -6,7 +6,11 @@
       "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:5173)",
       "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:5174)",
       "Bash(\"c:\\\\Users\\\\sidne\\\\Desktop\\\\Portfolio photographie\\\\src\\\\index.css\")",
-      "Bash(find 'c:\\\\Users\\\\sidne\\\\Desktop\\\\Portfolio photographie' -name *.rules -o -name firebase.json)"
+      "Bash(find 'c:\\\\Users\\\\sidne\\\\Desktop\\\\Portfolio photographie' -name *.rules -o -name firebase.json)",
+      "Bash(gh auth:*)",
+      "Bash(find 'c:\\\\Users\\\\sidne\\\\Desktop\\\\Portfolio photographie' -name firestore.rules -o -name *rules.*)",
+      "Bash(find 'c:\\\\Users\\\\sidne\\\\Desktop\\\\Portfolio photographie' -name *.json -path */src/*)",
+      "Bash(grep -rn \"dbGetAllGalleries\\\\|dbGetGallery\" 'c:\\\\Users\\\\sidne\\\\Desktop\\\\Portfolio photographie\\\\src' --include=*.jsx --include=*.js)"
     ]
   }
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, lazy, Suspense } from 'react'
 import Cursor from './components/Cursor'
 import Loader from './components/Loader'
 import Navbar from './components/Navbar'
@@ -11,8 +11,9 @@ import Contact from './components/Contact'
 import Availability from './components/Availability'
 import Footer from './components/Footer'
 import Banner from './components/Banner'
-import Admin from './pages/Admin'
-import ClientGallery from './pages/ClientGallery'
+
+const Admin = lazy(() => import('./pages/Admin'))
+const ClientGallery = lazy(() => import('./pages/ClientGallery'))
 import { incrementVisits } from './utils/storage'
 import { syncFromFirestore, syncPhotosFromFirestore, dbIncrementVisit } from './utils/db'
 
@@ -94,7 +95,9 @@ export default function App() {
     return (
       <>
         <Cursor />
-        <ClientGallery />
+        <Suspense fallback={null}>
+          <ClientGallery />
+        </Suspense>
       </>
     )
   }
@@ -104,7 +107,9 @@ export default function App() {
     return (
       <>
         <Cursor />
-        <Admin onExit={exitAdmin} />
+        <Suspense fallback={null}>
+          <Admin onExit={exitAdmin} />
+        </Suspense>
       </>
     )
   }
