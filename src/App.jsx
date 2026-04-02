@@ -16,6 +16,8 @@ const Admin = lazy(() => import('./pages/Admin'))
 const ClientGallery = lazy(() => import('./pages/ClientGallery'))
 import { incrementVisits } from './utils/storage'
 import { syncFromFirestore, syncPhotosFromFirestore, dbIncrementVisit } from './utils/db'
+import { signInAnonymously } from 'firebase/auth'
+import { auth } from './firebase'
 
 function isAdminRoute() {
   return window.location.pathname === '/admin' || window.location.hash === '#admin'
@@ -35,7 +37,9 @@ export default function App() {
   const visitedRef = useRef(false)
 
   useEffect(() => {
-    Promise.all([syncFromFirestore(), syncPhotosFromFirestore()]).finally(() => setSyncDone(true))
+    signInAnonymously(auth).catch(() => {}).finally(() => {
+      Promise.all([syncFromFirestore(), syncPhotosFromFirestore()]).finally(() => setSyncDone(true))
+    })
     if (!visitedRef.current) {
       visitedRef.current = true
       incrementVisits()
