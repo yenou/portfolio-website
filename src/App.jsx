@@ -1,4 +1,8 @@
 import { useEffect, useState, useRef, lazy, Suspense } from 'react'
+import { signInAnonymously } from 'firebase/auth'
+import { auth } from './firebase'
+import { incrementVisits } from './utils/storage'
+import { syncFromFirestore, syncPhotosFromFirestore, dbIncrementVisit } from './utils/db'
 import Cursor from './components/Cursor'
 import Loader from './components/Loader'
 import Navbar from './components/Navbar'
@@ -14,10 +18,6 @@ import Banner from './components/Banner'
 
 const Admin = lazy(() => import('./pages/Admin'))
 const ClientGallery = lazy(() => import('./pages/ClientGallery'))
-import { incrementVisits } from './utils/storage'
-import { syncFromFirestore, syncPhotosFromFirestore, dbIncrementVisit } from './utils/db'
-import { signInAnonymously } from 'firebase/auth'
-import { auth } from './firebase'
 
 function isAdminRoute() {
   return window.location.pathname === '/admin' || window.location.hash === '#admin'
