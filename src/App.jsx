@@ -1,4 +1,6 @@
 import { useEffect, useState, useRef } from 'react'
+import { signInAnonymously } from 'firebase/auth'
+import { auth } from './firebase'
 import Cursor from './components/Cursor'
 import Loader from './components/Loader'
 import Navbar from './components/Navbar'
@@ -34,7 +36,9 @@ export default function App() {
   const visitedRef = useRef(false)
 
   useEffect(() => {
-    Promise.all([syncFromFirestore(), syncPhotosFromFirestore()]).finally(() => setSyncDone(true))
+    signInAnonymously(auth).catch(() => {}).finally(() => {
+      Promise.all([syncFromFirestore(), syncPhotosFromFirestore()]).finally(() => setSyncDone(true))
+    })
     if (!visitedRef.current) {
       visitedRef.current = true
       incrementVisits()
