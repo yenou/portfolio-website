@@ -60,6 +60,7 @@ export default function App() {
   const exitAdmin = () => {
     window.location.hash = ''
     setShowAdmin(false)
+    syncPhotosFromFirestore()
   }
 
   // Scroll progress bar + show-top button
