@@ -135,7 +135,7 @@ export default function App() {
       )}
       <Navbar />
       <main>
-        <Hero />
+        <Hero ready={loaderDone} />
         <Portfolio />
         <About />
         <Services />

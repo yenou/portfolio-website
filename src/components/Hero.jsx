@@ -5,7 +5,7 @@ import { getTexts, getHeroImg, getHeroImgs, useStorage } from '../utils/storage'
 const INTERVAL = 10000
 const TRANSITION = 1200
 
-export default function Hero() {
+export default function Hero({ ready }) {
   const bgRef    = useRef(null)
   const mouseRef = useRef({ x: 0, y: 0 })
   const texts    = useStorage(getTexts)
@@ -84,7 +84,7 @@ export default function Hero() {
           />
         ))}
         <div className="hero__overlay" />
-        <div className="hero__scan" />
+        {ready && <div className="hero__scan" />}
       </div>
 
 

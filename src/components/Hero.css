@@ -212,7 +212,7 @@
   background: white;
   pointer-events: none;
   z-index: 3;
-  animation: shutterFlash 0.6s cubic-bezier(0.4, 0, 0.2, 1) 3s both;
+  animation: shutterFlash 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.3s both;
 }
 
 @keyframes shutterFlash {
