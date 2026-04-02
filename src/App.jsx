@@ -41,7 +41,11 @@ export default function App() {
       const needsAnon = !user || user.isAnonymous
       const signIn = needsAnon ? signInAnonymously(auth).catch(() => {}) : Promise.resolve()
       signIn.finally(() => {
-        Promise.all([syncFromFirestore(), syncPhotosFromFirestore()]).finally(() => setSyncDone(true))
+        const timeout = new Promise(resolve => setTimeout(resolve, 4000))
+        Promise.race([
+          Promise.all([syncFromFirestore(), syncPhotosFromFirestore()]),
+          timeout
+        ]).finally(() => setSyncDone(true))
       })
     })
     if (!visitedRef.current) {
