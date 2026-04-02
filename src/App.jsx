@@ -113,7 +113,6 @@ export default function App() {
   if (showAdmin) {
     return (
       <>
-        <Cursor />
         <Admin onExit={exitAdmin} />
       </>
     )
