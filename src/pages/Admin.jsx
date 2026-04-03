@@ -1052,8 +1052,11 @@ function TabTemoignages() {
       </div>
 
       <div className="temoignage-list">
-        {items.map(t => (
-          <div key={t.id} className="temoignage-card">
+        {items.map((t, i) => (
+          <motion.div key={t.id} className="temoignage-card"
+            initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35, delay: i * 0.06, ease: [0.16,1,0.3,1] }}
+            whileHover={{ y: -2, transition: { duration: 0.2 } }}>
             <div className="temoignage-card__fields">
               <div className="admin-field-row">
                 <div className="admin-field">
@@ -1077,7 +1080,7 @@ function TabTemoignages() {
               </div>
             </div>
             <button className="admin-btn-sm admin-btn-sm--delete" onClick={() => deleteItem(t.id)}>🗑 Supprimer</button>
-          </div>
+          </motion.div>
         ))}
       </div>
 
@@ -1130,8 +1133,11 @@ function TabServices() {
       </div>
 
       <div className="services-list">
-        {items.map(s => (
-          <div key={s.id} className="service-edit-card">
+        {items.map((s, i) => (
+          <motion.div key={s.id} className="service-edit-card"
+            initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35, delay: i * 0.07, ease: [0.16,1,0.3,1] }}
+            whileHover={{ y: -2, transition: { duration: 0.2 } }}>
             <div className="admin-field" style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
               <label>Titre</label>
               <button className="admin-slide-thumb__del" style={{ position: 'static' }} onClick={() => remove(s.id)}>×</button>
@@ -1147,7 +1153,7 @@ function TabServices() {
               <label>Prestations (une par ligne)</label>
               <textarea rows={4} value={s.details.join('\n')} onChange={e => updateDetails(s.id, e.target.value)} />
             </div>
-          </div>
+          </motion.div>
         ))}
       </div>
     </div>
@@ -1348,17 +1354,20 @@ function TabGalleries() {
       )}
 
       <div className="gallery-list">
-        {galleries.map(g => (
-          <GalleryCard
-            key={g.code}
-            gallery={g}
-            expanded={expanded === g.code}
-            onToggle={() => setExpanded(expanded === g.code ? null : g.code)}
-            onDelete={() => deleteGallery(g.code)}
-            onCopyLink={() => copyLink(g.code)}
-            onAddPhoto={(photo) => addPhoto(g.code, photo)}
-            onRemovePhoto={(photoId) => removePhoto(g.code, photoId)}
-          />
+        {galleries.map((g, i) => (
+          <motion.div key={g.code}
+            initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.32, delay: i * 0.06, ease: [0.16,1,0.3,1] }}>
+            <GalleryCard
+              gallery={g}
+              expanded={expanded === g.code}
+              onToggle={() => setExpanded(expanded === g.code ? null : g.code)}
+              onDelete={() => deleteGallery(g.code)}
+              onCopyLink={() => copyLink(g.code)}
+              onAddPhoto={(photo) => addPhoto(g.code, photo)}
+              onRemovePhoto={(photoId) => removePhoto(g.code, photoId)}
+            />
+          </motion.div>
         ))}
       </div>
     </div>
