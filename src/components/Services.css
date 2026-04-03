@@ -247,6 +247,7 @@
     grid-template-columns: 1fr;
     padding: 48px 0;
     gap: 0;
+    text-align: center;
   }
 
   .service-item__num {
@@ -266,6 +267,7 @@
     grid-row: auto;
     gap: 14px;
     margin-bottom: 32px;
+    align-items: center;
   }
 
   .service-item__right {
@@ -273,6 +275,15 @@
     grid-row: auto;
     gap: 20px;
     padding-top: 0;
+    align-items: center;
+  }
+
+  .service-item__details li {
+    justify-content: center;
+  }
+
+  .service-item__cta {
+    margin: 0 auto;
   }
 
   .service-item__title { font-size: 1.9rem; }
