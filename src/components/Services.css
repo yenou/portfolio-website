@@ -161,6 +161,7 @@
   letter-spacing: 0.04em;
   color: #e8e8e8;
   margin-bottom: 20px;
+  text-align: center;
   transition: color 0.45s ease;
 }
 
