@@ -45,7 +45,7 @@ export default function Services() {
   return (
     <section id="services" className="services">
       <div className="container">
-        <div className="services__header">
+        <div className="services__header reveal">
           <p className="section-subtitle">Ce que je propose</p>
           <h2 className="section-title">Services</h2>
           <div className="section-line"></div>
@@ -57,7 +57,7 @@ export default function Services() {
 
         <div className="services__grid">
           {services.map((service, i) => (
-            <div key={service.id || service.title} className="service-card" style={{ animationDelay: `${i * 0.15}s` }}>
+            <div key={service.id || service.title} className="service-card reveal" data-delay={String(i + 1)}>
               <div className="service-card__icon-wrap">
                 <div className="service-card__icon">{ICONS[i] || ICONS[0]}</div>
                 <div className="service-card__icon-ring"></div>
