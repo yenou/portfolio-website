@@ -49,7 +49,12 @@
 .about__img-frame {
   position: relative;
   margin-bottom: 40px;
-  overflow: hidden;
+}
+
+@media (min-width: 961px) {
+  .about__img-frame {
+    overflow: hidden;
+  }
 }
 
 .about__img {
@@ -60,12 +65,16 @@
   mix-blend-mode: screen;
   animation: cameraFloat 6s ease-in-out infinite;
   filter: contrast(1.1) brightness(1.05) drop-shadow(0 20px 40px rgba(255,255,255,0.04));
-  transition: transform 0.5s ease, filter 0.5s ease;
+  will-change: transform;
 }
 
-.about__img-frame:hover .about__img {
-  transform: scale(1.03);
-  filter: contrast(1.12) brightness(1.08) drop-shadow(0 20px 40px rgba(255,255,255,0.06));
+@media (min-width: 961px) {
+  .about__img {
+    transition: filter 0.5s ease;
+  }
+  .about__img-frame:hover .about__img {
+    filter: contrast(1.12) brightness(1.08) drop-shadow(0 20px 40px rgba(255,255,255,0.06));
+  }
 }
 
 .about__img-frame--empty {
