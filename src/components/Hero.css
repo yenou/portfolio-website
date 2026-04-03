@@ -398,6 +398,7 @@
 
 .hero__tagline-word {
   display: inline-block;
+  margin-right: 0.28em;
 }
 
 /* ===== CTA ===== */
