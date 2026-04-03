@@ -3,6 +3,16 @@
   position: relative;
 }
 
+.contact::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 320px;
+  background: radial-gradient(ellipse 70% 100% at 50% 0%, rgba(255,255,255,0.025) 0%, transparent 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
 .contact__grid {
   display: grid;
   grid-template-columns: 1fr 1.4fr;
