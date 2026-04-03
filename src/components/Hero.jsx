@@ -1,7 +1,38 @@
 import { useEffect, useRef, useState } from 'react'
-import { motion } from 'framer-motion'
+import { motion, useMotionValue, useSpring } from 'framer-motion'
 import './Hero.css'
 import { getTexts, getHeroImg, getHeroImgs, useStorage } from '../utils/storage'
+
+function MagneticBtn({ href, className, children }) {
+  const ref = useRef(null)
+  const x = useMotionValue(0)
+  const y = useMotionValue(0)
+  const sx = useSpring(x, { stiffness: 300, damping: 20 })
+  const sy = useSpring(y, { stiffness: 300, damping: 20 })
+
+  const onMove = (e) => {
+    const r = ref.current.getBoundingClientRect()
+    x.set((e.clientX - r.left - r.width  / 2) * 0.35)
+    y.set((e.clientY - r.top  - r.height / 2) * 0.35)
+  }
+  const onLeave = () => { x.set(0); y.set(0) }
+
+  return (
+    <motion.a
+      ref={ref}
+      href={href}
+      className={className}
+      style={{ x: sx, y: sy }}
+      onMouseMove={onMove}
+      onMouseLeave={onLeave}
+      whileHover={{ scale: 1.06 }}
+      whileTap={{ scale: 0.95 }}
+      transition={{ type: 'spring', stiffness: 400, damping: 18 }}
+    >
+      {children}
+    </motion.a>
+  )
+}
 
 const INTERVAL = 10000
 const TRANSITION = 1200
@@ -126,13 +157,15 @@ export default function Hero({ ready }) {
         </p>
 
         <div className="hero__cta">
-          <a href="#portfolio" className="btn btn--solid">
+          <MagneticBtn href="#portfolio" className="btn btn--solid">
             <span>Découvrir</span>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
               <path d="M5 12h14M12 5l7 7-7 7"/>
             </svg>
-          </a>
-          <a href="#contact" className="btn btn--ghost">Me contacter</a>
+          </MagneticBtn>
+          <MagneticBtn href="#contact" className="btn btn--ghost">
+            Me contacter
+          </MagneticBtn>
         </div>
       </div>
 
