@@ -276,19 +276,30 @@
 
 @media (max-width: 480px) {
   .service-item {
-    grid-template-columns: 1fr;
-    padding: 40px 0;
+    grid-template-columns: 40px 1fr;
+    grid-template-rows: auto auto;
+    gap: 0 20px;
+    padding: 36px 0;
   }
   .service-item__num {
     grid-column: 1;
-    grid-row: auto;
-    font-size: 2rem;
-    margin-bottom: 8px;
+    grid-row: 1;
+    font-size: 1.6rem;
+    padding-top: 6px;
   }
-  .service-item__left,
+  .service-item__left {
+    grid-column: 2;
+    grid-row: 1;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
   .service-item__right {
-    grid-column: 1;
+    grid-column: 2;
+    grid-row: 2;
+    gap: 20px;
   }
-  .service-item__title { font-size: 1.6rem; }
+  .service-item__icon { width: 28px; height: 28px; }
+  .service-item__title { font-size: 1.5rem; }
+  .service-item__desc { font-size: 0.84rem; }
   .services__outro { padding: 0 8px; }
 }
