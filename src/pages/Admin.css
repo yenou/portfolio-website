@@ -1,3 +1,12 @@
+/* ===== ADMIN ROOT — thème navy ===== */
+.admin {
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse 70% 45% at 8% 0%, rgba(96,165,250,0.07) 0%, transparent 55%),
+    radial-gradient(ellipse 45% 35% at 92% 90%, rgba(167,139,250,0.05) 0%, transparent 50%),
+    #080c18;
+}
+
 /* ===== LOGIN ===== */
 .admin-login {
   min-height: 100vh;
@@ -116,9 +125,9 @@
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(8,8,8,0.97);
+  background: rgba(5,8,18,0.97);
   backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(255,255,255,0.07);
+  border-bottom: 1px solid rgba(96,165,250,0.12);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -179,9 +188,7 @@
 /* ===== BODY ===== */
 .admin-body {
   min-height: calc(100vh - 57px);
-  background:
-    radial-gradient(ellipse 55% 35% at 15% 0%, rgba(255,255,255,0.025) 0%, transparent 65%),
-    #0a0a0a;
+  background: transparent;
   padding: 50px 40px;
   display: flex;
   flex-direction: column;
@@ -460,8 +467,8 @@
 }
 
 .admin-nav {
-  background: #050505;
-  border-right: 1px solid rgba(255,255,255,0.06);
+  background: rgba(4,7,16,0.8);
+  border-right: 1px solid rgba(96,165,250,0.1);
   padding: 24px 0;
   display: flex;
   flex-direction: column;
@@ -478,8 +485,8 @@
   position: absolute;
   left: 0;
   right: 0;
-  background: rgba(255,255,255,0.055);
-  border-left: 2px solid rgba(255,255,255,0.85);
+  background: rgba(96,165,250,0.1);
+  border-left: 2px solid #60a5fa;
   transition: top 0.38s cubic-bezier(0.16, 1, 0.3, 1), height 0.38s cubic-bezier(0.16, 1, 0.3, 1);
   pointer-events: none;
   z-index: 0;
@@ -504,8 +511,8 @@
   z-index: 1;
 }
 
-.admin-nav__item:hover { color: rgba(255,255,255,0.75); background: rgba(255,255,255,0.03); }
-.admin-nav__item.active { color: white; }
+.admin-nav__item:hover { color: rgba(255,255,255,0.75); background: rgba(96,165,250,0.05); }
+.admin-nav__item.active { color: #93c5fd; }
 
 /* SVG icon dans le nav */
 .admin-nav__icon {
@@ -559,8 +566,9 @@
     padding: 0;
     border-right: none;
     border-top: 1px solid rgba(255,255,255,0.07);
-    background: rgba(5,5,5,0.97);
+    background: rgba(4,7,18,0.97);
     backdrop-filter: blur(12px);
+    border-top: 1px solid rgba(96,165,250,0.1);
     z-index: 100;
     scrollbar-width: none;
     gap: 0;
@@ -583,8 +591,8 @@
     transition: color 0.2s, border-color 0.2s;
   }
   .admin-nav__item.active {
-    border-top-color: white;
-    color: white;
+    border-top-color: #60a5fa;
+    color: #93c5fd;
   }
   .admin-nav__icon { opacity: 1; }
   .admin-nav__item.active .admin-nav__icon { opacity: 1; }
@@ -1218,8 +1226,8 @@ h2.admin-tab__title { margin-bottom: 32px; }
     justify-content: flex-start;
     align-items: center;
     border-right: none;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-    background: #050505;
+    border-bottom: 1px solid rgba(96,165,250,0.1);
+    background: rgba(4,7,16,0.95);
     scrollbar-width: none;
   }
   .admin-nav::-webkit-scrollbar { display: none; }
@@ -1252,10 +1260,10 @@ h2.admin-tab__title { margin-bottom: 32px; }
   }
   .admin-nav__item:active { transform: scale(0.93); }
   .admin-nav__item.active {
-    background: rgba(255,255,255,0.1);
-    color: white;
+    background: rgba(96,165,250,0.1);
+    color: #93c5fd;
     border-left: none;
-    border-bottom-color: white;
+    border-bottom-color: #60a5fa;
   }
   .admin-nav__item.active .admin-nav__emoji {
     transform: scale(1.15);
