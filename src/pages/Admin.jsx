@@ -447,6 +447,7 @@ export default function Admin({ onExit }) {
 
 // ── Visit bar chart (pure SVG, no deps) ──────────────────────────────────────
 function VisitChart({ history, period }) {
+  const [hovered, setHovered] = useState(null)
   const today = new Date().toISOString().slice(0, 10)
   const days = []
   for (let i = period - 1; i >= 0; i--) {
@@ -463,7 +464,7 @@ function VisitChart({ history, period }) {
   const labelEvery = period <= 7 ? 1 : period <= 14 ? 2 : 5
 
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{ display: 'block' }}>
+    <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{ display: 'block', overflow: 'visible' }}>
       {/* Grid lines */}
       {[0, 0.5, 1].map(r => (
         <line key={r} x1={0} y1={topPad + chartH * (1 - r)} x2={W} y2={topPad + chartH * (1 - r)}
@@ -473,22 +474,40 @@ function VisitChart({ history, period }) {
         const barH = Math.max((d.count / maxCount) * chartH, d.count > 0 ? 3 : 0)
         const x = i * slotW + (slotW - barW) / 2
         const y = topPad + chartH - barH
+        const isHovered = hovered === i
+        const tooltipX = Math.min(Math.max(x + barW / 2, 28), W - 28)
+        const tooltipY = y - 14
         return (
-          <g key={d.key}>
+          <g key={d.key} style={{ cursor: 'default' }}
+            onMouseEnter={() => setHovered(i)}
+            onMouseLeave={() => setHovered(null)}>
+            {/* Hit zone */}
+            <rect x={i * slotW} y={topPad} width={slotW} height={chartH}
+              fill="transparent" />
+            {/* Bar */}
             <rect x={x} y={y} width={barW} height={barH}
-              fill={d.isToday ? 'rgba(255,255,255,0.85)' : 'rgba(255,255,255,0.25)'} rx={2} />
-            {d.count > 0 && (
-              <text x={x + barW / 2} y={y - 5} textAnchor="middle"
-                fill="rgba(255,255,255,0.55)" fontSize="9" fontFamily="inherit">
-                {d.count}
-              </text>
-            )}
+              fill={isHovered ? 'rgba(255,255,255,0.9)' : d.isToday ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.22)'}
+              rx={2}
+              className="chart-bar"
+              style={{ animationDelay: `${i * 0.04}s`, transition: 'fill 0.15s' }} />
+            {/* Labels */}
             {(i % labelEvery === 0 || d.isToday) && (
               <text x={i * slotW + slotW / 2} y={labelY} textAnchor="middle"
                 fill={d.isToday ? 'rgba(255,255,255,0.6)' : 'rgba(255,255,255,0.2)'}
                 fontSize="9" fontFamily="inherit">
                 {d.key.slice(8)}/{d.key.slice(5, 7)}
               </text>
+            )}
+            {/* Tooltip on hover */}
+            {isHovered && (
+              <g>
+                <rect x={tooltipX - 22} y={tooltipY - 13} width={44} height={18}
+                  rx={4} fill="rgba(30,30,30,0.95)" stroke="rgba(255,255,255,0.12)" strokeWidth="1" />
+                <text x={tooltipX} y={tooltipY} textAnchor="middle"
+                  fill="white" fontSize="10" fontFamily="inherit" fontWeight="500">
+                  {d.count} visite{d.count !== 1 ? 's' : ''}
+                </text>
+              </g>
             )}
           </g>
         )

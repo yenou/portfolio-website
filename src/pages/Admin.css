@@ -179,7 +179,9 @@
 /* ===== BODY ===== */
 .admin-body {
   min-height: calc(100vh - 57px);
-  background: #0a0a0a;
+  background:
+    radial-gradient(ellipse 55% 35% at 15% 0%, rgba(255,255,255,0.025) 0%, transparent 65%),
+    #0a0a0a;
   padding: 50px 40px;
   display: flex;
   flex-direction: column;
@@ -502,7 +504,7 @@
   z-index: 1;
 }
 
-.admin-nav__item:hover { color: rgba(255,255,255,0.7); }
+.admin-nav__item:hover { color: rgba(255,255,255,0.75); background: rgba(255,255,255,0.03); }
 .admin-nav__item.active { color: white; }
 
 /* SVG icon dans le nav */
@@ -617,7 +619,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: rgba(255,255,255,0.3);
+  color: rgba(255,255,255,0.4);
+}
+
+/* Chart bar rise animation */
+.chart-bar {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: barRise 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes barRise {
+  from { transform: scaleY(0); opacity: 0; }
+  to   { transform: scaleY(1); opacity: 1; }
 }
 
 /* Tab content enter animation */
@@ -743,20 +756,28 @@ h2.admin-tab__title { margin-bottom: 32px; }
 }
 
 .dashboard-stat {
-  background: #0f0f0f;
-  border: 1px solid rgba(255,255,255,0.06);
-  padding: 24px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 10px;
+  padding: 28px 24px;
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  transition: transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+}
+
+.dashboard-stat:hover {
+  transform: translateY(-3px);
+  background: rgba(255,255,255,0.05);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.07);
 }
 
 .dashboard-stat__icon { font-size: 1.5rem; }
 .dashboard-stat__num {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 2.5rem;
+  font-size: 3.2rem;
   font-weight: 300;
   color: white;
   line-height: 1;
@@ -771,10 +792,10 @@ h2.admin-tab__title { margin-bottom: 32px; }
 .dashboard-actions { margin-bottom: 24px; }
 
 .dashboard-chart-card {
-  background: #0f0f0f;
-  border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 8px;
-  padding: 20px 24px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 12px;
+  padding: 28px 32px;
   margin-bottom: 24px;
 }
 
@@ -789,7 +810,7 @@ h2.admin-tab__title { margin-bottom: 32px; }
   font-size: 0.68rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.35);
+  color: rgba(255,255,255,0.5);
 }
 
 .dashboard-chart-periods {
