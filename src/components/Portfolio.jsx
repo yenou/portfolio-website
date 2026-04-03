@@ -5,25 +5,6 @@ import './Portfolio.css'
 
 const categories = ['Portraits & Famille', 'Nature & Paysages', 'Concerts & Événements']
 
-const CATEGORY_ICONS = {
-  'Portraits & Famille': (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/>
-      <circle cx="19" cy="8" r="2.5"/><path d="M23 21v-1.5a2.5 2.5 0 0 0-2.5-2.5h-1"/>
-    </svg>
-  ),
-  'Nature & Paysages': (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M3 20h18"/><path d="M5 20 L12 6 L19 20"/><path d="M9 20 L12 14 L15 20"/>
-    </svg>
-  ),
-  'Concerts & Événements': (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/>
-      <path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/>
-    </svg>
-  ),
-}
 
 export default function Portfolio() {
   const [active, setActive] = useState(categories[0])
@@ -174,7 +155,6 @@ export default function Portfolio() {
                 className={`portfolio__filter ${active === cat ? 'active' : ''}`}
                 onClick={() => setActive(cat)}
               >
-                {CATEGORY_ICONS[cat]}
                 {cat}
               </button>
             ))}

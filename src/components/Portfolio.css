@@ -66,9 +66,6 @@
   padding: 14px 24px;
   cursor: pointer;
   transition: color 0.3s, border-color 0.3s;
-  display: flex;
-  align-items: center;
-  gap: 7px;
 }
 
 .portfolio__filter:hover { color: var(--white); }
