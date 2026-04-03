@@ -2,7 +2,7 @@
   position: relative;
   background:
     radial-gradient(ellipse 70% 320px at 50% 0%, rgba(255,255,255,0.03) 0%, transparent 100%),
-    linear-gradient(to bottom, var(--bg-secondary) 75%, var(--bg-primary) 100%);
+    var(--bg-secondary);
 }
 
 .portfolio__header { margin-bottom: 0; }
