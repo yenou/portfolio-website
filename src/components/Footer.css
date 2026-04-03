@@ -76,16 +76,17 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 30px;
-  height: 30px;
-  border: 1px solid var(--gray-dark);
-  color: var(--gray-mid);
-  transition: all 0.3s ease;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.4);
+  transition: border-color 0.3s ease, color 0.3s ease;
 }
 
 .footer__social-link:hover {
-  border-color: rgba(255,255,255,0.5);
-  color: rgba(255,255,255,0.5);
+  border-color: rgba(255,255,255,0.35);
+  color: rgba(255,255,255,0.75);
 }
 
 .footer__bottom {
@@ -132,8 +133,8 @@
     font-size: 0.65rem;
   }
   .footer__social-link {
-    width: 44px;
-    height: 44px;
+    width: 48px;
+    height: 48px;
   }
   .footer__bottom {
     padding: 16px 24px;
