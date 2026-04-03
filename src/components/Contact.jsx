@@ -205,6 +205,26 @@ export default function Contact() {
           )}
         </div>
       </div>
+
+      {/* Google Maps */}
+      <div className="contact__map">
+        <div className="contact__map-label">
+          <span className="contact__map-dot" />
+          Contrexéville · Vosges, France
+        </div>
+        <div className="contact__map-frame">
+          <iframe
+            title="Localisation Contrexéville"
+            src="https://maps.google.com/maps?q=Contrex%C3%A9ville,+Vosges,+France&output=embed&hl=fr&z=13"
+            width="100%"
+            height="100%"
+            style={{ border: 0 }}
+            allowFullScreen=""
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+          />
+        </div>
+      </div>
     </section>
   )
 }
