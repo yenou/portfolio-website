@@ -31,10 +31,24 @@ const ICONS = [
 
 export default function Services() {
   const services = useStorage(getServices)
+  const listRef  = useRef(null)
   const outroRef = useRef(null)
-  const gridRef  = useRef(null)
 
-  // Reveal outro
+  useEffect(() => {
+    const items = listRef.current?.querySelectorAll('.service-item') || []
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const i = [...items].indexOf(entry.target)
+          setTimeout(() => entry.target.classList.add('service-item--visible'), i * 120)
+          observer.unobserve(entry.target)
+        }
+      })
+    }, { threshold: 0.1 })
+    items.forEach(el => observer.observe(el))
+    return () => observer.disconnect()
+  }, [services.length])
+
   useEffect(() => {
     const el = outroRef.current
     if (!el) return
@@ -45,58 +59,47 @@ export default function Services() {
     return () => observer.disconnect()
   }, [])
 
-  // Reveal cartes avec stagger élégant
-  useEffect(() => {
-    const cards = gridRef.current?.querySelectorAll('.service-card') || []
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const i = [...cards].indexOf(entry.target)
-          setTimeout(() => entry.target.classList.add('service-card--visible'), i * 160)
-          observer.unobserve(entry.target)
-        }
-      })
-    }, { threshold: 0.12 })
-    cards.forEach(card => observer.observe(card))
-    return () => observer.disconnect()
-  }, [services.length])
-
   return (
     <section id="services" className="services">
       <div className="container">
-        <div className="services__header reveal">
+
+        <div className="services__header">
           <p className="section-subtitle">Ce que je propose</p>
           <h2 className="section-title">Services</h2>
-          <div className="section-line"></div>
-          <p className="services__intro">
-            Que ce soit pour un instant intime ou un grand événement,<br/>
-            chaque prestation est pensée avec soin et passion.
-          </p>
         </div>
 
-        <div className="services__grid" ref={gridRef}>
+        <div className="services__list" ref={listRef}>
           {services.map((service, i) => (
-            <div key={service.id || service.title} className="service-card">
-              <div className="service-card__icon-wrap">
-                <div className="service-card__icon">{ICONS[i] || ICONS[0]}</div>
-                <div className="service-card__icon-ring"></div>
+            <div key={service.id || service.title} className="service-item">
+
+              {/* Numéro de fond */}
+              <span className="service-item__num">0{i + 1}</span>
+
+              {/* Colonne gauche : icône + titre + desc */}
+              <div className="service-item__left">
+                <div className="service-item__icon">{ICONS[i] || ICONS[0]}</div>
+                <h3 className="service-item__title">{service.title}</h3>
+                <p className="service-item__desc">{service.description}</p>
               </div>
-              <h3 className="service-card__title">{service.title}</h3>
-              <div className="service-card__line"></div>
-              <p className="service-card__desc">{service.description}</p>
-              <ul className="service-card__details">
-                {service.details.map(d => (
-                  <li key={d}>
-                    <span className="service-card__check">✓</span> {d}
-                  </li>
-                ))}
-              </ul>
-              <a href="#contact" className="service-card__cta">
-                <span>Demander un devis</span>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M5 12h14M12 5l7 7-7 7"/>
-                </svg>
-              </a>
+
+              {/* Colonne droite : détails + CTA */}
+              <div className="service-item__right">
+                <ul className="service-item__details">
+                  {service.details.map(d => (
+                    <li key={d}>
+                      <span className="service-item__check">✓</span>
+                      {d}
+                    </li>
+                  ))}
+                </ul>
+                <a href="#contact" className="service-item__cta">
+                  <span>Demander un devis</span>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                  </svg>
+                </a>
+              </div>
+
             </div>
           ))}
         </div>
@@ -104,13 +107,10 @@ export default function Services() {
         <div className="services__outro" ref={outroRef}>
           <div className="services__outro-icon">
             <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-              {/* Outer ring */}
               <circle cx="40" cy="40" r="36" stroke="rgba(255,255,255,0.15)" strokeWidth="1"/>
-              {/* Rotating aperture ring */}
               <g className="lens-rotate">
                 <circle cx="40" cy="40" r="28" stroke="rgba(255,255,255,0.25)" strokeWidth="0.8" strokeDasharray="4 3"/>
               </g>
-              {/* Aperture blades */}
               <g className="lens-spin">
                 <path d="M40 18 L43 32 L40 40 L37 32 Z" fill="rgba(255,255,255,0.12)"/>
                 <path d="M62 40 L48 43 L40 40 L48 37 Z" fill="rgba(255,255,255,0.12)"/>
@@ -121,27 +121,21 @@ export default function Services() {
                 <path d="M24.4 55.6 L34.8 44.8 L40 40 L43 47 Z" fill="rgba(255,255,255,0.08)"/>
                 <path d="M24.4 24.4 L35.2 34.8 L40 40 L33 43 Z" fill="rgba(255,255,255,0.08)"/>
               </g>
-              {/* Inner lens */}
               <circle cx="40" cy="40" r="14" stroke="rgba(255,255,255,0.3)" strokeWidth="1"/>
               <circle cx="40" cy="40" r="10" stroke="rgba(255,255,255,0.15)" strokeWidth="0.8"/>
-              {/* Center dot */}
               <circle cx="40" cy="40" r="3" fill="rgba(255,255,255,0.5)"/>
-              {/* Light reflection */}
               <circle cx="34" cy="34" r="2" fill="rgba(255,255,255,0.2)"/>
             </svg>
           </div>
-          <div className="services__outro-line" />
           <p className="services__outro-text">
             Après la prise de vue, chaque image est minutieusement traitée pour révéler toute sa richesse&nbsp;: couleurs équilibrées, contrastes travaillés et rendu fidèle à l'émotion du moment.
           </p>
           <p className="services__outro-text">
-            Je vous propose ensuite, selon vos envies, la transmission de vos photos en format HD, idéales pour le web ou l'impression, ainsi que des tirages photo et impressions Fine Art sur des supports haut de gamme. De quoi sublimer vos images et les conserver durablement, sous la forme qui vous correspond le mieux.
+            Je vous propose ensuite, selon vos envies, la transmission de vos photos en format HD, idéales pour le web ou l'impression, ainsi que des tirages photo et impressions Fine Art sur des supports haut de gamme.
           </p>
-          <div className="services__outro-line" />
         </div>
 
       </div>
-
     </section>
   )
 }
