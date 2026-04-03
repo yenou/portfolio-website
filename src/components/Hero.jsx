@@ -107,7 +107,7 @@ export default function Hero({ ready }) {
         </div>
 
         <div className="hero__subtitle-wrap">
-          <p className="hero__subtitle">Photographe basé sur Contrexéville</p>
+          <p className="hero__subtitle">Photographe basé à <span className="hero__subtitle-location">Contrexéville</span></p>
         </div>
 
         <p className="hero__tagline">{texts.heroTagline}</p>

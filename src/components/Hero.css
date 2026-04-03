@@ -369,13 +369,20 @@
 
 .hero__subtitle {
   font-family: var(--font-body);
-  font-size: clamp(0.65rem, 1vw, 0.8rem);
+  font-size: clamp(0.7rem, 1.1vw, 0.85rem);
   font-weight: 400;
-  letter-spacing: 0.6em;
+  letter-spacing: 0.35em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.45);
+  color: rgba(255,255,255,0.6);
   margin-bottom: 0;
   padding-left: 2px;
+}
+
+.hero__subtitle-location {
+  color: rgba(255,255,255,0.95);
+  font-weight: 600;
+  letter-spacing: 0.25em;
+  text-shadow: 0 0 20px rgba(255,255,255,0.3);
 }
 
 /* ===== TAGLINE ===== */
@@ -513,8 +520,8 @@
   }
 
   .hero__subtitle {
-    font-size: 0.55rem;
-    letter-spacing: 0.25em;
+    font-size: 0.62rem;
+    letter-spacing: 0.2em;
     text-align: center;
   }
 
