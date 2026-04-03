@@ -402,15 +402,17 @@
     padding-bottom: 0;
   }
 
-  /* 1 seule colonne sur mobile */
+  /* Masonry désactivé sur mobile — simple colonne flex */
   .portfolio__masonry {
-    column-count: 1;
-    column-gap: 0;
+    column-count: unset;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
   }
 
   .portfolio__masonry-item {
-    margin-bottom: 20px;
-    /* Animations plus rapides sur mobile */
+    margin-bottom: 0;
+    break-inside: unset;
     transition:
       opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
       transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
