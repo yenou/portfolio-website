@@ -486,15 +486,16 @@ function VisitChart({ history, period }) {
               fill="transparent" />
             {/* Bar */}
             <rect x={x} y={y} width={barW} height={barH}
-              fill={isHovered ? 'rgba(255,255,255,0.9)' : d.isToday ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.22)'}
+              fill={isHovered ? '#93c5fd' : d.isToday ? '#60a5fa' : 'rgba(96,165,250,0.35)'}
               rx={2}
               className="chart-bar"
               style={{ animationDelay: `${i * 0.04}s`, transition: 'fill 0.15s' }} />
             {/* Labels */}
             {(i % labelEvery === 0 || d.isToday) && (
               <text x={i * slotW + slotW / 2} y={labelY} textAnchor="middle"
-                fill={d.isToday ? 'rgba(255,255,255,0.6)' : 'rgba(255,255,255,0.2)'}
-                fontSize="9" fontFamily="inherit">
+                fill={d.isToday ? '#60a5fa' : 'rgba(255,255,255,0.2)'}
+                fontSize="9" fontFamily="inherit"
+                fontWeight={d.isToday ? '600' : '400'}>
                 {d.key.slice(8)}/{d.key.slice(5, 7)}
               </text>
             )}

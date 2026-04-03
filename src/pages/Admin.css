@@ -619,7 +619,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: rgba(255,255,255,0.4);
 }
 
 /* Chart bar rise animation */
@@ -766,13 +765,47 @@ h2.admin-tab__title { margin-bottom: 32px; }
   align-items: center;
   gap: 10px;
   transition: transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+  position: relative;
+  overflow: hidden;
 }
 
-.dashboard-stat:hover {
-  transform: translateY(-3px);
-  background: rgba(255,255,255,0.05);
-  box-shadow: 0 12px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.07);
+.dashboard-stat::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  border-radius: 10px 10px 0 0;
 }
+
+/* Visites totales — bleu */
+.dashboard-stat:nth-child(1) { border-color: rgba(96,165,250,0.2); }
+.dashboard-stat:nth-child(1)::before { background: linear-gradient(90deg, #60a5fa, #818cf8); }
+.dashboard-stat:nth-child(1) .dashboard-stat__icon { color: #60a5fa; }
+.dashboard-stat:nth-child(1) .dashboard-stat__num { color: #a5c8fd; }
+.dashboard-stat:nth-child(1):hover { background: rgba(96,165,250,0.06); box-shadow: 0 12px 40px rgba(96,165,250,0.1); }
+
+/* Aujourd'hui — vert */
+.dashboard-stat:nth-child(2) { border-color: rgba(52,211,153,0.2); }
+.dashboard-stat:nth-child(2)::before { background: linear-gradient(90deg, #34d399, #6ee7b7); }
+.dashboard-stat:nth-child(2) .dashboard-stat__icon { color: #34d399; }
+.dashboard-stat:nth-child(2) .dashboard-stat__num { color: #6ee7b7; }
+.dashboard-stat:nth-child(2):hover { background: rgba(52,211,153,0.06); box-shadow: 0 12px 40px rgba(52,211,153,0.1); }
+
+/* Photos actives — ambre */
+.dashboard-stat:nth-child(3) { border-color: rgba(251,191,36,0.2); }
+.dashboard-stat:nth-child(3)::before { background: linear-gradient(90deg, #fbbf24, #fcd34d); }
+.dashboard-stat:nth-child(3) .dashboard-stat__icon { color: #fbbf24; }
+.dashboard-stat:nth-child(3) .dashboard-stat__num { color: #fcd34d; }
+.dashboard-stat:nth-child(3):hover { background: rgba(251,191,36,0.06); box-shadow: 0 12px 40px rgba(251,191,36,0.1); }
+
+/* Photos masquées — rose */
+.dashboard-stat:nth-child(4) { border-color: rgba(251,113,133,0.2); }
+.dashboard-stat:nth-child(4)::before { background: linear-gradient(90deg, #fb7185, #fda4af); }
+.dashboard-stat:nth-child(4) .dashboard-stat__icon { color: #fb7185; }
+.dashboard-stat:nth-child(4) .dashboard-stat__num { color: #fda4af; }
+.dashboard-stat:nth-child(4):hover { background: rgba(251,113,133,0.06); box-shadow: 0 12px 40px rgba(251,113,133,0.1); }
+
+.dashboard-stat:hover { transform: translateY(-3px); }
 
 .dashboard-stat__icon { font-size: 1.5rem; }
 .dashboard-stat__num {
