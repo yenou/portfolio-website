@@ -182,7 +182,6 @@ const NAV_ICONS = {
   services: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>,
   contact: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>,
   banniere: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>,
-  disponibilites: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>,
   securite: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>,
 }
 
@@ -375,7 +374,6 @@ export default function Admin({ onExit }) {
     { id: 'services',       label: 'Services' },
     { id: 'contact',        label: 'Contact' },
     { id: 'banniere',       label: 'Bannière' },
-    { id: 'disponibilites', label: 'Dispo' },
     { id: 'securite',       label: 'Sécurité' },
   ]
 
@@ -443,7 +441,6 @@ export default function Admin({ onExit }) {
               {tab === 'services'    && <TabServices />}
               {tab === 'contact'     && <TabContact />}
               {tab === 'banniere'    && <TabBanniere />}
-              {tab === 'disponibilites' && <TabDisponibilites />}
               {tab === 'securite'    && <TabSecurite autoLogoutMin={autoLogoutMin} setAutoLogoutMin={setAutoLogoutMin} onLogout={handleLogout} />}
             </motion.div>
           </AnimatePresence>
@@ -1524,85 +1521,6 @@ function GalleryCard({ gallery, expanded, onToggle, onDelete, onCopyLink, onAddP
 const MONTHS_FR = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre']
 const DAYS_FR   = ['L','M','M','J','V','S','D']
 
-function TabDisponibilites() {
-  const [busy, setBusy] = useState({})
-  const toast = useToast()
-  const [offset, setOffset] = useState(0)
-
-  useEffect(() => { dbGetAvailability().then(setBusy) }, [])
-
-  const today = new Date()
-  const months = [0,1,2].map(i => {
-    const d = new Date(today.getFullYear(), today.getMonth() + offset + i, 1)
-    return { year: d.getFullYear(), month: d.getMonth() }
-  })
-
-  const toggleDay = (key) => {
-    setBusy(prev => {
-      const next = { ...prev }
-      if (next[key] === 'busy') delete next[key]
-      else next[key] = 'busy'
-      return next
-    })
-  }
-
-  const save = async () => {
-    await dbSaveAvailability(busy)
-    toast('Disponibilités sauvegardées')
-  }
-
-  return (
-    <div className="admin-tab">
-      <div className="admin-tab__header">
-        <div>
-          <h2 className="admin-tab__title">📅 Disponibilités</h2>
-          <p className="admin-section__desc">Cliquez sur un jour pour le marquer comme complet. Cliquez à nouveau pour le libérer.</p>
-        </div>
-        <div style={{ display:'flex', gap:8, alignItems:'center' }}>
-          <button className="admin-btn admin-btn--ghost" onClick={() => setOffset(o => o - 3)}>‹</button>
-          <button className="admin-btn admin-btn--ghost" onClick={() => setOffset(0)}>Aujourd'hui</button>
-          <button className="admin-btn admin-btn--ghost" onClick={() => setOffset(o => o + 3)}>›</button>
-          <button className="admin-btn admin-btn--solid" onClick={save}>Sauvegarder</button>
-        </div>
-      </div>
-
-      <div className="avail-admin__months">
-        {months.map(({ year, month }) => {
-          const firstDay = new Date(year, month, 1)
-          const lastDay  = new Date(year, month + 1, 0)
-          const startOffset = (firstDay.getDay() + 6) % 7
-          const days = []
-          for (let i = 0; i < startOffset; i++) days.push(null)
-          for (let d = 1; d <= lastDay.getDate(); d++) days.push(d)
-          return (
-            <div key={`${year}-${month}`} className="avail-admin__month">
-              <p className="avail-admin__month-name">{MONTHS_FR[month]} {year}</p>
-              <div className="avail-admin__grid-head">
-                {DAYS_FR.map((d,i) => <span key={i}>{d}</span>)}
-              </div>
-              <div className="avail-admin__grid">
-                {days.map((d, i) => {
-                  if (!d) return <span key={`e-${i}`} className="avail-admin__day avail-admin__day--empty" />
-                  const key = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`
-                  const isPast = new Date(year, month, d) < new Date(today.getFullYear(), today.getMonth(), today.getDate())
-                  const isBusy = busy[key] === 'busy'
-                  return (
-                    <button
-                      key={key}
-                      className={`avail-admin__day ${isPast ? 'avail-admin__day--past' : isBusy ? 'avail-admin__day--busy' : 'avail-admin__day--free'}`}
-                      onClick={() => !isPast && toggleDay(key)}
-                      disabled={isPast}
-                    >{d}</button>
-                  )
-                })}
-              </div>
-            </div>
-          )
-        })}
-      </div>
-    </div>
-  )
-}
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // TAB: SÉCURITÉ
