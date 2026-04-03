@@ -32,6 +32,9 @@ const ICONS = [
 export default function Services() {
   const services = useStorage(getServices)
   const outroRef = useRef(null)
+  const gridRef  = useRef(null)
+
+  // Reveal outro
   useEffect(() => {
     const el = outroRef.current
     if (!el) return
@@ -41,6 +44,22 @@ export default function Services() {
     observer.observe(el)
     return () => observer.disconnect()
   }, [])
+
+  // Reveal cartes avec stagger élégant
+  useEffect(() => {
+    const cards = gridRef.current?.querySelectorAll('.service-card') || []
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const i = [...cards].indexOf(entry.target)
+          setTimeout(() => entry.target.classList.add('service-card--visible'), i * 160)
+          observer.unobserve(entry.target)
+        }
+      })
+    }, { threshold: 0.12 })
+    cards.forEach(card => observer.observe(card))
+    return () => observer.disconnect()
+  }, [services.length])
 
   return (
     <section id="services" className="services">
@@ -55,9 +74,9 @@ export default function Services() {
           </p>
         </div>
 
-        <div className="services__grid">
+        <div className="services__grid" ref={gridRef}>
           {services.map((service, i) => (
-            <div key={service.id || service.title} className="service-card reveal" data-delay={String(i + 1)}>
+            <div key={service.id || service.title} className="service-card">
               <div className="service-card__icon-wrap">
                 <div className="service-card__icon">{ICONS[i] || ICONS[0]}</div>
                 <div className="service-card__icon-ring"></div>
