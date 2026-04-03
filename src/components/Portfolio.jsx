@@ -3,7 +3,7 @@ import { getCustomPhotos, getHiddenIds, getCoupsDeCoeur, useStorage } from '../u
 import { dbGetPhotoLikes, dbLikePhoto, dbUnlikePhoto } from '../utils/db'
 import './Portfolio.css'
 
-const categories = ['Portraits & Famille', 'Nature & Paysages', 'Concerts & Événements']
+const categories = ['Portraits & Famille', 'Nature & Paysages', 'Concerts & Événements', 'Auto & Moto', 'Architecture']
 
 export default function Portfolio() {
   const [active, setActive]     = useState(categories[0])

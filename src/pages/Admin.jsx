@@ -16,7 +16,7 @@ import {
 import './Admin.css'
 import { dbSaveConfig, dbSaveAboutImg, dbSaveLogoImg, dbSaveCustomPhoto, dbDeleteCustomPhoto, dbSaveAllHeroSlides, dbGetVisitHistory, dbCreateGallery, dbDeleteGallery, dbAddGalleryPhoto, dbDeleteGalleryPhoto, dbGetAllGalleries, dbGetAvailability, dbSaveAvailability, dbAddLoginAttempt, dbGetLoginHistory, dbClearLoginHistory, dbPingFirestore, dbCreateSession, dbGetSessions, dbDeleteSession, dbRemovePassword, dbMigrateBase64ToCloudinary, dbMigrateHeroSlidesToCloudinary } from '../utils/db'
 
-const CATEGORIES = ['Portraits & Famille', 'Nature & Paysages', 'Concerts & Événements']
+const CATEGORIES = ['Portraits & Famille', 'Nature & Paysages', 'Concerts & Événements', 'Auto & Moto', 'Architecture']
 
 // Compresse une image base64 via canvas (max 1600px, qualité 82%)
 function compressImage(base64, maxW = 1600, quality = 0.82) {
