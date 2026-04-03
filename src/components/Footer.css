@@ -1,6 +1,5 @@
 .footer {
-  background: #050505;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  background: #0a0a0a;
 }
 
 .footer__inner {
@@ -84,7 +83,6 @@
 .footer__bottom {
   text-align: center;
   padding: 20px 40px;
-  border-top: 1px solid #111;
 }
 
 .footer__bottom p {

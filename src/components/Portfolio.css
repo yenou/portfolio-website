@@ -44,7 +44,7 @@
   align-items: center;
   justify-content: space-between;
   margin-bottom: 48px;
-  border-bottom: 1px solid var(--gray-dark);
+  padding-bottom: 8px;
 }
 
 .portfolio__filters {
@@ -56,8 +56,7 @@
 .portfolio__filter {
   background: none;
   border: none;
-  border-bottom: 1px solid transparent;
-  margin-bottom: -1px;
+  border-bottom: 2px solid transparent;
   color: var(--gray-mid);
   font-family: var(--font-body);
   font-size: 0.68rem;
@@ -398,10 +397,8 @@
     flex-direction: column;
     align-items: center;
     gap: 20px;
-    border-bottom: none;
   }
   .portfolio__filters {
-    border-bottom: 1px solid var(--gray-dark);
     width: 100%;
     justify-content: center;
   }

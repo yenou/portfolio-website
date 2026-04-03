@@ -4,20 +4,6 @@
   overflow: hidden;
 }
 
-.about::before {
-  content: '';
-  position: absolute;
-  left: 50%;
-  top: 10%;
-  height: 80%;
-  width: 1px;
-  background: rgba(255,255,255,0.05);
-  pointer-events: none;
-}
-
-@media (max-width: 960px) {
-  .about::before { display: none; }
-}
 
 /* ===== ANIMATIONS AU SCROLL ===== */
 .about__left {
@@ -63,6 +49,7 @@
 .about__img-frame {
   position: relative;
   margin-bottom: 40px;
+  overflow: hidden;
 }
 
 .about__img {
@@ -73,6 +60,12 @@
   mix-blend-mode: screen;
   animation: cameraFloat 6s ease-in-out infinite;
   filter: contrast(1.1) brightness(1.05) drop-shadow(0 20px 40px rgba(255,255,255,0.04));
+  transition: transform 0.5s ease, filter 0.5s ease;
+}
+
+.about__img-frame:hover .about__img {
+  transform: scale(1.03);
+  filter: contrast(1.12) brightness(1.08) drop-shadow(0 20px 40px rgba(255,255,255,0.06));
 }
 
 .about__img-frame--empty {
@@ -142,8 +135,8 @@
 .about__stats {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1px;
-  background: var(--gray-dark);
+  gap: 0;
+  background: transparent;
 }
 
 .about__stat {
@@ -180,7 +173,6 @@
   font-style: italic;
   font-weight: 300;
   color: rgba(255,255,255,0.55);
-  border-left: 1px solid var(--gray-dark);
   padding-left: 28px;
   margin-bottom: 36px;
   line-height: 1.6;

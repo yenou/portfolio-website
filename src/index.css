@@ -6,12 +6,12 @@
 }
 
 :root {
-  --bg-primary: #080808;
-  --bg-secondary: #0f0f0f;
-  --bg-card: #141414;
+  --bg-primary: #0f0f0f;
+  --bg-secondary: #141414;
+  --bg-card: #1a1a1a;
   --accent: #ffffff;
   --accent-dim: rgba(255,255,255,0.6);
-  --white: #ffffff;
+  --white: #e5e5e5;
   --gray-light: #cccccc;
   --gray-mid: #777777;
   --gray-dark: #333333;
@@ -111,19 +111,11 @@ section { padding: 120px 0; }
   gap: 16px;
 }
 
-.section-label::before {
-  content: '';
-  width: 30px;
-  height: 1px;
-  background: var(--gray-dark);
-  flex-shrink: 0;
-}
-
 .section-title {
   font-family: var(--font-heading);
   font-size: clamp(2.4rem, 4vw, 4rem);
   font-weight: 300;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.06em;
   line-height: 1.05;
   color: var(--white);
   margin-bottom: 40px;
@@ -175,8 +167,8 @@ section { padding: 120px 0; }
 }
 
 .btn--solid {
-  background: white;
-  color: #080808;
+  background: #e5e5e5;
+  color: #0f0f0f;
 }
 .btn--solid:hover {
   background: #ddd;
