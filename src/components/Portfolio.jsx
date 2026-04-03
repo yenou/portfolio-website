@@ -5,14 +5,13 @@ import './Portfolio.css'
 
 const categories = ['Portraits & Famille', 'Nature & Paysages', 'Concerts & Événements']
 
-
 export default function Portfolio() {
-  const [active, setActive] = useState(categories[0])
+  const [active, setActive]     = useState(categories[0])
   const [lightbox, setLightbox] = useState(null)
   const [isFullscreen, setIsFullscreen] = useState(false)
-  const [carouselIdx, setCarouselIdx] = useState(0)
-  const carouselRef = useRef(null)
   const lightboxRef = useRef(null)
+  const masonryRef  = useRef(null)
+
   const [likes, setLikes] = useState({})
   const [likedByMe, setLikedByMe] = useState(() => {
     try { return JSON.parse(localStorage.getItem('yenou_likes') || '[]') } catch { return [] }
@@ -34,20 +33,16 @@ export default function Portfolio() {
   const hiddenIds    = useStorage(getHiddenIds)
   const coupsDeCoeur = useStorage(getCoupsDeCoeur)
   const customPhotos = useStorage(getCustomPhotos)
-  const photos = customPhotos.slice().reverse().filter(p => !hiddenIds.includes(p.id))
-
+  const photos   = customPhotos.slice().reverse().filter(p => !hiddenIds.includes(p.id))
   const filtered = photos.filter(p => p.category === active)
 
-  // Re-déclenche les animations après changement de filtre
+  // Scroll reveal avec stagger au changement de filtre
   useEffect(() => {
-    const items = document.querySelectorAll('.portfolio__item.reveal')
+    const items = masonryRef.current?.querySelectorAll('.portfolio__masonry-item') || []
+    items.forEach(el => el.classList.remove('revealed'))
     items.forEach((el, i) => {
-      el.classList.remove('revealed')
-      setTimeout(() => el.classList.add('revealed'), i * 60)
+      setTimeout(() => el.classList.add('revealed'), i * 80)
     })
-    // Reset carousel position
-    if (carouselRef.current) carouselRef.current.scrollLeft = 0
-    setCarouselIdx(0)
   }, [active])
 
   const navigate = (dir) => {
@@ -55,13 +50,7 @@ export default function Portfolio() {
     setLightbox(filtered[(idx + dir + filtered.length) % filtered.length])
   }
 
-  const onCarouselScroll = () => {
-    if (!carouselRef.current) return
-    const idx = Math.round(carouselRef.current.scrollLeft / carouselRef.current.clientWidth)
-    setCarouselIdx(idx)
-  }
-
-  // Fullscreen + slideshow
+  // Slideshow plein écran
   const navigateNext = useRef(null)
   navigateNext.current = () => {
     setLightbox(current => {
@@ -77,14 +66,12 @@ export default function Portfolio() {
     return () => document.removeEventListener('fullscreenchange', onFsChange)
   }, [])
 
-  // Slideshow automatique en plein écran (5s par photo)
   useEffect(() => {
     if (!isFullscreen) return
     const timer = setInterval(() => navigateNext.current?.(), 5000)
     return () => clearInterval(timer)
   }, [isFullscreen])
 
-  // Curseur auto-masqué après 3s d'inactivité en plein écran
   useEffect(() => {
     if (!isFullscreen) return
     let timer
@@ -103,7 +90,6 @@ export default function Portfolio() {
     }
   }, [isFullscreen])
 
-  // Navigation clavier dans la lightbox
   useEffect(() => {
     const onKey = (e) => {
       if (!lightbox) return
@@ -122,17 +108,13 @@ export default function Portfolio() {
 
   const toggleFullscreen = (e) => {
     e.stopPropagation()
-    if (!document.fullscreenElement) {
-      lightboxRef.current?.requestFullscreen()
-    } else {
-      document.exitFullscreen()
-    }
+    if (!document.fullscreenElement) lightboxRef.current?.requestFullscreen()
+    else document.exitFullscreen()
   }
 
-  // Swipe mobile (lightbox)
   const touchStart = useRef(null)
   const onTouchStart = (e) => { touchStart.current = e.touches[0].clientX }
-  const onTouchEnd = (e) => {
+  const onTouchEnd   = (e) => {
     if (touchStart.current === null) return
     const diff = touchStart.current - e.changedTouches[0].clientX
     if (Math.abs(diff) > 50) navigate(diff > 0 ? 1 : -1)
@@ -142,6 +124,7 @@ export default function Portfolio() {
   return (
     <section id="portfolio" className="portfolio">
       <div className="container">
+
         <div className="portfolio__header reveal">
           <p className="section-label">Mes réalisations</p>
           <h2 className="section-title">Portfolio</h2>
@@ -165,17 +148,19 @@ export default function Portfolio() {
           </p>
         </div>
 
-        {/* Grille desktop */}
-        <div className="portfolio__grid">
+        {/* Masonry layout — 3 col desktop, 1 col mobile */}
+        <div className="portfolio__masonry" ref={masonryRef}>
           {filtered.map((photo, i) => (
             <div
               key={photo.id}
-              className={`portfolio__item ${i === 0 ? 'portfolio__item--large' : 'reveal'}`}
-              data-delay={String(Math.min(i % 3 + 1, 4))}
+              className="portfolio__masonry-item"
               onClick={() => setLightbox(photo)}
             >
-              <img src={photo.src} alt={photo.alt} loading="lazy"
-                onError={(e) => { e.target.closest('.portfolio__item').style.display = 'none' }}
+              <img
+                src={photo.src}
+                alt={photo.alt}
+                loading="lazy"
+                onError={(e) => { e.target.closest('.portfolio__masonry-item').style.display = 'none' }}
               />
               {coupsDeCoeur.includes(photo.id) && (
                 <span className="portfolio__cdc-badge">♥ Coup de cœur</span>
@@ -199,38 +184,6 @@ export default function Portfolio() {
           ))}
         </div>
 
-        {/* Carousel mobile */}
-        <div className="portfolio__carousel" ref={carouselRef} onScroll={onCarouselScroll}>
-          {filtered.map((photo) => (
-            <div key={photo.id} className="portfolio__carousel-item" onClick={() => setLightbox(photo)}>
-              <img src={photo.src} alt={photo.alt} loading="lazy"
-                onError={(e) => { e.target.closest('.portfolio__carousel-item').style.display = 'none' }}
-              />
-              {coupsDeCoeur.includes(photo.id) && (
-                <span className="portfolio__cdc-badge">♥ Coup de cœur</span>
-              )}
-              <div className="portfolio__carousel-info">
-                <span className="portfolio__carousel-alt">{photo.alt}</span>
-                <span className="portfolio__carousel-cat">{photo.category}</span>
-              </div>
-              <button
-                className={`portfolio__like ${likedByMe.includes(String(photo.id)) ? 'portfolio__like--on' : ''}`}
-                onClick={(e) => toggleLike(e, photo.id)}
-                aria-label="J'aime"
-              >
-                <span className="portfolio__like-heart">{likedByMe.includes(String(photo.id)) ? '♥' : '♡'}</span>
-                {(likes[String(photo.id)] || 0) > 0 && (
-                  <span className="portfolio__like-count">{likes[String(photo.id)]}</span>
-                )}
-              </button>
-            </div>
-          ))}
-        </div>
-        <div className="portfolio__dots">
-          {filtered.map((_, i) => (
-            <div key={i} className={`portfolio__dot ${i === carouselIdx ? 'portfolio__dot--active' : ''}`} />
-          ))}
-        </div>
       </div>
 
       {lightbox && (
