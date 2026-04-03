@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, createContext, useContext } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, updatePassword, EmailAuthProvider, reauthenticateWithCredential } from 'firebase/auth'
 import { auth } from '../firebase'
 import {
@@ -426,18 +427,26 @@ export default function Admin({ onExit }) {
         </nav>
 
         <div className="admin-content">
-          <div key={tab} className="admin-tab-anim">
-            {tab === 'dashboard'   && <TabDashboard onExit={onExit} />}
-            {tab === 'galleries'   && <TabGalleries />}
-            {tab === 'photos'      && <TabPhotos />}
-            {tab === 'textes'      && <TabTextes />}
-            {tab === 'temoignages' && <TabTemoignages />}
-            {tab === 'services'    && <TabServices />}
-            {tab === 'contact'     && <TabContact />}
-            {tab === 'banniere'    && <TabBanniere />}
-            {tab === 'disponibilites' && <TabDisponibilites />}
-            {tab === 'securite'    && <TabSecurite autoLogoutMin={autoLogoutMin} setAutoLogoutMin={setAutoLogoutMin} onLogout={handleLogout} />}
-          </div>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={tab}
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+            >
+              {tab === 'dashboard'   && <TabDashboard onExit={onExit} />}
+              {tab === 'galleries'   && <TabGalleries />}
+              {tab === 'photos'      && <TabPhotos />}
+              {tab === 'textes'      && <TabTextes />}
+              {tab === 'temoignages' && <TabTemoignages />}
+              {tab === 'services'    && <TabServices />}
+              {tab === 'contact'     && <TabContact />}
+              {tab === 'banniere'    && <TabBanniere />}
+              {tab === 'disponibilites' && <TabDisponibilites />}
+              {tab === 'securite'    && <TabSecurite autoLogoutMin={autoLogoutMin} setAutoLogoutMin={setAutoLogoutMin} onLogout={handleLogout} />}
+            </motion.div>
+          </AnimatePresence>
         </div>
       </div>
     </div>
@@ -468,7 +477,7 @@ function VisitChart({ history, period }) {
       {/* Grid lines */}
       {[0, 0.5, 1].map(r => (
         <line key={r} x1={0} y1={topPad + chartH * (1 - r)} x2={W} y2={topPad + chartH * (1 - r)}
-          stroke="rgba(0,0,0,0.06)" strokeWidth="1" />
+          stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
       ))}
       {days.map((d, i) => {
         const barH = Math.max((d.count / maxCount) * chartH, d.count > 0 ? 3 : 0)
@@ -486,14 +495,14 @@ function VisitChart({ history, period }) {
               fill="transparent" />
             {/* Bar */}
             <rect x={x} y={y} width={barW} height={barH}
-              fill={isHovered ? '#6366f1' : d.isToday ? '#818cf8' : 'rgba(99,102,241,0.3)'}
+              fill={isHovered ? '#ff5252' : d.isToday ? '#e53935' : 'rgba(229,57,53,0.4)'}
               rx={2}
               className="chart-bar"
               style={{ animationDelay: `${i * 0.04}s`, transition: 'fill 0.15s' }} />
             {/* Labels */}
             {(i % labelEvery === 0 || d.isToday) && (
               <text x={i * slotW + slotW / 2} y={labelY} textAnchor="middle"
-                fill={d.isToday ? '#6366f1' : 'rgba(0,0,0,0.25)'}
+                fill={d.isToday ? '#e53935' : 'rgba(255,255,255,0.2)'}
                 fontSize="9" fontFamily="inherit"
                 fontWeight={d.isToday ? '600' : '400'}>
                 {d.key.slice(8)}/{d.key.slice(5, 7)}
@@ -548,34 +557,30 @@ function TabDashboard() {
       <h2 className="admin-tab__title">Tableau de bord</h2>
 
       <div className="dashboard-stats">
-        <div className="dashboard-stat">
-          <span className="dashboard-stat__icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" width="22" height="22"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-          </span>
-          <StatNumber value={totalVisits} />
-          <span className="dashboard-stat__label">Visites totales</span>
-        </div>
-        <div className="dashboard-stat">
-          <span className="dashboard-stat__icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" width="22" height="22"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-          </span>
-          <StatNumber value={todayVisits} />
-          <span className="dashboard-stat__label">Aujourd'hui</span>
-        </div>
-        <div className="dashboard-stat">
-          <span className="dashboard-stat__icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" width="22" height="22"><rect x="2" y="7" width="20" height="15" rx="2"/><path d="M16 7l-2-4H10L8 7"/><circle cx="12" cy="14" r="3"/></svg>
-          </span>
-          <StatNumber value={totalPhotos} />
-          <span className="dashboard-stat__label">Photos actives</span>
-        </div>
-        <div className="dashboard-stat">
+        {[
+          { icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" width="22" height="22"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>, value: totalVisits, label: 'Visites totales' },
+          { icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" width="22" height="22"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>, value: todayVisits, label: "Aujourd'hui" },
+          { icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" width="22" height="22"><rect x="2" y="7" width="20" height="15" rx="2"/><path d="M16 7l-2-4H10L8 7"/><circle cx="12" cy="14" r="3"/></svg>, value: totalPhotos, label: 'Photos actives' },
+        ].map((s, i) => (
+          <motion.div key={s.label} className="dashboard-stat"
+            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: i * 0.08, ease: [0.16,1,0.3,1] }}
+            whileHover={{ y: -4, transition: { duration: 0.2 } }}>
+            <span className="dashboard-stat__icon">{s.icon}</span>
+            <StatNumber value={s.value} />
+            <span className="dashboard-stat__label">{s.label}</span>
+          </motion.div>
+        ))}
+        <motion.div className="dashboard-stat"
+          initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.24, ease: [0.16,1,0.3,1] }}
+          whileHover={{ y: -4, transition: { duration: 0.2 } }}>
           <span className="dashboard-stat__icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" width="22" height="22"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
           </span>
           <StatNumber value={hiddenIds.length} />
           <span className="dashboard-stat__label">Photo masquée</span>
-        </div>
+        </motion.div>
       </div>
 
       <div className="dashboard-chart-card">
