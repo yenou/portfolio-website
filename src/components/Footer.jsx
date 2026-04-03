@@ -9,8 +9,25 @@ export default function Footer() {
     <footer className="footer">
       <div className="container footer__inner">
         <div className="footer__brand">
-          <p className="footer__name">YENOU <span>André</span></p>
-          <p className="footer__tagline">Photographe · Contrexéville</p>
+          <div className="footer__brand-top">
+            {contact.facebook && (
+              <a
+                href={contact.facebook}
+                target="_blank"
+                rel="noreferrer"
+                className="footer__social-link"
+                aria-label="Facebook"
+              >
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+                </svg>
+              </a>
+            )}
+            <div>
+              <p className="footer__name">YENOU <span>André</span></p>
+              <p className="footer__tagline">Photographe · Contrexéville</p>
+            </div>
+          </div>
           <div className="footer__built">
             <span>Built by Sidney with</span>
             <svg className="footer__tech-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="React">
@@ -34,22 +51,6 @@ export default function Footer() {
           <a href="#services">Services</a>
           <a href="#contact">Contact</a>
         </nav>
-
-        {contact.facebook && (
-          <div className="footer__social">
-            <a
-              href={contact.facebook}
-              target="_blank"
-              rel="noreferrer"
-              className="footer__social-link"
-              aria-label="Facebook"
-            >
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
-              </svg>
-            </a>
-          </div>
-        )}
       </div>
 
     </footer>

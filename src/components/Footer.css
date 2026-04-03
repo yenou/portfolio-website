@@ -20,12 +20,19 @@
   padding-bottom: 50px;
 }
 
+.footer__brand-top {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 10px;
+}
+
 .footer__name {
   font-family: var(--font-heading);
   font-size: 1.2rem;
   font-weight: 400;
   letter-spacing: 0.1em;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 .footer__name span {
@@ -114,10 +121,13 @@
     flex-direction: column;
     align-items: center;
   }
+  .footer__brand-top {
+    justify-content: center;
+  }
   .footer__name {
     font-size: 1.8rem;
     letter-spacing: 0.18em;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
   }
   .footer__built {
     justify-content: center;
