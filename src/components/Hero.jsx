@@ -91,13 +91,9 @@ export default function Hero({ ready }) {
       {/* Main content — bloc unique centré */}
       <div className="hero__content">
 
-        <span className="hero__top-label">— 2026 —</span>
-
         <div className="hero__title-wrap">
           <h2 className="hero__portfolio-title">Portfolio</h2>
         </div>
-
-        <p className="hero__top-sub">Lumière · Instant · Émotion</p>
 
         <div className="hero__divider">
           <span className="hero__divider-line" />
