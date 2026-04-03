@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { motion } from 'framer-motion'
 import './Hero.css'
 import { getTexts, getHeroImg, getHeroImgs, useStorage } from '../utils/storage'
 
@@ -110,7 +111,19 @@ export default function Hero({ ready }) {
           <p className="hero__subtitle">Photographe basé à <span className="hero__subtitle-location">Contrexéville</span></p>
         </div>
 
-        <p className="hero__tagline">{texts.heroTagline}</p>
+        <p className="hero__tagline" aria-label={texts.heroTagline}>
+          {(texts.heroTagline || '').split(' ').map((word, i) => (
+            <motion.span
+              key={i}
+              className="hero__tagline-word"
+              initial={{ opacity: 0, y: 18, filter: 'blur(6px)' }}
+              animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+              transition={{ duration: 0.6, delay: 4.1 + i * 0.09, ease: [0.16, 1, 0.3, 1] }}
+            >
+              {word}{' '}
+            </motion.span>
+          ))}
+        </p>
 
         <div className="hero__cta">
           <a href="#portfolio" className="btn btn--solid">

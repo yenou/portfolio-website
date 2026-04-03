@@ -388,12 +388,16 @@
 /* ===== TAGLINE ===== */
 .hero__tagline {
   font-family: var(--font-heading);
-  font-size: 1.05rem;
+  font-size: clamp(1rem, 1.8vw, 1.25rem);
   font-style: italic;
-  letter-spacing: 0.05em;
-  color: rgba(255,255,255,0.4);
-  animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 4.1s both;
+  letter-spacing: 0.06em;
+  color: rgba(255,255,255,0.82);
   margin-bottom: 40px;
+  text-shadow: 0 2px 20px rgba(0,0,0,0.5);
+}
+
+.hero__tagline-word {
+  display: inline-block;
 }
 
 /* ===== CTA ===== */
@@ -526,7 +530,7 @@
   }
 
   .hero__tagline {
-    font-size: 0.82rem;
+    font-size: 0.92rem;
     margin-bottom: 18px;
     text-align: center;
   }
