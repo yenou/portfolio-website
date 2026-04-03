@@ -468,7 +468,7 @@ function VisitChart({ history, period }) {
       {/* Grid lines */}
       {[0, 0.5, 1].map(r => (
         <line key={r} x1={0} y1={topPad + chartH * (1 - r)} x2={W} y2={topPad + chartH * (1 - r)}
-          stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
+          stroke="rgba(0,0,0,0.06)" strokeWidth="1" />
       ))}
       {days.map((d, i) => {
         const barH = Math.max((d.count / maxCount) * chartH, d.count > 0 ? 3 : 0)
@@ -486,14 +486,14 @@ function VisitChart({ history, period }) {
               fill="transparent" />
             {/* Bar */}
             <rect x={x} y={y} width={barW} height={barH}
-              fill={isHovered ? '#93c5fd' : d.isToday ? '#60a5fa' : 'rgba(96,165,250,0.35)'}
+              fill={isHovered ? '#6366f1' : d.isToday ? '#818cf8' : 'rgba(99,102,241,0.3)'}
               rx={2}
               className="chart-bar"
               style={{ animationDelay: `${i * 0.04}s`, transition: 'fill 0.15s' }} />
             {/* Labels */}
             {(i % labelEvery === 0 || d.isToday) && (
               <text x={i * slotW + slotW / 2} y={labelY} textAnchor="middle"
-                fill={d.isToday ? '#60a5fa' : 'rgba(255,255,255,0.2)'}
+                fill={d.isToday ? '#6366f1' : 'rgba(0,0,0,0.25)'}
                 fontSize="9" fontFamily="inherit"
                 fontWeight={d.isToday ? '600' : '400'}>
                 {d.key.slice(8)}/{d.key.slice(5, 7)}
