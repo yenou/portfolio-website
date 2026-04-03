@@ -9,8 +9,10 @@ export default function Portfolio() {
   const [active, setActive]     = useState(categories[0])
   const [lightbox, setLightbox] = useState(null)
   const [isFullscreen, setIsFullscreen] = useState(false)
+  const [carouselIdx, setCarouselIdx] = useState(0)
   const lightboxRef = useRef(null)
   const masonryRef  = useRef(null)
+  const carouselRef = useRef(null)
 
   const [likes, setLikes] = useState({})
   const [likedByMe, setLikedByMe] = useState(() => {
@@ -43,7 +45,20 @@ export default function Portfolio() {
     items.forEach((el, i) => {
       setTimeout(() => el.classList.add('revealed'), i * 80)
     })
+    if (carouselRef.current) carouselRef.current.scrollLeft = 0
+    setCarouselIdx(0)
   }, [active])
+
+  const onCarouselScroll = () => {
+    if (!carouselRef.current) return
+    const idx = Math.round(carouselRef.current.scrollLeft / carouselRef.current.clientWidth)
+    setCarouselIdx(idx)
+  }
+
+  const scrollToIndex = (i) => {
+    if (!carouselRef.current) return
+    carouselRef.current.scrollTo({ left: i * carouselRef.current.clientWidth, behavior: 'smooth' })
+  }
 
   const navigate = (dir) => {
     const idx = filtered.findIndex(p => p.id === lightbox.id)
@@ -181,6 +196,52 @@ export default function Portfolio() {
                 )}
               </button>
             </div>
+          ))}
+        </div>
+
+        {/* Carousel mobile — swipe horizontal */}
+        <div className="portfolio__carousel" ref={carouselRef} onScroll={onCarouselScroll}>
+          {filtered.map((photo, i) => (
+            <div
+              key={photo.id}
+              className={`portfolio__carousel-item ${i === carouselIdx ? 'portfolio__carousel-item--active' : ''}`}
+              onClick={() => setLightbox(photo)}
+            >
+              <img
+                src={photo.src}
+                alt={photo.alt}
+                loading="lazy"
+                onError={(e) => { e.target.closest('.portfolio__carousel-item').style.display = 'none' }}
+              />
+              {coupsDeCoeur.includes(photo.id) && (
+                <span className="portfolio__cdc-badge">♥ Coup de cœur</span>
+              )}
+              <div className="portfolio__carousel-info">
+                <span className="portfolio__carousel-alt">{photo.alt}</span>
+              </div>
+              <button
+                className={`portfolio__like ${likedByMe.includes(String(photo.id)) ? 'portfolio__like--on' : ''}`}
+                onClick={(e) => toggleLike(e, photo.id)}
+                aria-label="J'aime"
+              >
+                <span className="portfolio__like-heart">{likedByMe.includes(String(photo.id)) ? '♥' : '♡'}</span>
+                {(likes[String(photo.id)] || 0) > 0 && (
+                  <span className="portfolio__like-count">{likes[String(photo.id)]}</span>
+                )}
+              </button>
+            </div>
+          ))}
+        </div>
+
+        {/* Dots améliorés */}
+        <div className="portfolio__dots">
+          {filtered.map((_, i) => (
+            <button
+              key={i}
+              className={`portfolio__dot ${i === carouselIdx ? 'portfolio__dot--active' : ''}`}
+              onClick={() => scrollToIndex(i)}
+              aria-label={`Photo ${i + 1}`}
+            />
           ))}
         </div>
 
