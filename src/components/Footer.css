@@ -2,6 +2,14 @@
   background: #0a0a0a;
 }
 
+.footer__tagline {
+  font-size: 0.6rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.25);
+  margin-bottom: 10px;
+}
+
 .footer__inner {
   display: flex;
   align-items: center;
@@ -96,12 +104,36 @@
     flex-direction: column;
     align-items: center;
     text-align: center;
-    padding-top: 36px;
-    padding-bottom: 36px;
+    padding-top: 56px;
+    padding-bottom: 48px;
+    gap: 36px;
+  }
+  .footer__brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .footer__name {
+    font-size: 1.8rem;
+    letter-spacing: 0.18em;
+    margin-bottom: 6px;
+  }
+  .footer__built {
+    justify-content: center;
+    font-size: 0.6rem;
   }
   .footer__nav {
-    justify-content: center;
-    gap: 16px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px 48px;
+    justify-items: center;
+  }
+  .footer__nav a {
+    font-size: 0.65rem;
+  }
+  .footer__social-link {
+    width: 44px;
+    height: 44px;
   }
   .footer__bottom {
     padding: 16px 24px;

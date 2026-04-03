@@ -9,6 +9,8 @@ export default function Footer() {
     <footer className="footer">
       <div className="container footer__inner">
         <div className="footer__brand">
+          <p className="footer__name">YENOU <span>André</span></p>
+          <p className="footer__tagline">Photographe · Contrexéville</p>
           <div className="footer__built">
             <span>Built by Sidney with</span>
             <svg className="footer__tech-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="React">
