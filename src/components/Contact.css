@@ -25,7 +25,7 @@
 
 .contact__intro {
   font-size: 0.9rem;
-  color: var(--gray-mid);
+  color: rgba(255,255,255,0.72);
   line-height: 1.9;
   margin-bottom: 40px;
 }
@@ -57,7 +57,7 @@
   font-size: 0.65rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--gray-mid);
+  color: rgba(255,255,255,0.5);
   margin-bottom: 4px;
 }
 
@@ -94,30 +94,31 @@ a.contact__detail-value:hover {
   font-size: 0.68rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--gray-mid);
+  color: rgba(255,255,255,0.6);
 }
 
 .form-group input,
 .form-group textarea {
-  background: var(--bg-card);
-  border: 1px solid var(--gray-dark);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.12);
   color: var(--white);
   font-family: var(--font-body);
   font-size: 0.88rem;
   padding: 14px 18px;
   outline: none;
-  transition: border-color 0.3s ease;
+  transition: border-color 0.3s ease, background 0.3s ease;
   resize: vertical;
 }
 
 .form-group input::placeholder,
 .form-group textarea::placeholder {
-  color: var(--gray-dark);
+  color: rgba(255,255,255,0.25);
 }
 
 .form-group input:focus,
 .form-group textarea:focus {
-  border-color: rgba(255, 255, 255, 0.5);
+  border-color: rgba(255,255,255,0.45);
+  background: rgba(255,255,255,0.07);
 }
 
 /* ===== SUCCESS ===== */
