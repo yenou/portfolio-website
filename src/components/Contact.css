@@ -1,16 +1,8 @@
 .contact {
-  background: var(--bg-primary);
   position: relative;
-}
-
-.contact::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 320px;
-  background: radial-gradient(ellipse 70% 100% at 50% 0%, rgba(255,255,255,0.025) 0%, transparent 100%);
-  pointer-events: none;
-  z-index: 0;
+  background:
+    radial-gradient(ellipse 70% 320px at 50% 0%, rgba(255,255,255,0.025) 0%, transparent 100%),
+    linear-gradient(to bottom, var(--bg-primary) 85%, #0a0a0a 100%);
 }
 
 .contact__grid {

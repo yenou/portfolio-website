@@ -1,16 +1,8 @@
 .portfolio {
-  background: var(--bg-secondary);
   position: relative;
-}
-
-.portfolio::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 320px;
-  background: radial-gradient(ellipse 70% 100% at 50% 0%, rgba(255,255,255,0.03) 0%, transparent 100%);
-  pointer-events: none;
-  z-index: 0;
+  background:
+    radial-gradient(ellipse 70% 320px at 50% 0%, rgba(255,255,255,0.03) 0%, transparent 100%),
+    linear-gradient(to bottom, var(--bg-secondary) 75%, var(--bg-primary) 100%);
 }
 
 .portfolio__header { margin-bottom: 0; }
