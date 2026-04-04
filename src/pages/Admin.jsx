@@ -524,6 +524,73 @@ function VisitChart({ history, period }) {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
+// COMPOSANT: TITRE D'ONGLET
+// ═══════════════════════════════════════════════════════════════════════════════
+const TAB_ICONS = {
+  dashboard: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+      <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
+    </svg>
+  ),
+  photos: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+      <circle cx="12" cy="13" r="4"/>
+    </svg>
+  ),
+  textes: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+    </svg>
+  ),
+  temoignages: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    </svg>
+  ),
+  services: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>
+    </svg>
+  ),
+  contact: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 11.9a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.61 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.69a16 16 0 0 0 6.29 6.29l.95-.95a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+    </svg>
+  ),
+  banner: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/>
+      <line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/>
+    </svg>
+  ),
+  galleries: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+      <line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/>
+    </svg>
+  ),
+  securite: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+    </svg>
+  ),
+}
+
+function TabTitle({ id, children }) {
+  return (
+    <div className="admin-tab__title-wrap">
+      <h2 className="admin-tab__title">{children}</h2>
+      {TAB_ICONS[id] && (
+        <span className="admin-tab__title-icon">{TAB_ICONS[id]}</span>
+      )}
+    </div>
+  )
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
 // TAB: TABLEAU DE BORD
 // ═══════════════════════════════════════════════════════════════════════════════
 function TabDashboard() {
@@ -551,7 +618,7 @@ function TabDashboard() {
 
   return (
     <div className="tab-dashboard">
-      <h2 className="admin-tab__title">Tableau de bord</h2>
+      <TabTitle id="dashboard">Tableau de bord</TabTitle>
 
       <div className="dashboard-stats">
         {[
@@ -773,7 +840,7 @@ function TabPhotos() {
 
   return (
     <div className="tab-photos">
-      <h2 className="admin-tab__title">Gestion des photos</h2>
+      <TabTitle id="photos">Gestion des photos</TabTitle>
 
       {/* Hero slideshow */}
       <div className="admin-slideshow-section">
@@ -979,7 +1046,7 @@ function TabTextes() {
   return (
     <div className="tab-textes">
       <div className="admin-tab__header">
-        <h2 className="admin-tab__title">Modifier les textes</h2>
+        <TabTitle id="textes">Modifier les textes</TabTitle>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
 <button className="admin-btn admin-btn--solid" onClick={save}>Sauvegarder</button>
         </div>
@@ -1045,7 +1112,7 @@ function TabTemoignages() {
   return (
     <div className="tab-temoignages">
       <div className="admin-tab__header">
-        <h2 className="admin-tab__title">Témoignages</h2>
+        <TabTitle id="temoignages">Témoignages</TabTitle>
       </div>
 
       <div className="temoignage-list">
@@ -1126,7 +1193,7 @@ function TabServices() {
   return (
     <div className="tab-services">
       <div className="admin-tab__header">
-        <h2 className="admin-tab__title">Services</h2>
+        <TabTitle id="services">Services</TabTitle>
       </div>
 
       <div className="services-list">
@@ -1170,7 +1237,7 @@ function TabContact() {
   return (
     <div className="tab-contact">
       <div className="admin-tab__header">
-        <h2 className="admin-tab__title">Informations de contact</h2>
+        <TabTitle id="contact">Informations de contact</TabTitle>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
 <button className="admin-btn admin-btn--solid" onClick={save}>Sauvegarder</button>
         </div>
@@ -1217,7 +1284,7 @@ function TabBanniere() {
 
   return (
     <div className="admin-section">
-      <h2 className="admin-tab__title">Bannière d'annonce</h2>
+      <TabTitle id="banner">Bannière d'annonce</TabTitle>
       <p className="admin-section__desc">
         Affiche une barre de message en haut du site. Le visiteur peut la fermer.
       </p>
@@ -1327,7 +1394,7 @@ function TabGalleries() {
   return (
     <div className="tab-galleries">
       <div className="admin-tab__header">
-        <h2 className="admin-tab__title">Galeries clients</h2>
+        <TabTitle id="galleries">Galeries clients</TabTitle>
         <button className="admin-btn admin-btn--ghost" onClick={() => dbGetAllGalleries().then(setGalleries)}>↻ Rafraîchir</button>
       </div>
 
@@ -1599,7 +1666,7 @@ function TabSecurite({ autoLogoutMin, setAutoLogoutMin, onLogout }) {
 
   return (
     <div className="tab-securite">
-      <h2 className="admin-tab__title">Sécurité</h2>
+      <TabTitle id="securite">Sécurité</TabTitle>
 
       <div className="admin-fields-group">
         <h3 className="admin-group-title">Changer le mot de passe</h3>

@@ -446,15 +446,39 @@
   gap: 12px;
 }
 
+.admin-tab__title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
 .admin-tab__title {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 2rem;
-  font-weight: 300;
-  letter-spacing: 0.04em;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
   color: var(--text);
   margin-bottom: 0;
 }
-h2.admin-tab__title { margin-bottom: 28px; }
+
+.admin-tab__title-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  color: var(--red);
+  opacity: 0.85;
+  flex-shrink: 0;
+}
+
+.admin-tab__title-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+h2.admin-tab__title { margin-bottom: 0; }
 
 .admin-saved {
   font-size: 0.65rem;
@@ -1384,7 +1408,8 @@ h2.admin-tab__title { margin-bottom: 28px; }
 
   .admin-content  { padding: 20px 16px 90px; }
   .dashboard-stats { grid-template-columns: repeat(2, 1fr); }
-  .admin-tab__title { font-size: 1.5rem; }
+  .admin-tab__title { font-size: 1.2rem; }
+  .admin-tab__title-icon { width: 18px; height: 18px; }
   .admin-upload { grid-template-columns: 1fr; }
   .admin-grid   { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
 }
@@ -1461,6 +1486,7 @@ h2.admin-tab__title { margin-bottom: 28px; }
   .admin-field-row { grid-template-columns: 1fr; }
   .admin-tab__header { flex-direction: column; align-items: flex-start; gap: 10px; }
   .admin-tab__title { font-size: 1rem; }
+  .admin-tab__title-icon { width: 16px; height: 16px; }
   .admin-slideshow-header { flex-direction: column; align-items: flex-start; gap: 8px; }
   .admin-slideshow-grid { grid-template-columns: 1fr; }
   .gallery-create-form { flex-direction: column; }
