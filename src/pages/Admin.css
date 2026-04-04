@@ -1966,8 +1966,15 @@ h2.admin-tab__title { margin-bottom: 0; }
   .admin-nav__divider { display: none; }
   .admin-nav__kbd { display: none; }
   .admin-nav__footer { display: none; }
-  .dashboard-greeting { flex-direction: column; gap: 8px; align-items: flex-start; }
+  .dashboard-greeting { flex-direction: column; gap: 12px; align-items: flex-start; padding: 16px 18px; }
   .dashboard-greeting__right { align-self: flex-start; }
+  .dashboard-greeting__left { gap: 10px; }
+  .dashboard-greeting__left svg { width: 44px !important; height: 50px !important; }
+  .dashboard-greeting__weather { gap: 8px; }
+  .dashboard-greeting__weather-icon { font-size: 1.5rem; }
+  .dashboard-greeting__weather-temp { font-size: 1rem; }
+  .dashboard-greeting__hello { font-size: 0.95rem; }
+  .dashboard-greeting__date { font-size: 0.6rem; }
   .dashboard-completion__items { flex-wrap: wrap; gap: 8px; }
 }
 
@@ -2080,7 +2087,10 @@ h2.admin-tab__title { margin-bottom: 0; }
 
 @media (max-width: 600px) {
   .dashboard-greeting__right { gap: 12px; }
-  .dashboard-greeting__weather { padding-right: 12px; }
+  .dashboard-greeting__weather {
+    padding-right: 0;
+    border-right: none;
+  }
   .dashboard-greeting__activity { display: none; }
 }
 
