@@ -40,7 +40,7 @@ export default function App() {
       const needsAnon = !user || user.isAnonymous
       const signIn = needsAnon ? signInAnonymously(auth).catch(() => {}) : Promise.resolve()
       signIn.finally(() => {
-        const timeout = new Promise(resolve => setTimeout(resolve, 4000))
+        const timeout = new Promise(resolve => setTimeout(resolve, 12000))
         Promise.race([
           Promise.all([syncFromFirestore(), syncPhotosFromFirestore()]),
           timeout

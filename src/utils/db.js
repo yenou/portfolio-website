@@ -76,6 +76,10 @@ export async function syncPhotosFromFirestore() {
   try {
     let updated = false
 
+    // Forcer la suppression du cache hero stale avant de syncer
+    localStorage.removeItem(K.HERO_IMGS)
+    localStorage.removeItem(K.HERO_IMG)
+
     // About + logo (stored as base64 in site/photos)
     const photosSnap = await getDoc(photosDoc)
     if (photosSnap.exists()) {
