@@ -380,6 +380,36 @@ function saveLockoutState(state) {
   localStorage.setItem(LOCKOUT_KEY, JSON.stringify(state))
 }
 
+function playSound(type) {
+  try {
+    const AC = window.AudioContext || window.webkitAudioContext
+    if (!AC) return
+    const ctx = new AC()
+    const now = ctx.currentTime
+    if (type === 'success') {
+      ;[523, 659, 784].forEach((freq, i) => {
+        const osc = ctx.createOscillator(), gain = ctx.createGain()
+        osc.connect(gain); gain.connect(ctx.destination)
+        osc.frequency.value = freq; osc.type = 'sine'
+        const t = now + i * 0.13
+        gain.gain.setValueAtTime(0, t)
+        gain.gain.linearRampToValueAtTime(0.1, t + 0.03)
+        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.22)
+        osc.start(t); osc.stop(t + 0.22)
+      })
+    } else if (type === 'error') {
+      const osc = ctx.createOscillator(), gain = ctx.createGain()
+      osc.connect(gain); gain.connect(ctx.destination)
+      osc.type = 'sawtooth'
+      osc.frequency.setValueAtTime(280, now)
+      osc.frequency.exponentialRampToValueAtTime(120, now + 0.28)
+      gain.gain.setValueAtTime(0.07, now)
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.32)
+      osc.start(now); osc.stop(now + 0.32)
+    }
+  } catch {}
+}
+
 export default function Admin({ onExit }) {
   const [auth, setAuth]       = useState(false)
   const [pwd, setPwd]         = useState('')
@@ -389,6 +419,14 @@ export default function Admin({ onExit }) {
   const [lockoutRemaining, setLockoutRemaining] = useState(0)
   const [loginDisabled, setLoginDisabled] = useState(false)
   const [toasts, setToasts] = useState([])
+  const [robotState, setRobotState] = useState('idle') // idle | watching | error | success
+  const [parallax, setParallax] = useState({ x: 0, y: 0 })
+  const onParallaxMove = (e) => {
+    setParallax({
+      x: (e.clientX / window.innerWidth  - 0.5) * 2,
+      y: (e.clientY / window.innerHeight - 0.5) * 2,
+    })
+  }
   const navRef = useRef(null)
   const [pillStyle, setPillStyle] = useState({ top: 0, height: 0 })
   const handleLogout = () => {
@@ -450,6 +488,8 @@ export default function Admin({ onExit }) {
     const firebaseOk = await firebaseLogin(pwd)
 
     if (firebaseOk) {
+      playSound('success')
+      setRobotState('success')
       await savePassword(pwd)
       dbRemovePassword()
       dbMigrateBase64ToCloudinary()
@@ -471,6 +511,9 @@ export default function Admin({ onExit }) {
       } else {
         saveLockoutState({ attempts: newAttempts })
       }
+      playSound('error')
+      setRobotState('error')
+      setTimeout(() => setRobotState(s => s === 'error' ? 'watching' : s), 1400)
       dbAddLoginAttempt({ at: Date.now(), attempt: newAttempts, locked })
       setPwdError(true)
     }
@@ -480,26 +523,35 @@ export default function Admin({ onExit }) {
   const formatRemaining = (s) => s >= 60 ? `${Math.ceil(s/60)} min` : `${s}s`
 
   if (!auth) return (
-    <div className="admin-login">
+    <div className="admin-login" onMouseMove={onParallaxMove}>
 
       <SpaceCanvas />
 
       {/* Décorations de fond */}
-      <div className="admin-login__rings">
+      <div className="admin-login__rings" style={{
+        transform: `translate(${parallax.x * 18}px, ${parallax.y * 12}px)`,
+        transition: 'transform 0.7s ease-out',
+      }}>
         <div className="admin-login__ring" />
         <div className="admin-login__ring admin-login__ring--2" />
         <div className="admin-login__ring admin-login__ring--3" />
       </div>
-      <div className="admin-login__glow" />
+      <div className="admin-login__glow" style={{
+        transform: `translate(calc(-50% + ${parallax.x * 32}px), ${parallax.y * 22}px)`,
+        transition: 'transform 0.8s ease-out',
+      }} />
 
-      <div className="admin-login__inner">
+      <div className="admin-login__inner" style={{
+        transform: `translate(${parallax.x * -9}px, ${parallax.y * -6}px)`,
+        transition: 'transform 0.45s ease-out',
+      }}>
 
       {/* Robot */}
       <motion.div className="admin-login__robot"
         initial={{ opacity: 0, x: -30 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}>
-        <svg className="admin-login__robot-svg" viewBox="0 0 200 295" xmlns="http://www.w3.org/2000/svg">
+        <svg className={`admin-login__robot-svg robot-state--${robotState}`} data-robot-state={robotState} viewBox="0 0 200 295" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <linearGradient id="lRim" x1="0%" y1="100%" x2="100%" y2="0%">
               <stop offset="0%" stopColor="#ff3a5c"/>
@@ -562,10 +614,10 @@ export default function Admin({ onExit }) {
           {/* Eyes */}
           <circle className="robot-eye" cx="88" cy="115" r="8" fill="#ff2244" filter="url(#fEye)"/>
           <circle className="robot-eye" cx="112" cy="115" r="8" fill="#ff2244" filter="url(#fEye)"/>
-          <circle cx="88" cy="115" r="4" fill="#ff6680"/>
-          <circle cx="112" cy="115" r="4" fill="#ff6680"/>
-          <circle cx="89.5" cy="113.5" r="1.5" fill="#ffaabb" opacity="0.8"/>
-          <circle cx="113.5" cy="113.5" r="1.5" fill="#ffaabb" opacity="0.8"/>
+          <circle className="robot-pupil" cx="88" cy="115" r="4" fill="#ff6680"/>
+          <circle className="robot-pupil" cx="112" cy="115" r="4" fill="#ff6680"/>
+          <circle className="robot-shine" cx="89.5" cy="113.5" r="1.5" fill="#ffaabb" opacity="0.8"/>
+          <circle className="robot-shine" cx="113.5" cy="113.5" r="1.5" fill="#ffaabb" opacity="0.8"/>
 
           {/* Side ears */}
           <rect x="28" y="112" width="17" height="28" rx="5" fill="#1a1a2a" stroke="rgba(229,57,53,0.25)" strokeWidth="1"/>
@@ -641,6 +693,8 @@ export default function Admin({ onExit }) {
             </label>
             <input type="password" placeholder="••••••••••••" value={pwd}
               onChange={e => { setPwd(e.target.value); setPwdError(false) }}
+              onFocus={() => setRobotState(s => s === 'error' ? 'error' : 'watching')}
+              onBlur={() => setRobotState(s => s === 'error' || s === 'success' ? s : 'idle')}
               className={`admin-login__input ${pwdError ? 'error' : ''}`}
               autoFocus disabled={loginDisabled} />
           </div>
