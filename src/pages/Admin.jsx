@@ -172,6 +172,15 @@ function StatNumber({ value }) {
   return <span className="dashboard-stat__num">{n}</span>
 }
 
+// ── Tab IDs (module-level pour keyboard shortcuts) ────────────────────────────
+const TAB_IDS = ['dashboard','galleries','photos','textes','temoignages','services','contact','banniere','securite']
+
+const TAB_GROUPS = [
+  { label: null,          ids: ['dashboard'] },
+  { label: 'Contenu',     ids: ['galleries','photos','textes','temoignages','services'] },
+  { label: 'Paramètres',  ids: ['contact','banniere','securite'] },
+]
+
 // ── Nav SVG icons ─────────────────────────────────────────────────────────────
 const NAV_ICONS = {
   dashboard: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>,
@@ -266,6 +275,21 @@ export default function Admin({ onExit }) {
     const el = navRef.current.querySelector(`[data-tab-id="${tab}"]`)
     if (el) setPillStyle({ top: el.offsetTop, height: el.offsetHeight })
   }, [tab])
+
+  // Keyboard shortcuts (1-9 = tabs, Escape = dashboard)
+  useEffect(() => {
+    const handle = (e) => {
+      if (!auth) return
+      if (['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName)) return
+      if (e.key >= '1' && e.key <= '9') {
+        const id = TAB_IDS[parseInt(e.key) - 1]
+        if (id) setTab(id)
+      }
+      if (e.key === 'Escape') setTab('dashboard')
+    }
+    window.addEventListener('keydown', handle)
+    return () => window.removeEventListener('keydown', handle)
+  }, [auth])
 
   // Check lockout on mount and on timer
   useEffect(() => {
@@ -444,13 +468,33 @@ export default function Admin({ onExit }) {
       <div className="admin-layout">
         <nav className="admin-nav" ref={navRef}>
           <div className="admin-nav__pill" style={{ top: pillStyle.top, height: pillStyle.height }} />
-          {TABS.map(t => (
-            <button key={t.id} data-tab-id={t.id} className={`admin-nav__item ${tab === t.id ? 'active' : ''}`}
-              onClick={() => setTab(t.id)}>
-              <span className="admin-nav__icon">{NAV_ICONS[t.id]}</span>
-              <span className="admin-nav__label">{t.label}</span>
-            </button>
+
+          {TAB_GROUPS.map(group => (
+            <div key={group.label || 'main'} className="admin-nav__group">
+              {group.label && <span className="admin-nav__divider">{group.label}</span>}
+              {group.ids.map(id => {
+                const t = TABS.find(t => t.id === id)
+                const kbdNum = TAB_IDS.indexOf(id) + 1
+                return (
+                  <button key={id} data-tab-id={id}
+                    className={`admin-nav__item ${tab === id ? 'active' : ''}`}
+                    onClick={() => setTab(id)}>
+                    <span className="admin-nav__icon">{NAV_ICONS[id]}</span>
+                    <span className="admin-nav__label">{t.label}</span>
+                    <span className="admin-nav__kbd">{kbdNum}</span>
+                  </button>
+                )
+              })}
+            </div>
           ))}
+
+          <div className="admin-nav__footer">
+            <span className="admin-nav__status">
+              <span className="admin-nav__status-dot" />
+              En ligne
+            </span>
+            <span className="admin-nav__version">v1.0</span>
+          </div>
         </nav>
 
         <div className="admin-content">
@@ -549,6 +593,99 @@ function VisitChart({ history, period }) {
         )
       })}
     </svg>
+  )
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// GREETING BANNER
+// ═══════════════════════════════════════════════════════════════════════════════
+function GreetingBanner() {
+  const [now, setNow] = useState(new Date())
+  useEffect(() => {
+    const t = setInterval(() => setNow(new Date()), 1000)
+    return () => clearInterval(t)
+  }, [])
+  const h = now.getHours()
+  const greeting = h < 5 ? 'Bonne nuit' : h < 12 ? 'Bonjour' : h < 18 ? 'Bon après-midi' : 'Bonsoir'
+  const timeStr = now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+  const dateStr = now.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
+  return (
+    <motion.div className="dashboard-greeting"
+      initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}>
+      <div>
+        <p className="dashboard-greeting__hello">{greeting}, <span>André</span></p>
+        <p className="dashboard-greeting__date">{dateStr}</p>
+      </div>
+      <div className="dashboard-greeting__clock">{timeStr}</div>
+    </motion.div>
+  )
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// SKELETON BLOCK
+// ═══════════════════════════════════════════════════════════════════════════════
+function SkeletonBlock({ w = '100%', h = '20px', radius = '4px', style = {} }) {
+  return <div className="skeleton" style={{ width: w, height: h, borderRadius: radius, ...style }} />
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// MINI SPARKLINE
+// ═══════════════════════════════════════════════════════════════════════════════
+function MiniSparkline({ history }) {
+  const vals = []
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(); d.setDate(d.getDate() - i)
+    vals.push(history[d.toISOString().slice(0, 10)] || 0)
+  }
+  const max = Math.max(...vals, 1)
+  const W = 72, H = 24
+  const pts = vals.map((v, i) => `${(i / 6) * W},${H - (v / max) * (H - 4) - 2}`).join(' ')
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} className="mini-sparkline" width={W} height={H}>
+      <polyline points={`0,${H} ${pts} ${W},${H}`} fill="rgba(229,57,53,0.12)" stroke="none" />
+      <polyline points={pts} fill="none" stroke="rgba(229,57,53,0.75)" strokeWidth="1.5"
+        strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// PORTFOLIO COMPLETION
+// ═══════════════════════════════════════════════════════════════════════════════
+function PortfolioCompletion() {
+  const items = [
+    { label: 'Photo héro',    done: getHeroImgs().length > 0 },
+    { label: 'Photo profil',  done: !!getAboutImg() },
+    { label: 'Textes',        done: !!(getTexts().aboutP1) },
+    { label: 'Services',      done: getServices().length > 0 },
+    { label: 'Avis clients',  done: getTestimonials().length > 0 },
+    { label: 'Contact',       done: !!(getContact().email) },
+  ]
+  const done = items.filter(i => i.done).length
+  const pct  = Math.round((done / items.length) * 100)
+  return (
+    <motion.div className="dashboard-completion"
+      initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, delay: 0.32, ease: [0.16, 1, 0.3, 1] }}>
+      <div className="dashboard-completion__header">
+        <span className="dashboard-completion__title">Complétion du portfolio</span>
+        <span className="dashboard-completion__pct">{pct}%</span>
+      </div>
+      <div className="dashboard-completion__bar">
+        <motion.div className="dashboard-completion__fill"
+          initial={{ width: 0 }} animate={{ width: `${pct}%` }}
+          transition={{ duration: 0.9, delay: 0.5, ease: [0.16, 1, 0.3, 1] }} />
+      </div>
+      <div className="dashboard-completion__items">
+        {items.map(item => (
+          <span key={item.label} className={`dashboard-completion__item ${item.done ? 'done' : ''}`}>
+            <span className="dashboard-completion__check">{item.done ? '✓' : '○'}</span>
+            {item.label}
+          </span>
+        ))}
+      </div>
+    </motion.div>
   )
 }
 
@@ -657,36 +794,42 @@ function TabDashboard() {
   })()
   const todayVisits = history[new Date().toISOString().slice(0, 10)] || 0
 
+  const stats = [
+    { icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" width="22" height="22"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>, value: totalVisits,      label: 'Visites totales',  sparkline: true  },
+    { icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" width="22" height="22"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>, value: todayVisits,      label: "Aujourd'hui",      sparkline: true  },
+    { icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" width="22" height="22"><rect x="2" y="7" width="20" height="15" rx="2"/><path d="M16 7l-2-4H10L8 7"/><circle cx="12" cy="14" r="3"/></svg>, value: totalPhotos,      label: 'Photos actives',   sparkline: false },
+    { icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" width="22" height="22"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>, value: hiddenIds.length, label: 'Photos masquées', sparkline: false },
+  ]
+
   return (
     <div className="tab-dashboard">
+      <GreetingBanner />
       <TabTitle id="dashboard">Tableau de bord</TabTitle>
 
       <div className="dashboard-stats">
-        {[
-          { icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" width="22" height="22"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>, value: totalVisits, label: 'Visites totales' },
-          { icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" width="22" height="22"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>, value: todayVisits, label: "Aujourd'hui" },
-          { icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" width="22" height="22"><rect x="2" y="7" width="20" height="15" rx="2"/><path d="M16 7l-2-4H10L8 7"/><circle cx="12" cy="14" r="3"/></svg>, value: totalPhotos, label: 'Photos actives' },
-        ].map((s, i) => (
-          <motion.div key={s.label} className="dashboard-stat"
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: i * 0.08, ease: [0.16,1,0.3,1] }}
-            whileHover={{ y: -4, transition: { duration: 0.2 } }}>
-            <span className="dashboard-stat__icon">{s.icon}</span>
-            <StatNumber value={s.value} />
-            <span className="dashboard-stat__label">{s.label}</span>
-          </motion.div>
-        ))}
-        <motion.div className="dashboard-stat"
-          initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.24, ease: [0.16,1,0.3,1] }}
-          whileHover={{ y: -4, transition: { duration: 0.2 } }}>
-          <span className="dashboard-stat__icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" width="22" height="22"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
-          </span>
-          <StatNumber value={hiddenIds.length} />
-          <span className="dashboard-stat__label">Photo masquée</span>
-        </motion.div>
+        {loading
+          ? [0,1,2,3].map(i => (
+              <div key={i} className="dashboard-stat">
+                <SkeletonBlock h="22px" w="22px" radius="50%" style={{ marginBottom: 14 }} />
+                <SkeletonBlock h="34px" w="70px" radius="6px" style={{ marginBottom: 10 }} />
+                <SkeletonBlock h="11px" w="90px" radius="3px" />
+              </div>
+            ))
+          : stats.map((s, i) => (
+              <motion.div key={s.label} className="dashboard-stat"
+                initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: i * 0.08, ease: [0.16,1,0.3,1] }}
+                whileHover={{ y: -4, transition: { duration: 0.2 } }}>
+                <span className="dashboard-stat__icon">{s.icon}</span>
+                <StatNumber value={s.value} />
+                <span className="dashboard-stat__label">{s.label}</span>
+                {s.sparkline && <MiniSparkline history={history} />}
+              </motion.div>
+            ))
+        }
       </div>
+
+      <PortfolioCompletion />
 
       <div className="dashboard-chart-card">
         <div className="dashboard-chart-header">
@@ -699,7 +842,7 @@ function TabDashboard() {
           </div>
         </div>
         {loading
-          ? <p className="dashboard-chart-loading">Chargement…</p>
+          ? <div style={{ padding: '16px 0' }}><SkeletonBlock h="96px" radius="6px" /></div>
           : <VisitChart history={history} period={period} />
         }
       </div>

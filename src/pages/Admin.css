@@ -4,6 +4,10 @@
 
 /* ── Variables ─────────────────────────────────────────────────────────── */
 .admin {
+  /* Texture — grille de points subtile */
+  background-image: radial-gradient(rgba(255,255,255,0.045) 1px, transparent 1px);
+  background-size: 28px 28px;
+
   --red:          #e53935;
   --red-bright:   #ff5252;
   --red-deep:     #b71c1c;
@@ -1574,4 +1578,246 @@ h2.admin-tab__title { margin-bottom: 0; }
   .admin-upload { grid-template-columns: 1fr; }
   .admin-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
   .admin-section__title { font-size: 1.2rem; flex-direction: column; gap: 6px; }
+  .admin-nav__group { display: contents; }
+  .admin-nav__divider { display: none; }
+  .admin-nav__kbd { display: none; }
+  .admin-nav__footer { display: none; }
+  .dashboard-greeting { flex-direction: column; gap: 8px; align-items: flex-start; }
+  .dashboard-greeting__clock { font-size: 1.1rem; }
+  .dashboard-completion__items { flex-wrap: wrap; gap: 8px; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   GREETING BANNER
+   ═══════════════════════════════════════════════════════════════════════ */
+.dashboard-greeting {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 28px;
+  margin-bottom: 32px;
+  background: rgba(255,255,255,0.025);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: var(--radius);
+  position: relative;
+  overflow: hidden;
+}
+
+.dashboard-greeting::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(229,57,53,0.5), transparent);
+}
+
+.dashboard-greeting__hello {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.85);
+  margin-bottom: 4px;
+  letter-spacing: -0.01em;
+}
+
+.dashboard-greeting__hello span {
+  color: var(--red-bright);
+}
+
+.dashboard-greeting__date {
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+}
+
+.dashboard-greeting__clock {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 200;
+  letter-spacing: 0.08em;
+  color: rgba(255,255,255,0.55);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   SKELETON LOADER
+   ═══════════════════════════════════════════════════════════════════════ */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,0.04) 25%,
+    rgba(255,255,255,0.09) 50%,
+    rgba(255,255,255,0.04) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.6s ease infinite;
+  display: block;
+}
+
+@keyframes skeleton-shimmer {
+  0%   { background-position: 200% center; }
+  100% { background-position: -200% center; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   MINI SPARKLINE
+   ═══════════════════════════════════════════════════════════════════════ */
+.mini-sparkline {
+  display: block;
+  margin-top: 10px;
+  opacity: 0.85;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   PORTFOLIO COMPLETION
+   ═══════════════════════════════════════════════════════════════════════ */
+.dashboard-completion {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  margin-bottom: 28px;
+}
+
+.dashboard-completion__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.dashboard-completion__title {
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+}
+
+.dashboard-completion__pct {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--red-bright);
+}
+
+.dashboard-completion__bar {
+  height: 3px;
+  background: rgba(255,255,255,0.07);
+  border-radius: 2px;
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+
+.dashboard-completion__fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--red), var(--red-bright));
+  border-radius: 2px;
+  box-shadow: 0 0 8px rgba(229,57,53,0.5);
+}
+
+.dashboard-completion__items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.dashboard-completion__item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.3);
+  transition: color 0.2s ease;
+}
+
+.dashboard-completion__item.done {
+  color: rgba(255,255,255,0.65);
+}
+
+.dashboard-completion__check {
+  font-size: 0.55rem;
+  color: rgba(255,255,255,0.2);
+}
+
+.dashboard-completion__item.done .dashboard-completion__check {
+  color: var(--red-bright);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   SIDEBAR — GROUPES, KBD BADGES, STATUS FOOTER
+   ═══════════════════════════════════════════════════════════════════════ */
+.admin-nav__group {
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-nav__divider {
+  display: block;
+  font-size: 0.52rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.2);
+  padding: 20px 20px 6px;
+  user-select: none;
+}
+
+.admin-nav__kbd {
+  margin-left: auto;
+  font-size: 0.5rem;
+  font-family: 'Montserrat', sans-serif;
+  color: rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 4px;
+  padding: 1px 5px;
+  min-width: 16px;
+  text-align: center;
+  transition: color 0.2s, background 0.2s;
+  flex-shrink: 0;
+}
+
+.admin-nav__item.active .admin-nav__kbd {
+  color: rgba(229,57,53,0.6);
+  background: rgba(229,57,53,0.1);
+  border-color: rgba(229,57,53,0.2);
+}
+
+.admin-nav__footer {
+  margin-top: auto;
+  padding: 20px 20px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+.admin-nav__status {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.58rem;
+  letter-spacing: 0.14em;
+  color: rgba(255,255,255,0.3);
+}
+
+.admin-nav__status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #4ade80;
+  box-shadow: 0 0 6px rgba(74,222,128,0.6);
+  animation: pulse-dot 2.5s ease infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.6; transform: scale(0.85); }
+}
+
+.admin-nav__version {
+  font-size: 0.52rem;
+  letter-spacing: 0.15em;
+  color: rgba(255,255,255,0.15);
 }
