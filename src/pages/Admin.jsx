@@ -388,26 +388,55 @@ export default function Admin({ onExit }) {
     <div className="admin">
       <ToastContainer toasts={toasts} />
       <header className="admin-header">
-        <div className="admin-header__left">
-          <div className="admin-header__brand">
-            <svg className="admin-header__brand-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="12" r="3.5"/>
-              <path d="M6.343 6.343A8 8 0 1 0 17.657 17.657M8 3h8l1 3H7L8 3z"/>
-            </svg>
-            <span className="admin-header__brand-name">v1.0</span>
-            <span className="admin-header__brand-sep">/</span>
-            <span className="admin-header__brand-sub">admin</span>
-          </div>
+        {/* Brand */}
+        <div className="admin-header__brand">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+            <circle cx="12" cy="13" r="4"/>
+          </svg>
+          <span className="admin-header__brand-name">Admin</span>
         </div>
-        <div className="admin-header__right">
-          <a href="/" target="_blank" rel="noreferrer" className="admin-btn admin-btn--ghost">
-            <span className="admin-btn__icon">👁</span><span className="admin-btn__text"> Voir le site</span>
+
+        {/* Liens desktop */}
+        <nav className="admin-header__nav">
+          <a href="/" target="_blank" rel="noreferrer" className="admin-header__link">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+            </svg>
+            Voir le site
           </a>
-          <button className="admin-btn admin-btn--ghost" onClick={handleLogout}>
-            <span className="admin-btn__icon">⏻</span><span className="admin-btn__text"> Déconnexion</span>
+          <span className="admin-header__sep">·</span>
+          <button className="admin-header__link" onClick={handleLogout}>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+            Déconnexion
           </button>
-          <button className="admin-btn admin-btn--ghost" onClick={onExit}>
-            <span className="admin-btn__icon">←</span><span className="admin-btn__text"> Retour</span>
+          <span className="admin-header__sep">·</span>
+          <button className="admin-header__link" onClick={onExit}>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+            </svg>
+            Retour
+          </button>
+        </nav>
+
+        {/* Mobile : icônes seules */}
+        <div className="admin-header__mobile-actions">
+          <a href="/" target="_blank" rel="noreferrer" className="admin-header__icon-btn" aria-label="Voir le site">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+            </svg>
+          </a>
+          <button className="admin-header__icon-btn" onClick={handleLogout} aria-label="Déconnexion">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+          </button>
+          <button className="admin-header__icon-btn" onClick={onExit} aria-label="Retour">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+            </svg>
           </button>
         </div>
       </header>

@@ -250,51 +250,128 @@
   position: sticky;
   top: 0;
   z-index: 200;
-  background: rgba(9,9,11,0.92);
-  backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--border);
+  background: rgba(9,9,11,0.55);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 32px;
-  height: 58px;
+  padding: 0 40px;
+  height: 52px;
 }
 
-/* Red line at very top */
+/* Halo lumineux en haut */
 .admin-header::before {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--red), var(--red-bright), var(--red), transparent);
-  opacity: 0.6;
+  height: 120%;
+  background: radial-gradient(circle at 50% 0%, rgba(255,255,255,0.06), transparent 60%);
+  pointer-events: none;
 }
 
-.admin-header__left  { display: flex; align-items: center; gap: 12px; }
-.admin-header__brand { display: flex; align-items: center; gap: 10px; }
-
-.admin-header__brand-icon {
-  color: var(--red);
-  filter: drop-shadow(0 0 6px var(--red-glow));
-  flex-shrink: 0;
-}
-.admin-header__brand-name {
-  font-size: 0.82rem;
-  font-weight: 700;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--text);
-}
-.admin-header__brand-sep  { color: var(--text-3); font-size: 0.75rem; }
-.admin-header__brand-sub  {
-  font-size: 0.6rem;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: var(--red);
+/* Ligne rouge tout en haut */
+.admin-header::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, var(--red) 30%, var(--red-bright) 50%, var(--red) 70%, transparent 100%);
   opacity: 0.7;
 }
-.admin-header__count { font-size: 0.62rem; letter-spacing: 0.15em; color: var(--text-3); }
-.admin-header__right { display: flex; align-items: center; gap: 8px; }
+
+/* Brand */
+.admin-header__brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--red);
+}
+
+.admin-header__brand svg {
+  filter: drop-shadow(0 0 5px var(--red-glow));
+}
+
+.admin-header__brand-name {
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.85);
+}
+
+/* Nav liens desktop */
+.admin-header__nav {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.admin-header__sep {
+  color: rgba(255,255,255,0.15);
+  font-size: 0.55rem;
+  margin: 0 18px;
+  user-select: none;
+}
+
+.admin-header__link {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.6rem;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.6);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'Montserrat', sans-serif;
+  padding: 4px 0;
+  position: relative;
+  transition: color 0.25s ease;
+}
+
+.admin-header__link::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 1px;
+  background: rgba(255,255,255,0.5);
+  transition: width 0.3s ease;
+}
+
+.admin-header__link:hover { color: rgba(255,255,255,0.95); }
+.admin-header__link:hover::after { width: 100%; }
+
+/* Mobile icônes */
+.admin-header__mobile-actions {
+  display: none;
+  align-items: center;
+  gap: 4px;
+}
+
+.admin-header__icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: rgba(255,255,255,0.55);
+  border-radius: 6px;
+  transition: color 0.2s ease, background 0.2s ease;
+}
+
+.admin-header__icon-btn:hover {
+  color: rgba(255,255,255,0.9);
+  background: rgba(255,255,255,0.06);
+}
 
 
 /* ═══════════════════════════════════════════════════════════════════════
@@ -1360,13 +1437,9 @@ h2.admin-tab__title { margin-bottom: 0; }
    RESPONSIVE — MOBILE (≤ 768px)
    ═══════════════════════════════════════════════════════════════════════ */
 @media (max-width: 768px) {
-  .admin-header { padding: 0 14px; }
-  .admin-header__brand-name,
-  .admin-header__brand-sep,
-  .admin-header__brand-sub { display: none; }
-  .admin-btn__text { display: none; }
-  .admin-btn { padding: 9px 12px; min-width: 0; }
-  .admin-header__right { gap: 6px; }
+  .admin-header { padding: 0 16px; }
+  .admin-header__nav { display: none; }
+  .admin-header__mobile-actions { display: flex; }
 
   .admin-layout {
     grid-template-columns: 1fr;
