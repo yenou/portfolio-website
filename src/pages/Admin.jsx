@@ -600,13 +600,6 @@ export default function Admin({ onExit }) {
         <span className="admin-login__corner admin-login__corner--bl" />
         <span className="admin-login__corner admin-login__corner--br" />
 
-        {/* System status badge */}
-        <motion.div className="admin-login__badge"
-          initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}>
-          <span className="admin-login__badge-dot" />
-          <span>Système en ligne</span>
-        </motion.div>
 
         {/* Icône avec ring */}
         <motion.div className="admin-login__icon"
@@ -625,7 +618,6 @@ export default function Admin({ onExit }) {
         <motion.div className="admin-login__title-block"
           initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.25 }}>
-          <p className="admin-login__eyebrow">// Accès sécurisé</p>
           <h1 className="admin-login__title">Administration</h1>
           <p className="admin-login__sub">Yenou André Photographie</p>
         </motion.div>
