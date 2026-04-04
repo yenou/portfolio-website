@@ -318,33 +318,6 @@ export default function Admin({ onExit }) {
     const state = getLockoutState()
     const attempts = state.attempts || 0
 
-    // Si un hash local existe, on vérifie LOCALEMENT d'abord
-    // → Firebase Auth n'est jamais appelé avec un mauvais mot de passe
-    // → empêche le flood et le blocage du compte Firebase
-    const stored = getPassword()
-    const hashedInput = await hashPassword(pwd)
-    const localMatch = stored
-      ? (isHashed(stored) ? hashedInput === stored : pwd === stored)
-      : null // null = pas de hash local, on ne sait pas encore
-
-    if (localMatch === false) {
-      // Mauvais mdp confirmé localement, pas besoin d'appeler Firebase
-      const newAttempts = attempts + 1
-      const locked = newAttempts >= MAX_ATTEMPTS
-      if (locked) {
-        const lockedUntil = Date.now() + LOCKOUT_DURATION
-        saveLockoutState({ attempts: newAttempts, lockedUntil })
-        setLoginDisabled(true)
-        setLockoutRemaining(Math.ceil(LOCKOUT_DURATION / 1000))
-      } else {
-        saveLockoutState({ attempts: newAttempts })
-      }
-      dbAddLoginAttempt({ at: Date.now(), attempt: newAttempts, locked })
-      setPwdError(true)
-      return
-    }
-
-    // Hash local OK ou premier login sur ce navigateur → appel Firebase Auth
     const firebaseOk = await firebaseLogin(pwd)
 
     if (firebaseOk) {
