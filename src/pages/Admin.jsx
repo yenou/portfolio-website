@@ -891,6 +891,82 @@ function VisitChart({ history, period }) {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
+// WAVING AVATAR
+// ═══════════════════════════════════════════════════════════════════════════════
+function WavingAvatar() {
+  const [av] = useState(() => {
+    const skins   = ['#FDBCB4','#E8A07C','#C68642','#8D5524','#4A2512']
+    const hairs   = ['#1a1a1a','#4a2800','#8B4513','#D2691E','#e8c84a','#c0392b','#5b2d8e']
+    const shirts  = ['#e53935','#1565c0','#2e7d32','#6a1b9a','#00838f','#37474f']
+    const eyes    = ['#2c3e50','#1a5276','#1e8449','#7d6608']
+    const styles  = [0, 1, 2] // 0=court, 1=long, 2=frange
+    const pick = arr => arr[Math.floor(Math.random() * arr.length)]
+    return { skin: pick(skins), hair: pick(hairs), shirt: pick(shirts), eye: pick(eyes), style: pick(styles) }
+  })
+
+  const { skin, hair, shirt, eye, style } = av
+
+  const hairPath = style === 0
+    ? <path d={`M14 28 Q14 12 30 12 Q46 12 46 28 Q46 18 30 18 Q14 18 14 28`} fill={hair}/>
+    : style === 1
+      ? <>
+          <path d={`M14 28 Q14 10 30 10 Q46 10 46 28`} fill={hair}/>
+          <path d={`M14 28 Q10 36 12 44`} fill={hair} strokeWidth="0"/>
+          <path d={`M46 28 Q50 36 48 44`} fill={hair} strokeWidth="0"/>
+        </>
+      : <>
+          <path d={`M14 28 Q14 10 30 10 Q46 10 46 28`} fill={hair}/>
+          <path d={`M14 22 Q18 16 26 16`} fill={hair}/>
+        </>
+
+  return (
+    <svg viewBox="0 0 60 68" width="52" height="58" style={{ flexShrink: 0 }}>
+      {/* Body / shirt */}
+      <rect x="16" y="46" width="28" height="18" rx="9" fill={shirt}/>
+
+      {/* Left arm static */}
+      <line x1="16" y1="52" x2="7" y2="60" stroke={skin} strokeWidth="5.5" strokeLinecap="round"/>
+
+      {/* Right arm — waving */}
+      <g className="avatar-wave-arm">
+        <line x1="44" y1="52" x2="53" y2="40" stroke={skin} strokeWidth="5.5" strokeLinecap="round"/>
+        {/* Hand */}
+        <circle cx="54" cy="38" r="4.5" fill={skin}/>
+        {/* Little fingers */}
+        <line x1="54" y1="34" x2="53" y2="30" stroke={skin} strokeWidth="2.5" strokeLinecap="round"/>
+        <line x1="57" y1="35" x2="58" y2="31" stroke={skin} strokeWidth="2.5" strokeLinecap="round"/>
+        <line x1="51" y1="35" x2="49" y2="31" stroke={skin} strokeWidth="2.5" strokeLinecap="round"/>
+      </g>
+
+      {/* Head */}
+      <circle cx="30" cy="28" r="17" fill={skin}/>
+
+      {/* Hair */}
+      {hairPath}
+
+      {/* Eyebrows */}
+      <path d={`M22 23 Q25 21.5 28 23`} stroke={hair} strokeWidth="1.3" fill="none" strokeLinecap="round"/>
+      <path d={`M32 23 Q35 21.5 38 23`} stroke={hair} strokeWidth="1.3" fill="none" strokeLinecap="round"/>
+
+      {/* Eyes */}
+      <circle cx="25.5" cy="27" r="3" fill={eye}/>
+      <circle cx="34.5" cy="27" r="3" fill={eye}/>
+      <circle cx="24.8" cy="26" r="1.1" fill="white" opacity="0.8"/>
+      <circle cx="33.8" cy="26" r="1.1" fill="white" opacity="0.8"/>
+      <circle cx="25.5" cy="27" r="1.2" fill="#000" opacity="0.5"/>
+      <circle cx="34.5" cy="27" r="1.2" fill="#000" opacity="0.5"/>
+
+      {/* Smile */}
+      <path d={`M23.5 33 Q30 38.5 36.5 33`} stroke="#c0392b" strokeWidth="1.8" fill="none" strokeLinecap="round"/>
+
+      {/* Cheeks */}
+      <circle cx="20" cy="32" r="3.5" fill="rgba(255,120,100,0.2)"/>
+      <circle cx="40" cy="32" r="3.5" fill="rgba(255,120,100,0.2)"/>
+    </svg>
+  )
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
 // GREETING BANNER
 // ═══════════════════════════════════════════════════════════════════════════════
 function GreetingBanner() {
@@ -907,9 +983,12 @@ function GreetingBanner() {
     <motion.div className="dashboard-greeting"
       initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}>
-      <div>
-        <p className="dashboard-greeting__hello">{greeting}, <span>André</span></p>
-        <p className="dashboard-greeting__date">{dateStr}</p>
+      <div className="dashboard-greeting__left">
+        <WavingAvatar />
+        <div>
+          <p className="dashboard-greeting__hello">{greeting}, <span>André</span></p>
+          <p className="dashboard-greeting__date">{dateStr}</p>
+        </div>
       </div>
       <div className="dashboard-greeting__clock">{timeStr}</div>
     </motion.div>

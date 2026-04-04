@@ -1939,6 +1939,24 @@ h2.admin-tab__title { margin-bottom: 0; }
 /* ═══════════════════════════════════════════════════════════════════════
    GREETING BANNER
    ═══════════════════════════════════════════════════════════════════════ */
+@keyframes waveHand {
+  0%, 100% { transform: rotate(0deg); }
+  15%       { transform: rotate(-28deg); }
+  35%       { transform: rotate(12deg); }
+  55%       { transform: rotate(-22deg); }
+  75%       { transform: rotate(8deg); }
+}
+.avatar-wave-arm {
+  transform-origin: 44px 52px;
+  animation: waveHand 1.6s ease-in-out infinite;
+}
+
+.dashboard-greeting__left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
 .dashboard-greeting {
   display: flex;
   align-items: center;
