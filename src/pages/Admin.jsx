@@ -235,16 +235,12 @@ const ADMIN_EMAIL = 'admin@yenouphotographie.fr'
 async function firebaseLogin(password) {
   try {
     await signInWithEmailAndPassword(auth, ADMIN_EMAIL, password)
-    return 'ok'
+    return true
   } catch (e) {
-    // Codes explicitement "mauvais mot de passe"
-    if (e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential') return 'wrong'
-    // Premier login — compte inexistant
-    if (e.code === 'auth/user-not-found' || e.code === 'auth/invalid-email') {
-      try { await createUserWithEmailAndPassword(auth, ADMIN_EMAIL, password); return 'ok' } catch { /* ignore */ }
+    if (e.code === 'auth/user-not-found' || e.code === 'auth/invalid-credential' || e.code === 'auth/invalid-email') {
+      try { await createUserWithEmailAndPassword(auth, ADMIN_EMAIL, password); return true } catch { /* ignore */ }
     }
-    // Tout autre code (too-many-requests, network, etc.) → rate limited
-    return 'rate_limited'
+    return false
   }
 }
 
@@ -263,7 +259,6 @@ export default function Admin({ onExit }) {
   const [autoLogoutMin, setAutoLogoutMin] = useState(30)
   const [lockoutRemaining, setLockoutRemaining] = useState(0)
   const [loginDisabled, setLoginDisabled] = useState(false)
-  const [rateLimited, setRateLimited] = useState(false)
   const [toasts, setToasts] = useState([])
   const navRef = useRef(null)
   const [pillStyle, setPillStyle] = useState({ top: 0, height: 0 })
@@ -323,9 +318,9 @@ export default function Admin({ onExit }) {
     const state = getLockoutState()
     const attempts = state.attempts || 0
 
-    const result = await firebaseLogin(pwd)
+    const firebaseOk = await firebaseLogin(pwd)
 
-    if (result === 'ok') {
+    if (firebaseOk) {
       await savePassword(pwd)
       dbRemovePassword()
       dbMigrateBase64ToCloudinary()
@@ -333,16 +328,10 @@ export default function Admin({ onExit }) {
       saveLockoutState({})
       setAuth(true)
       setPwdError(false)
-      setRateLimited(false)
       const sessionId = (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()))
       localStorage.setItem('yenou_session_id', sessionId)
       dbCreateSession({ id: sessionId, ua: navigator.userAgent, loginAt: Date.now() })
-    } else if (result === 'rate_limited') {
-      // Firebase bloque temporairement — ne pas compter comme tentative
-      setRateLimited(true)
-      setPwdError(false)
     } else {
-      setRateLimited(false)
       const newAttempts = attempts + 1
       const locked = newAttempts >= MAX_ATTEMPTS
       if (locked) {
@@ -537,12 +526,6 @@ export default function Admin({ onExit }) {
             <p className="admin-login__error">
               <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" style={{marginRight:'5px'}}><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
               Trop de tentatives. Réessayez dans {formatRemaining(lockoutRemaining)}.
-            </p>
-          )}
-          {rateLimited && (
-            <p className="admin-login__error">
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" style={{marginRight:'5px'}}><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-              Trop de tentatives détectées. Réessayez dans quelques minutes.
             </p>
           )}
           {pwdError && !loginDisabled && (
