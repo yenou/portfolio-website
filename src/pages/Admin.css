@@ -382,12 +382,35 @@
 
 /* Responsive login */
 @media (max-width: 720px) {
-  .admin-login__inner { flex-direction: column; gap: 28px; }
-  .admin-login__robot { width: 150px; animation: none; }
+  .admin-login {
+    align-items: center;
+    justify-content: center;
+    padding: 24px 16px;
+  }
+  .admin-login__inner {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+  }
+  .admin-login__robot { width: 130px; animation: none; }
+  .admin-login__card {
+    width: 100%;
+    max-width: 400px;
+    padding: 36px 24px 28px;
+  }
+  .admin-login__title { font-size: 1.9rem; }
 }
 @media (max-width: 440px) {
+  .admin-login { padding: 20px 14px; }
   .admin-login__robot { display: none; }
-  .admin-login__card { padding: 36px 24px 30px; border-radius: 18px; }
+  .admin-login__card {
+    padding: 32px 20px 26px;
+    border-radius: 16px;
+    max-width: 100%;
+  }
+  .admin-login__title { font-size: 1.75rem; }
+  .admin-login__badge { font-size: 0.5rem; padding: 4px 10px; }
 }
 
 
