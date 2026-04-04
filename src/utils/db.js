@@ -345,8 +345,12 @@ export async function dbAddLoginAttempt(entry) {
     const snap = await getDoc(loginAttemptsDoc)
     const history = snap.exists() ? (snap.data().history || []) : []
     const next = [entry, ...history].slice(0, 20)
-    const d = snap.exists() ? snap.data() : {}
-    await setDoc(loginAttemptsDoc, { ...d, history: next })
+    if (snap.exists()) {
+      // updateDoc ne touche que history — ne pas écraser attempts/lockedUntil
+      await updateDoc(loginAttemptsDoc, { history: next })
+    } else {
+      await setDoc(loginAttemptsDoc, { history: next, attempts: 0, lockedUntil: null })
+    }
   } catch (e) { console.warn('[Firebase] loginAttempt save failed:', e.message) }
 }
 

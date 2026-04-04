@@ -357,18 +357,21 @@ export default function Admin({ onExit }) {
     } else {
       const newAttempts = attempts + 1
       const locked = newAttempts >= MAX_ATTEMPTS
-      dbAddLoginAttempt({ at: Date.now(), attempt: newAttempts, locked })
       if (locked) {
         const lockedUntil = Date.now() + LOCKOUT_DURATION
         const newState = { attempts: newAttempts, lockedUntil }
-        await dbSetLockoutState(newState) // écrit dans Firestore
+        // Mettre à jour l'UI immédiatement (pas d'await)
         saveLockoutState(newState)
         setLoginDisabled(true)
         setLockoutRemaining(Math.ceil(LOCKOUT_DURATION / 1000))
+        // Persister en Firestore en arrière-plan
+        dbSetLockoutState(newState)
+        dbAddLoginAttempt({ at: Date.now(), attempt: newAttempts, locked })
       } else {
         const newState = { attempts: newAttempts }
-        await dbSetLockoutState(newState)
         saveLockoutState(newState)
+        dbSetLockoutState(newState)
+        dbAddLoginAttempt({ at: Date.now(), attempt: newAttempts, locked })
       }
       setPwdError(true)
     }
