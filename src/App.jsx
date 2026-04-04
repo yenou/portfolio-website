@@ -47,8 +47,9 @@ export default function App() {
         ]).finally(() => setSyncDone(true))
       })
     })
-    if (!visitedRef.current) {
+    if (!visitedRef.current && !sessionStorage.getItem('yenou_visited')) {
       visitedRef.current = true
+      sessionStorage.setItem('yenou_visited', '1')
       incrementVisits()
       dbIncrementVisit()
     }
