@@ -318,12 +318,35 @@ export async function dbGetGallery(code) {
   } catch (e) { return null }
 }
 
+// ── Firestore lockout (server-side, unbypassable) ────────────────────────────
+export async function dbGetLockoutState() {
+  try {
+    const snap = await getDoc(loginAttemptsDoc)
+    if (!snap.exists()) return {}
+    const d = snap.data()
+    return { attempts: d.attempts || 0, lockedUntil: d.lockedUntil || null }
+  } catch (e) { return {} }
+}
+
+export async function dbSetLockoutState(state) {
+  try {
+    const snap = await getDoc(loginAttemptsDoc)
+    const history = snap.exists() ? (snap.data().history || []) : []
+    await setDoc(loginAttemptsDoc, {
+      history,
+      attempts: state.attempts ?? 0,
+      lockedUntil: state.lockedUntil ?? null,
+    })
+  } catch (e) { console.warn('[Firebase] lockout save failed:', e.message) }
+}
+
 export async function dbAddLoginAttempt(entry) {
   try {
     const snap = await getDoc(loginAttemptsDoc)
     const history = snap.exists() ? (snap.data().history || []) : []
     const next = [entry, ...history].slice(0, 20)
-    await setDoc(loginAttemptsDoc, { history: next })
+    const d = snap.exists() ? snap.data() : {}
+    await setDoc(loginAttemptsDoc, { ...d, history: next })
   } catch (e) { console.warn('[Firebase] loginAttempt save failed:', e.message) }
 }
 

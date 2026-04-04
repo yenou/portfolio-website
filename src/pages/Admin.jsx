@@ -14,7 +14,7 @@ import {
   updateLastActive,
 } from '../utils/storage'
 import './Admin.css'
-import { dbSaveConfig, dbSaveAboutImg, dbSaveLogoImg, dbSaveCustomPhoto, dbDeleteCustomPhoto, dbSaveAllHeroSlides, dbGetVisitHistory, dbCreateGallery, dbDeleteGallery, dbAddGalleryPhoto, dbDeleteGalleryPhoto, dbGetAllGalleries, dbGetAvailability, dbSaveAvailability, dbAddLoginAttempt, dbGetLoginHistory, dbClearLoginHistory, dbPingFirestore, dbCreateSession, dbGetSessions, dbDeleteSession, dbRemovePassword, dbMigrateBase64ToCloudinary, dbMigrateHeroSlidesToCloudinary } from '../utils/db'
+import { dbSaveConfig, dbSaveAboutImg, dbSaveLogoImg, dbSaveCustomPhoto, dbDeleteCustomPhoto, dbSaveAllHeroSlides, dbGetVisitHistory, dbCreateGallery, dbDeleteGallery, dbAddGalleryPhoto, dbDeleteGalleryPhoto, dbGetAllGalleries, dbGetAvailability, dbSaveAvailability, dbAddLoginAttempt, dbGetLoginHistory, dbClearLoginHistory, dbPingFirestore, dbCreateSession, dbGetSessions, dbDeleteSession, dbRemovePassword, dbMigrateBase64ToCloudinary, dbMigrateHeroSlidesToCloudinary, dbGetLockoutState, dbSetLockoutState } from '../utils/db'
 
 const CATEGORIES = ['Portraits & Famille', 'Nature & Paysages', 'Concerts & Événements', 'Auto & Moto', 'Architecture']
 
@@ -291,8 +291,13 @@ export default function Admin({ onExit }) {
     return () => window.removeEventListener('keydown', handle)
   }, [auth])
 
-  // Check lockout on mount and on timer
+  // Check lockout on mount: sync Firestore → localStorage, then poll localStorage every second
   useEffect(() => {
+    dbGetLockoutState().then(fsState => {
+      if (fsState.attempts > 0 || fsState.lockedUntil) {
+        saveLockoutState(fsState)
+      }
+    })
     const check = () => {
       const state = getLockoutState()
       if (state.lockedUntil && Date.now() < state.lockedUntil) {
@@ -314,13 +319,19 @@ export default function Admin({ onExit }) {
     e.preventDefault()
     if (loginDisabled) return
 
-    const state = getLockoutState()
-    const attempts = state.attempts || 0
+    // ── Gate 1: vérifier le lockout côté Firestore (incontournable) ──────────
+    const fsState = await dbGetLockoutState()
+    if (fsState.lockedUntil && Date.now() < fsState.lockedUntil) {
+      saveLockoutState(fsState) // resync le cache local
+      setLoginDisabled(true)
+      setLockoutRemaining(Math.ceil((fsState.lockedUntil - Date.now()) / 1000))
+      return
+    }
+    const attempts = fsState.attempts || 0
 
-    // Try Firebase Auth as primary (firebaseLogin uses the imported auth, not local state)
+    // ── Gate 2: tentative de connexion ────────────────────────────────────────
     const firebaseOk = await firebaseLogin(pwd)
 
-    // Fallback: local hash check
     let localOk = false
     if (!firebaseOk) {
       const stored = getPassword()
@@ -335,6 +346,8 @@ export default function Admin({ onExit }) {
       dbRemovePassword()
       dbMigrateBase64ToCloudinary()
       dbMigrateHeroSlidesToCloudinary()
+      // Réinitialiser le lockout dans Firestore ET localStorage
+      await dbSetLockoutState({ attempts: 0, lockedUntil: null })
       saveLockoutState({})
       setAuth(true)
       setPwdError(false)
@@ -347,10 +360,14 @@ export default function Admin({ onExit }) {
       dbAddLoginAttempt({ at: Date.now(), attempt: newAttempts, locked })
       if (locked) {
         const lockedUntil = Date.now() + LOCKOUT_DURATION
-        saveLockoutState({ attempts: newAttempts, lockedUntil })
+        const newState = { attempts: newAttempts, lockedUntil }
+        await dbSetLockoutState(newState) // écrit dans Firestore
+        saveLockoutState(newState)
         setLoginDisabled(true)
       } else {
-        saveLockoutState({ attempts: newAttempts })
+        const newState = { attempts: newAttempts }
+        await dbSetLockoutState(newState)
+        saveLockoutState(newState)
       }
       setPwdError(true)
     }
