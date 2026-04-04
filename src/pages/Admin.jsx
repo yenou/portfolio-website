@@ -291,13 +291,8 @@ export default function Admin({ onExit }) {
     return () => window.removeEventListener('keydown', handle)
   }, [auth])
 
-  // Check lockout on mount: sync Firestore → localStorage, then poll localStorage every second
+  // Check lockout on mount (localStorage par navigateur)
   useEffect(() => {
-    dbGetLockoutState().then(fsState => {
-      if (fsState.attempts > 0 || fsState.lockedUntil) {
-        saveLockoutState(fsState)
-      }
-    })
     const check = () => {
       const state = getLockoutState()
       if (state.lockedUntil && Date.now() < state.lockedUntil) {
@@ -319,17 +314,10 @@ export default function Admin({ onExit }) {
     e.preventDefault()
     if (loginDisabled) return
 
-    // ── Gate 1: vérifier le lockout côté Firestore (incontournable) ──────────
-    const fsState = await dbGetLockoutState()
-    if (fsState.lockedUntil && Date.now() < fsState.lockedUntil) {
-      saveLockoutState(fsState) // resync le cache local
-      setLoginDisabled(true)
-      setLockoutRemaining(Math.ceil((fsState.lockedUntil - Date.now()) / 1000))
-      return
-    }
-    const attempts = fsState.attempts || 0
+    // Lockout par navigateur (localStorage) — Firebase Auth protège côté serveur
+    const state = getLockoutState()
+    const attempts = state.attempts || 0
 
-    // ── Gate 2: tentative de connexion ────────────────────────────────────────
     const firebaseOk = await firebaseLogin(pwd)
 
     let localOk = false
@@ -346,8 +334,6 @@ export default function Admin({ onExit }) {
       dbRemovePassword()
       dbMigrateBase64ToCloudinary()
       dbMigrateHeroSlidesToCloudinary()
-      // Réinitialiser le lockout dans Firestore ET localStorage
-      await dbSetLockoutState({ attempts: 0, lockedUntil: null })
       saveLockoutState({})
       setAuth(true)
       setPwdError(false)
@@ -360,19 +346,14 @@ export default function Admin({ onExit }) {
       if (locked) {
         const lockedUntil = Date.now() + LOCKOUT_DURATION
         const newState = { attempts: newAttempts, lockedUntil }
-        // Mettre à jour l'UI immédiatement (pas d'await)
         saveLockoutState(newState)
         setLoginDisabled(true)
         setLockoutRemaining(Math.ceil(LOCKOUT_DURATION / 1000))
-        // Persister en Firestore en arrière-plan
-        dbSetLockoutState(newState)
-        dbAddLoginAttempt({ at: Date.now(), attempt: newAttempts, locked })
       } else {
-        const newState = { attempts: newAttempts }
-        saveLockoutState(newState)
-        dbSetLockoutState(newState)
-        dbAddLoginAttempt({ at: Date.now(), attempt: newAttempts, locked })
+        saveLockoutState({ attempts: newAttempts })
       }
+      // Log dans Firestore pour monitoring uniquement (sans impact sur le lockout)
+      dbAddLoginAttempt({ at: Date.now(), attempt: newAttempts, locked })
       setPwdError(true)
     }
   }
