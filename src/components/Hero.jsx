@@ -46,9 +46,7 @@ export default function Hero({ ready }) {
 
   // Normalize slides: support both string (legacy) and object format
   const rawSlides = heroImgs.length > 0 ? heroImgs : (heroImg ? [heroImg] : [])
-  const slides = rawSlides.length > 0
-    ? rawSlides.map(s => typeof s === 'string' ? { src: s, location: 'Contrexéville', sub: 'Vosges, France' } : s)
-    : [{ src: '/images/hero.jpg', location: 'Contrexéville', sub: 'Vosges, France' }]
+  const slides = rawSlides.map(s => typeof s === 'string' ? { src: s, location: 'Contrexéville', sub: 'Vosges, France' } : s)
 
   const [current, setCurrent]   = useState(0)
   const [prev, setPrev]         = useState(null)
