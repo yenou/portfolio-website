@@ -472,35 +472,59 @@ export default function Admin({ onExit }) {
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}>
 
-        {/* Icône */}
+        {/* Corner accents */}
+        <span className="admin-login__corner admin-login__corner--tl" />
+        <span className="admin-login__corner admin-login__corner--tr" />
+        <span className="admin-login__corner admin-login__corner--bl" />
+        <span className="admin-login__corner admin-login__corner--br" />
+
+        {/* System status badge */}
+        <motion.div className="admin-login__badge"
+          initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}>
+          <span className="admin-login__badge-dot" />
+          <span>Système en ligne</span>
+        </motion.div>
+
+        {/* Icône avec ring */}
         <motion.div className="admin-login__icon"
-          initial={{ opacity: 0, scale: 0.5 }}
+          initial={{ opacity: 0, scale: 0.4 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}>
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round">
-            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-            <circle cx="12" cy="13" r="4"/>
-          </svg>
+          transition={{ duration: 0.55, delay: 0.18, ease: [0.16, 1, 0.3, 1] }}>
+          <div className="admin-login__icon-ring">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round">
+              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+              <circle cx="12" cy="13" r="4"/>
+            </svg>
+          </div>
         </motion.div>
 
         {/* Titre */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.22 }}>
+        <motion.div className="admin-login__title-block"
+          initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.25 }}>
+          <p className="admin-login__eyebrow">// Accès sécurisé</p>
           <h1 className="admin-login__title">Administration</h1>
           <p className="admin-login__sub">Yenou André Photographie</p>
         </motion.div>
 
-        {/* Séparateur */}
-        <div className="admin-login__divider" />
+        {/* Séparateur avec dot central */}
+        <div className="admin-login__divider">
+          <span className="admin-login__divider-dot" />
+        </div>
 
         {/* Formulaire */}
         <motion.form onSubmit={handleLogin} className="admin-login__form"
           initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}>
+          transition={{ duration: 0.5, delay: 0.35 }}>
 
           <div className="admin-login__field">
-            <label className="admin-login__label">Mot de passe</label>
+            <label className="admin-login__label">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" style={{marginRight:'6px',opacity:0.6}}>
+                <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+              </svg>
+              Mot de passe
+            </label>
             <input type="password" placeholder="••••••••••••" value={pwd}
               onChange={e => { setPwd(e.target.value); setPwdError(false) }}
               className={`admin-login__input ${pwdError ? 'error' : ''}`}
@@ -508,23 +532,37 @@ export default function Admin({ onExit }) {
           </div>
 
           {loginDisabled && lockoutRemaining > 0 && (
-            <p className="admin-login__error">Trop de tentatives. Réessayez dans {formatRemaining(lockoutRemaining)}.</p>
+            <p className="admin-login__error">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" style={{marginRight:'5px'}}><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              Trop de tentatives. Réessayez dans {formatRemaining(lockoutRemaining)}.
+            </p>
           )}
           {pwdError && !loginDisabled && (
             <p className="admin-login__error">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" style={{marginRight:'5px'}}><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
               Mot de passe incorrect.{attemptsLeft > 0 && attemptsLeft <= 3 ? ` ${attemptsLeft} tentative${attemptsLeft > 1 ? 's' : ''} restante${attemptsLeft > 1 ? 's' : ''}.` : ''}
             </p>
           )}
 
           <button type="submit" className="admin-login__submit" disabled={loginDisabled}>
-            <span>{loginDisabled ? 'Verrouillé…' : 'Accéder'}</span>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-              <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
-            </svg>
+            {loginDisabled ? (
+              <>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                <span>Verrouillé…</span>
+              </>
+            ) : (
+              <>
+                <span>Accéder</span>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </>
+            )}
           </button>
         </motion.form>
 
-        <button className="admin-login__back" onClick={onExit}>← Retour au site</button>
+        <button className="admin-login__back" onClick={onExit}>
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" style={{marginRight:'5px'}}><polyline points="15 18 9 12 15 6"/></svg>
+          Retour au site
+        </button>
       </motion.div>
 
       </div>{/* /.admin-login__inner */}
