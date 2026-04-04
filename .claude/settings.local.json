@@ -10,7 +10,10 @@
       "Bash(gh auth:*)",
       "Bash(find 'c:\\\\Users\\\\sidne\\\\Desktop\\\\Portfolio photographie' -name firestore.rules -o -name *rules.*)",
       "Bash(find 'c:\\\\Users\\\\sidne\\\\Desktop\\\\Portfolio photographie' -name *.json -path */src/*)",
-      "Bash(grep -rn \"dbGetAllGalleries\\\\|dbGetGallery\" 'c:\\\\Users\\\\sidne\\\\Desktop\\\\Portfolio photographie\\\\src' --include=*.jsx --include=*.js)"
+      "Bash(grep -rn \"dbGetAllGalleries\\\\|dbGetGallery\" 'c:\\\\Users\\\\sidne\\\\Desktop\\\\Portfolio photographie\\\\src' --include=*.jsx --include=*.js)",
+      "Bash(curl -s \"https://firestore.googleapis.com/v1/projects/yenou-photographie/databases/\\(default\\)/documents/customPhotos?key=AIzaSyAJySSg4ENDONgLHos-f-IJmGNemjJppas\")",
+      "Bash(curl -s \"https://firestore.googleapis.com/v1/projects/yenou-photographie/databases/\\(default\\)/documents/customPhotos?key=AIzaSyAJySSg4ENDONgLHos-f-IJmGNemjJppas&fields=documents.name\")",
+      "Bash(del \"c:/Users/sidne/Desktop/Portfolio photographie/public/images/hero.jpg\")"
     ]
   }
 }
