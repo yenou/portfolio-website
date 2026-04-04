@@ -464,6 +464,81 @@
 .admin-nav__item:hover .admin-nav__icon { opacity: 0.8; }
 .admin-nav__label { /* inline */ }
 
+/* Groupes sidebar */
+.admin-nav__group {
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-nav__divider {
+  display: block;
+  font-size: 0.52rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.2);
+  padding: 20px 20px 6px;
+  user-select: none;
+}
+
+.admin-nav__kbd {
+  margin-left: auto;
+  font-size: 0.5rem;
+  font-family: 'Montserrat', sans-serif;
+  color: rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 4px;
+  padding: 1px 5px;
+  min-width: 16px;
+  text-align: center;
+  transition: color 0.2s, background 0.2s;
+  flex-shrink: 0;
+}
+
+.admin-nav__item.active .admin-nav__kbd {
+  color: rgba(229,57,53,0.6);
+  background: rgba(229,57,53,0.1);
+  border-color: rgba(229,57,53,0.2);
+}
+
+.admin-nav__footer {
+  margin-top: auto;
+  padding: 20px 20px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+.admin-nav__status {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.58rem;
+  letter-spacing: 0.14em;
+  color: rgba(255,255,255,0.3);
+}
+
+.admin-nav__status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #4ade80;
+  box-shadow: 0 0 6px rgba(74,222,128,0.6);
+  animation: pulse-dot 2.5s ease infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.6; transform: scale(0.85); }
+}
+
+.admin-nav__version {
+  font-size: 0.52rem;
+  letter-spacing: 0.15em;
+  color: rgba(255,255,255,0.15);
+}
+
 
 /* ═══════════════════════════════════════════════════════════════════════
    CONTENT
@@ -1745,79 +1820,3 @@ h2.admin-tab__title { margin-bottom: 0; }
   color: var(--red-bright);
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   SIDEBAR — GROUPES, KBD BADGES, STATUS FOOTER
-   ═══════════════════════════════════════════════════════════════════════ */
-.admin-nav__group {
-  display: flex;
-  flex-direction: column;
-}
-
-.admin-nav__divider {
-  display: block;
-  font-size: 0.52rem;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
-  color: rgba(255,255,255,0.2);
-  padding: 20px 20px 6px;
-  user-select: none;
-}
-
-.admin-nav__kbd {
-  margin-left: auto;
-  font-size: 0.5rem;
-  font-family: 'Montserrat', sans-serif;
-  color: rgba(255,255,255,0.15);
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.09);
-  border-radius: 4px;
-  padding: 1px 5px;
-  min-width: 16px;
-  text-align: center;
-  transition: color 0.2s, background 0.2s;
-  flex-shrink: 0;
-}
-
-.admin-nav__item.active .admin-nav__kbd {
-  color: rgba(229,57,53,0.6);
-  background: rgba(229,57,53,0.1);
-  border-color: rgba(229,57,53,0.2);
-}
-
-.admin-nav__footer {
-  margin-top: auto;
-  padding: 20px 20px 8px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-top: 1px solid rgba(255,255,255,0.05);
-}
-
-.admin-nav__status {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  font-size: 0.58rem;
-  letter-spacing: 0.14em;
-  color: rgba(255,255,255,0.3);
-}
-
-.admin-nav__status-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #4ade80;
-  box-shadow: 0 0 6px rgba(74,222,128,0.6);
-  animation: pulse-dot 2.5s ease infinite;
-}
-
-@keyframes pulse-dot {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50%       { opacity: 0.6; transform: scale(0.85); }
-}
-
-.admin-nav__version {
-  font-size: 0.52rem;
-  letter-spacing: 0.15em;
-  color: rgba(255,255,255,0.15);
-}
