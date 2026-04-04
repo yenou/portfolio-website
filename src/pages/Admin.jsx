@@ -237,11 +237,14 @@ async function firebaseLogin(password) {
     await signInWithEmailAndPassword(auth, ADMIN_EMAIL, password)
     return 'ok'
   } catch (e) {
-    if (e.code === 'auth/too-many-requests') return 'rate_limited'
-    if (e.code === 'auth/user-not-found' || e.code === 'auth/invalid-credential' || e.code === 'auth/invalid-email') {
+    // Codes explicitement "mauvais mot de passe"
+    if (e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential') return 'wrong'
+    // Premier login — compte inexistant
+    if (e.code === 'auth/user-not-found' || e.code === 'auth/invalid-email') {
       try { await createUserWithEmailAndPassword(auth, ADMIN_EMAIL, password); return 'ok' } catch { /* ignore */ }
     }
-    return 'wrong'
+    // Tout autre code (too-many-requests, network, etc.) → rate limited
+    return 'rate_limited'
   }
 }
 
