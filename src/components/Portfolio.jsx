@@ -135,9 +135,13 @@ export default function Portfolio() {
   }
 
   const touchStart = useRef(null)
-  const onTouchStart = (e) => { touchStart.current = e.touches[0].clientX }
-  const onTouchEnd   = (e) => {
+  const onTouchStart = (e) => {
+    if (e.touches.length > 1) { touchStart.current = null; return } // pinch-zoom → ignorer
+    touchStart.current = e.touches[0].clientX
+  }
+  const onTouchEnd = (e) => {
     if (touchStart.current === null) return
+    if (e.changedTouches.length > 1) { touchStart.current = null; return }
     const diff = touchStart.current - e.changedTouches[0].clientX
     if (Math.abs(diff) > 50) navigate(diff > 0 ? 1 : -1)
     touchStart.current = null
