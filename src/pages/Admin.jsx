@@ -125,7 +125,136 @@ const DEFAULT_PHOTOS = [
   { id: 9,  src: '/images/portfolio/concert3.jpg',  category: 'Concerts & Événements', alt: 'Concert ambiance',   isDefault: true },
 ]
 
-// ── Auto-logout hook ──────────────────────────────────────────────────────────
+// ── Space background canvas ───────────────────────────────────────────────────
+function SpaceCanvas() {
+  const ref = useRef(null)
+  useEffect(() => {
+    const canvas = ref.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+    let raf, W, H
+
+    // Stars
+    const STAR_COUNT = 220
+    const stars = []
+    // Shooting stars
+    const shoots = []
+    let shootTimer = 0
+
+    function resize() {
+      W = canvas.width  = window.innerWidth
+      H = canvas.height = window.innerHeight
+    }
+    resize()
+    window.addEventListener('resize', resize)
+
+    // Init stars
+    for (let i = 0; i < STAR_COUNT; i++) {
+      stars.push({
+        x: Math.random() * 1,
+        y: Math.random() * 1,
+        r: Math.random() * 1.4 + 0.2,
+        alpha: Math.random() * 0.7 + 0.2,
+        speed: Math.random() * 0.0004 + 0.0001,
+        twinkleOffset: Math.random() * Math.PI * 2,
+        color: Math.random() < 0.15
+          ? `rgba(229,120,120,`
+          : Math.random() < 0.2
+            ? `rgba(160,180,255,`
+            : `rgba(255,255,255,`,
+      })
+    }
+
+    function spawnShoot() {
+      const fromLeft = Math.random() > 0.5
+      shoots.push({
+        x: fromLeft ? Math.random() * W * 0.4 : W * 0.6 + Math.random() * W * 0.4,
+        y: Math.random() * H * 0.5,
+        len: Math.random() * 180 + 80,
+        speed: Math.random() * 12 + 8,
+        angle: Math.PI / 6 + Math.random() * Math.PI / 8,
+        alpha: 1,
+        trail: [],
+      })
+    }
+
+    let t = 0
+    function draw() {
+      t += 0.012
+      ctx.clearRect(0, 0, W, H)
+
+      // Nebula glow patches
+      const nebulas = [
+        { x: 0.2, y: 0.3, r: W * 0.35, c1: 'rgba(80,20,120,0.06)', c2: 'transparent' },
+        { x: 0.75, y: 0.6, r: W * 0.3,  c1: 'rgba(180,30,40,0.05)', c2: 'transparent' },
+        { x: 0.5, y: 0.15, r: W * 0.25, c1: 'rgba(30,60,160,0.05)', c2: 'transparent' },
+      ]
+      nebulas.forEach(n => {
+        const g = ctx.createRadialGradient(n.x*W, n.y*H, 0, n.x*W, n.y*H, n.r)
+        g.addColorStop(0, n.c1); g.addColorStop(1, n.c2)
+        ctx.fillStyle = g
+        ctx.beginPath(); ctx.arc(n.x*W, n.y*H, n.r, 0, Math.PI*2); ctx.fill()
+      })
+
+      // Stars
+      stars.forEach(s => {
+        const twinkle = 0.5 + 0.5 * Math.sin(t * 1.5 + s.twinkleOffset)
+        const a = s.alpha * (0.5 + 0.5 * twinkle)
+        ctx.beginPath()
+        ctx.arc(s.x * W, s.y * H, s.r, 0, Math.PI * 2)
+        ctx.fillStyle = s.color + a + ')'
+        ctx.fill()
+        // Subtle cross sparkle for big stars
+        if (s.r > 1.2 && twinkle > 0.8) {
+          ctx.strokeStyle = s.color + (a * 0.4) + ')'
+          ctx.lineWidth = 0.5
+          const len = s.r * 3
+          ctx.beginPath(); ctx.moveTo(s.x*W - len, s.y*H); ctx.lineTo(s.x*W + len, s.y*H); ctx.stroke()
+          ctx.beginPath(); ctx.moveTo(s.x*W, s.y*H - len); ctx.lineTo(s.x*W, s.y*H + len); ctx.stroke()
+        }
+      })
+
+      // Shooting stars
+      shootTimer++
+      if (shootTimer > 90 + Math.random() * 80) { spawnShoot(); shootTimer = 0 }
+
+      for (let i = shoots.length - 1; i >= 0; i--) {
+        const s = shoots[i]
+        s.x += Math.cos(s.angle) * s.speed
+        s.y += Math.sin(s.angle) * s.speed
+        s.alpha -= 0.018
+        if (s.alpha <= 0 || s.x > W + 100 || s.y > H + 100) { shoots.splice(i, 1); continue }
+
+        const tx = s.x - Math.cos(s.angle) * s.len
+        const ty = s.y - Math.sin(s.angle) * s.len
+        const g = ctx.createLinearGradient(tx, ty, s.x, s.y)
+        g.addColorStop(0, `rgba(255,255,255,0)`)
+        g.addColorStop(0.7, `rgba(255,220,200,${s.alpha * 0.4})`)
+        g.addColorStop(1, `rgba(255,255,255,${s.alpha})`)
+        ctx.strokeStyle = g
+        ctx.lineWidth = 1.5
+        ctx.beginPath(); ctx.moveTo(tx, ty); ctx.lineTo(s.x, s.y); ctx.stroke()
+
+        // Glow at head
+        const glow = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, 6)
+        glow.addColorStop(0, `rgba(255,240,220,${s.alpha * 0.8})`)
+        glow.addColorStop(1, 'transparent')
+        ctx.fillStyle = glow
+        ctx.beginPath(); ctx.arc(s.x, s.y, 6, 0, Math.PI*2); ctx.fill()
+      }
+
+      raf = requestAnimationFrame(draw)
+    }
+    draw()
+    return () => {
+      cancelAnimationFrame(raf)
+      window.removeEventListener('resize', resize)
+    }
+  }, [])
+  return <canvas ref={ref} style={{ position:'absolute', inset:0, width:'100%', height:'100%', pointerEvents:'none', zIndex:0 }} />
+}
+
+// ── Auto-logout hook ───────────────────────────────────────────────────────────
 function useAutoLogout(timeoutMinutes, onLogout) {
   useEffect(() => {
     if (!timeoutMinutes) return
@@ -352,6 +481,8 @@ export default function Admin({ onExit }) {
 
   if (!auth) return (
     <div className="admin-login">
+
+      <SpaceCanvas />
 
       {/* Décorations de fond */}
       <div className="admin-login__rings">
