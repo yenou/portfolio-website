@@ -361,19 +361,152 @@ export default function Admin({ onExit }) {
 
   if (!auth) return (
     <div className="admin-login">
-      <div className="admin-login__box">
-        <div className="admin-login__icon">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
-            <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+
+      {/* Décorations de fond */}
+      <div className="admin-login__rings">
+        <div className="admin-login__ring" />
+        <div className="admin-login__ring admin-login__ring--2" />
+        <div className="admin-login__ring admin-login__ring--3" />
+      </div>
+      <div className="admin-login__glow" />
+
+      <div className="admin-login__inner">
+
+      {/* Robot */}
+      <motion.div className="admin-login__robot"
+        initial={{ opacity: 0, x: -30 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}>
+        <svg className="admin-login__robot-svg" viewBox="0 0 200 295" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="lRim" x1="0%" y1="100%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#ff3a5c"/>
+              <stop offset="38%" stopColor="#e53935"/>
+              <stop offset="68%" stopColor="#4ade80"/>
+              <stop offset="100%" stopColor="#60a5fa"/>
+            </linearGradient>
+            <linearGradient id="lNeck" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#111118"/>
+              <stop offset="50%" stopColor="#1e1e2e"/>
+              <stop offset="100%" stopColor="#111118"/>
+            </linearGradient>
+            <linearGradient id="lBase" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#c0392b"/>
+              <stop offset="100%" stopColor="#6b1212"/>
+            </linearGradient>
+            <linearGradient id="lScreen" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#0d0d18"/>
+              <stop offset="100%" stopColor="#050510"/>
+            </linearGradient>
+            <filter id="fEye" x="-200%" y="-200%" width="500%" height="500%">
+              <feGaussianBlur stdDeviation="4" result="b"/>
+              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <filter id="fRim" x="-15%" y="-15%" width="130%" height="130%">
+              <feGaussianBlur stdDeviation="7" result="b"/>
+              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <filter id="fBase" x="-30%" y="-30%" width="160%" height="160%">
+              <feGaussianBlur stdDeviation="5" result="b"/>
+              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+
+          {/* Shadow */}
+          <ellipse cx="100" cy="286" rx="42" ry="8" fill="rgba(0,0,0,0.45)"/>
+
+          {/* Base stand */}
+          <rect x="76" y="253" width="48" height="26" rx="9" fill="url(#lBase)"/>
+          <ellipse cx="100" cy="253" rx="24" ry="7" fill="#d04040"/>
+          <ellipse cx="100" cy="278" rx="24" ry="6" fill="#5a1010"/>
+
+          {/* Neck */}
+          <rect x="86" y="225" width="28" height="32" rx="5" fill="url(#lNeck)"/>
+          <rect x="82" y="225" width="36" height="5" rx="2.5" fill="#222232"/>
+          <rect x="82" y="252" width="36" height="5" rx="2.5" fill="#222232"/>
+
+          {/* Head — outer rim (colored gradient glow) */}
+          <path d="M56 65 L67 40 L133 40 L144 65 L156 102 L156 168 L144 192 L133 214 L67 214 L56 192 L44 168 L44 102 Z"
+            fill="url(#lRim)" filter="url(#fRim)" opacity="0.92"/>
+
+          {/* Head — inner body */}
+          <path d="M63 72 L72 50 L128 50 L137 72 L147 104 L147 166 L137 188 L128 206 L72 206 L63 188 L53 166 L53 104 Z"
+            fill="#14141f"/>
+
+          {/* Face screen */}
+          <rect x="67" y="82" width="66" height="66" rx="10" fill="url(#lScreen)"/>
+          <rect x="67" y="82" width="66" height="66" rx="10" fill="none" stroke="rgba(229,57,53,0.18)" strokeWidth="1.2"/>
+
+          {/* Eyes */}
+          <circle className="robot-eye" cx="88" cy="115" r="8" fill="#ff2244" filter="url(#fEye)"/>
+          <circle className="robot-eye" cx="112" cy="115" r="8" fill="#ff2244" filter="url(#fEye)"/>
+          <circle cx="88" cy="115" r="4" fill="#ff6680"/>
+          <circle cx="112" cy="115" r="4" fill="#ff6680"/>
+          <circle cx="89.5" cy="113.5" r="1.5" fill="#ffaabb" opacity="0.8"/>
+          <circle cx="113.5" cy="113.5" r="1.5" fill="#ffaabb" opacity="0.8"/>
+
+          {/* Side ears */}
+          <rect x="28" y="112" width="17" height="28" rx="5" fill="#1a1a2a" stroke="rgba(229,57,53,0.25)" strokeWidth="1"/>
+          <rect x="32" y="120" width="9" height="3" rx="1.5" fill="rgba(229,57,53,0.6)"/>
+          <rect x="32" y="128" width="9" height="3" rx="1.5" fill="rgba(96,165,250,0.5)"/>
+          <rect x="155" y="112" width="17" height="28" rx="5" fill="#1a1a2a" stroke="rgba(74,222,128,0.25)" strokeWidth="1"/>
+          <rect x="159" y="120" width="9" height="3" rx="1.5" fill="rgba(74,222,128,0.6)"/>
+          <rect x="159" y="128" width="9" height="3" rx="1.5" fill="rgba(229,57,53,0.5)"/>
+
+          {/* Top antenna light */}
+          <line x1="100" y1="40" x2="100" y2="26" stroke="#2a2a3e" strokeWidth="3" strokeLinecap="round"/>
+          <circle cx="100" cy="21" r="6" fill="#e53935" opacity="0.9"/>
+          <circle cx="100" cy="21" r="10" fill="none" stroke="rgba(229,57,53,0.35)" strokeWidth="1.5"/>
+
+          {/* Rim color accents */}
+          <line x1="44" y1="135" x2="53" y2="135" stroke="#60a5fa" strokeWidth="2.5" strokeLinecap="round" opacity="0.8"/>
+          <line x1="44" y1="148" x2="53" y2="148" stroke="#818cf8" strokeWidth="2" strokeLinecap="round" opacity="0.6"/>
+          <line x1="147" y1="118" x2="156" y2="118" stroke="#4ade80" strokeWidth="2.5" strokeLinecap="round" opacity="0.8"/>
+          <line x1="147" y1="160" x2="156" y2="160" stroke="#ff3a5c" strokeWidth="2.5" strokeLinecap="round" opacity="0.8"/>
+        </svg>
+      </motion.div>
+
+      {/* Card */}
+      <motion.div className="admin-login__card"
+        initial={{ opacity: 0, y: 28, scale: 0.96 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}>
+
+        {/* Icône */}
+        <motion.div className="admin-login__icon"
+          initial={{ opacity: 0, scale: 0.5 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}>
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round">
+            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+            <circle cx="12" cy="13" r="4"/>
           </svg>
-        </div>
-        <h1 className="admin-login__title">Administration</h1>
-        <p className="admin-login__sub">YENOU André Photographie</p>
-        <form onSubmit={handleLogin} className="admin-login__form">
-          <input type="password" placeholder="Mot de passe" value={pwd}
-            onChange={e => { setPwd(e.target.value); setPwdError(false) }}
-            className={`admin-login__input ${pwdError ? 'error' : ''}`}
-            autoFocus disabled={loginDisabled} />
+        </motion.div>
+
+        {/* Titre */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.22 }}>
+          <h1 className="admin-login__title">Administration</h1>
+          <p className="admin-login__sub">Yenou André Photographie</p>
+        </motion.div>
+
+        {/* Séparateur */}
+        <div className="admin-login__divider" />
+
+        {/* Formulaire */}
+        <motion.form onSubmit={handleLogin} className="admin-login__form"
+          initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.3 }}>
+
+          <div className="admin-login__field">
+            <label className="admin-login__label">Mot de passe</label>
+            <input type="password" placeholder="••••••••••••" value={pwd}
+              onChange={e => { setPwd(e.target.value); setPwdError(false) }}
+              className={`admin-login__input ${pwdError ? 'error' : ''}`}
+              autoFocus disabled={loginDisabled} />
+          </div>
+
           {loginDisabled && lockoutRemaining > 0 && (
             <p className="admin-login__error">Trop de tentatives. Réessayez dans {formatRemaining(lockoutRemaining)}.</p>
           )}
@@ -382,10 +515,19 @@ export default function Admin({ onExit }) {
               Mot de passe incorrect.{attemptsLeft > 0 && attemptsLeft <= 3 ? ` ${attemptsLeft} tentative${attemptsLeft > 1 ? 's' : ''} restante${attemptsLeft > 1 ? 's' : ''}.` : ''}
             </p>
           )}
-          <button type="submit" className="admin-btn admin-btn--solid" disabled={loginDisabled}>Accéder</button>
-        </form>
+
+          <button type="submit" className="admin-login__submit" disabled={loginDisabled}>
+            <span>{loginDisabled ? 'Verrouillé…' : 'Accéder'}</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+              <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+            </svg>
+          </button>
+        </motion.form>
+
         <button className="admin-login__back" onClick={onExit}>← Retour au site</button>
-      </div>
+      </motion.div>
+
+      </div>{/* /.admin-login__inner */}
     </div>
   )
 
