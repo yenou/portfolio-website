@@ -5,6 +5,13 @@ import './Portfolio.css'
 
 const categories = ['Portraits & Famille', 'Nature & Paysages', 'Concerts & Événements', 'Auto & Moto', 'Architecture']
 
+// Transforme une URL Cloudinary pour la grille (petite) ou le lightbox (pleine qualité)
+function cloudinaryUrl(src, mode = 'thumb') {
+  if (!src || !src.includes('cloudinary.com')) return src
+  const transform = mode === 'full' ? 'q_auto,f_auto' : 'w_800,q_auto,f_auto'
+  return src.replace('/upload/', `/upload/${transform}/`)
+}
+
 export default function Portfolio() {
   const [active, setActive]     = useState(categories[0])
   const [lightbox, setLightbox] = useState(null)
@@ -172,7 +179,7 @@ export default function Portfolio() {
               onClick={() => setLightbox(photo)}
             >
               <img
-                src={photo.src}
+                src={cloudinaryUrl(photo.src, 'thumb')}
                 alt={photo.alt}
                 loading="lazy"
                 onError={(e) => { e.target.closest('.portfolio__masonry-item').style.display = 'none' }}
@@ -208,7 +215,7 @@ export default function Portfolio() {
               onClick={() => setLightbox(photo)}
             >
               <img
-                src={photo.src}
+                src={cloudinaryUrl(photo.src, 'thumb')}
                 alt={photo.alt}
                 loading="lazy"
                 onError={(e) => { e.target.closest('.portfolio__carousel-item').style.display = 'none' }}
@@ -263,7 +270,7 @@ export default function Portfolio() {
           </button>
           <button className="lightbox__prev" onClick={e => { e.stopPropagation(); navigate(-1) }}>‹</button>
           <div className="lightbox__inner" onClick={e => e.stopPropagation()}>
-            <img src={lightbox.src} alt={lightbox.alt} />
+            <img src={cloudinaryUrl(lightbox.src, 'full')} alt={lightbox.alt} />
             <button
               className={`portfolio__like portfolio__like--lb ${likedByMe.includes(String(lightbox.id)) ? 'portfolio__like--on' : ''}`}
               onClick={(e) => toggleLike(e, lightbox.id)}
