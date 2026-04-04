@@ -1273,23 +1273,6 @@ function TabPhotos() {
           </div>
           <AboutInput />
         </div>
-        <div className="admin-img-editor">
-          <p className="admin-field-label">Logo (navbar)</p>
-          <div className="admin-img-preview admin-img-preview--logo" onClick={openLogo}>
-            {logoImg
-              ? <img src={logoImg} alt="logo" />
-              : <span className="admin-img-preview__placeholder">Aucun logo — cliquer pour uploader</span>
-            }
-            <div className="admin-img-preview__overlay">Changer</div>
-          </div>
-          <p className="admin-field-hint">PNG ou SVG recommandé. Remplace le texte dans la navbar.</p>
-          {logoImg && (
-            <button className="admin-btn admin-btn--ghost admin-btn--sm" style={{ marginTop: 6 }} onClick={() => { saveLogoImg(null); setLogoImgState(null) }}>
-              Supprimer le logo
-            </button>
-          )}
-          <LogoInput />
-        </div>
       </div>
 
       {/* Upload new portfolio photo */}
