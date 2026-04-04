@@ -364,6 +364,7 @@ export default function Admin({ onExit }) {
         await dbSetLockoutState(newState) // écrit dans Firestore
         saveLockoutState(newState)
         setLoginDisabled(true)
+        setLockoutRemaining(Math.ceil(LOCKOUT_DURATION / 1000))
       } else {
         const newState = { attempts: newAttempts }
         await dbSetLockoutState(newState)
