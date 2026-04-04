@@ -581,12 +581,24 @@ const TAB_ICONS = {
 
 function TabTitle({ id, children }) {
   return (
-    <div className="admin-tab__title-wrap">
+    <motion.div
+      className="admin-tab__title-wrap"
+      initial={{ opacity: 0, x: -16 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+    >
       <h2 className="admin-tab__title">{children}</h2>
       {TAB_ICONS[id] && (
-        <span className="admin-tab__title-icon">{TAB_ICONS[id]}</span>
+        <motion.span
+          className="admin-tab__title-icon"
+          initial={{ opacity: 0, scale: 0.6 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.35, delay: 0.18, ease: [0.16, 1, 0.3, 1] }}
+        >
+          {TAB_ICONS[id]}
+        </motion.span>
       )}
-    </div>
+    </motion.div>
   )
 }
 
