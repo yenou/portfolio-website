@@ -25,8 +25,8 @@
   --border-hover: rgba(255,255,255,0.14);
 
   --text:         #f1f1f3;
-  --text-2:       #9ca3af;
-  --text-3:       #8b949e;
+  --text-2:       #b8bec8;
+  --text-3:       #a0a8b4;
 
   --shadow-card:  0 4px 24px rgba(0,0,0,0.5);
   --shadow-red:   0 0 24px rgba(229,57,53,0.3);
@@ -1932,7 +1932,7 @@ h2.admin-tab__title { margin-bottom: 0; }
   .admin-nav__kbd { display: none; }
   .admin-nav__footer { display: none; }
   .dashboard-greeting { flex-direction: column; gap: 8px; align-items: flex-start; }
-  .dashboard-greeting__clock { font-size: 1.1rem; }
+  .dashboard-greeting__right { align-self: flex-start; }
   .dashboard-completion__items { flex-wrap: wrap; gap: 8px; }
 }
 
@@ -1998,13 +1998,55 @@ h2.admin-tab__title { margin-bottom: 0; }
   color: rgba(255,255,255,0.3);
 }
 
-.dashboard-greeting__clock {
+.dashboard-greeting__right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-shrink: 0;
+}
+
+.dashboard-greeting__weather {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-right: 1px solid rgba(255,255,255,0.08);
+  padding-right: 20px;
+}
+.dashboard-greeting__weather-icon { font-size: 1.8rem; line-height: 1; }
+.dashboard-greeting__weather-temp {
   font-family: 'Montserrat', sans-serif;
-  font-size: 1.6rem;
-  font-weight: 200;
-  letter-spacing: 0.08em;
-  color: rgba(255,255,255,0.55);
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1;
+}
+.dashboard-greeting__weather-city {
+  font-size: 0.58rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  margin-top: 2px;
+}
+
+.dashboard-greeting__activity { text-align: right; }
+.dashboard-greeting__activity-label {
+  font-size: 0.55rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  margin-bottom: 3px;
+}
+.dashboard-greeting__activity-val {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--text-2);
   font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 600px) {
+  .dashboard-greeting__right { gap: 12px; }
+  .dashboard-greeting__weather { padding-right: 12px; }
+  .dashboard-greeting__activity { display: none; }
 }
 
 /* ═══════════════════════════════════════════════════════════════════════

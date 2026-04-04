@@ -969,16 +969,45 @@ function WavingAvatar() {
 // ═══════════════════════════════════════════════════════════════════════════════
 // GREETING BANNER
 // ═══════════════════════════════════════════════════════════════════════════════
+const WMO_ICONS = {
+  0:'☀️', 1:'🌤️', 2:'⛅', 3:'☁️',
+  45:'🌫️', 48:'🌫️',
+  51:'🌦️', 53:'🌦️', 55:'🌧️',
+  61:'🌧️', 63:'🌧️', 65:'🌧️',
+  71:'🌨️', 73:'❄️', 75:'❄️',
+  80:'🌦️', 81:'🌧️', 82:'⛈️',
+  95:'⛈️', 96:'⛈️', 99:'⛈️',
+}
+
 function GreetingBanner() {
-  const [now, setNow] = useState(new Date())
+  const [now, setNow]         = useState(new Date())
+  const [weather, setWeather] = useState(null)
+  const lastActive            = getLastActive()
+
   useEffect(() => {
     const t = setInterval(() => setNow(new Date()), 1000)
     return () => clearInterval(t)
   }, [])
-  const h = now.getHours()
+
+  useEffect(() => {
+    fetch('https://api.open-meteo.com/v1/forecast?latitude=48.18&longitude=5.9&current=temperature_2m,weather_code&timezone=Europe%2FParis')
+      .then(r => r.json())
+      .then(d => setWeather({ temp: Math.round(d.current.temperature_2m), code: d.current.weather_code }))
+      .catch(() => {})
+  }, [])
+
+  const h        = now.getHours()
   const greeting = h < 5 ? 'Bonne nuit' : h < 12 ? 'Bonjour' : h < 18 ? 'Bon après-midi' : 'Bonsoir'
-  const timeStr = now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
-  const dateStr = now.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
+  const dateStr  = now.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
+
+  const lastActiveStr = (() => {
+    const diff = Math.floor((Date.now() - lastActive) / 1000)
+    if (diff < 60)   return "à l'instant"
+    if (diff < 3600) return `il y a ${Math.floor(diff / 60)} min`
+    if (diff < 86400) return `il y a ${Math.floor(diff / 3600)}h`
+    return new Date(lastActive).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })
+  })()
+
   return (
     <motion.div className="dashboard-greeting"
       initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }}
@@ -990,7 +1019,21 @@ function GreetingBanner() {
           <p className="dashboard-greeting__date">{dateStr}</p>
         </div>
       </div>
-      <div className="dashboard-greeting__clock">{timeStr}</div>
+      <div className="dashboard-greeting__right">
+        {weather && (
+          <div className="dashboard-greeting__weather">
+            <span className="dashboard-greeting__weather-icon">{WMO_ICONS[weather.code] ?? '🌡️'}</span>
+            <div>
+              <p className="dashboard-greeting__weather-temp">{weather.temp}°C</p>
+              <p className="dashboard-greeting__weather-city">Contrexéville</p>
+            </div>
+          </div>
+        )}
+        <div className="dashboard-greeting__activity">
+          <p className="dashboard-greeting__activity-label">Dernière activité</p>
+          <p className="dashboard-greeting__activity-val">{lastActiveStr}</p>
+        </div>
+      </div>
     </motion.div>
   )
 }
