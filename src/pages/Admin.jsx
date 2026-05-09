@@ -14,7 +14,7 @@ import {
   updateLastActive, getLastActive,
 } from '../utils/storage'
 import './Admin.css'
-import { dbSaveConfig, dbSaveAboutImg, dbSaveLogoImg, dbSaveCustomPhoto, dbDeleteCustomPhoto, dbSaveAllHeroSlides, dbGetVisitHistory, dbCreateGallery, dbDeleteGallery, dbAddGalleryPhoto, dbDeleteGalleryPhoto, dbGetAllGalleries, dbGetAvailability, dbSaveAvailability, dbAddLoginAttempt, dbGetLoginHistory, dbClearLoginHistory, dbPingFirestore, dbCreateSession, dbGetSessions, dbDeleteSession, dbRemovePassword, dbMigrateBase64ToCloudinary, dbMigrateHeroSlidesToCloudinary, dbGetLockoutState, dbSetLockoutState } from '../utils/db'
+import { dbSaveConfig, dbSaveAboutImg, dbSaveLogoImg, dbSaveCustomPhoto, dbDeleteCustomPhoto, dbSaveAllHeroSlides, dbGetVisitHistory, dbCreateGallery, dbDeleteGallery, dbAddGalleryPhoto, dbDeleteGalleryPhoto, dbGetAllGalleries, dbGetGallery, dbGetAvailability, dbSaveAvailability, dbAddLoginAttempt, dbGetLoginHistory, dbClearLoginHistory, dbPingFirestore, dbCreateSession, dbGetSessions, dbDeleteSession, dbRemovePassword, dbMigrateBase64ToCloudinary, dbMigrateHeroSlidesToCloudinary, dbGetLockoutState, dbSetLockoutState } from '../utils/db'
 
 const CATEGORIES = ['Portraits & Famille', 'Nature & Paysages', 'Concerts & Événements', 'Auto & Moto', 'Architecture']
 
@@ -2028,6 +2028,13 @@ function TabGalleries() {
     navigator.clipboard.writeText(url).then(() => alert('Lien copié !'))
   }
 
+  const handleToggle = async (code) => {
+    if (expanded === code) { setExpanded(null); return }
+    setExpanded(code)
+    const fresh = await dbGetGallery(code)
+    if (fresh) setGalleries(prev => prev.map(g => g.code === code ? { ...g, ...fresh } : g))
+  }
+
   return (
     <div className="tab-galleries">
       <div className="admin-tab__header">
@@ -2062,7 +2069,7 @@ function TabGalleries() {
             <GalleryCard
               gallery={g}
               expanded={expanded === g.code}
-              onToggle={() => setExpanded(expanded === g.code ? null : g.code)}
+              onToggle={() => handleToggle(g.code)}
               onDelete={() => deleteGallery(g.code)}
               onCopyLink={() => copyLink(g.code)}
               onAddPhoto={(photo) => addPhoto(g.code, photo)}
@@ -2171,7 +2178,11 @@ function GalleryCard({ gallery, expanded, onToggle, onDelete, onCopyLink, onAddP
           <span className="gallery-card__name">{gallery.clientName}</span>
           <span className="gallery-card__meta">
             {gallery.code} · {(gallery.photos || []).length} photo{(gallery.photos || []).length !== 1 ? 's' : ''}
-            {gallery.views ? ` · 👁 ${gallery.views} vue${gallery.views > 1 ? 's' : ''}` : ' · Pas encore consulté'}
+            {gallery.views
+              ? ` · 👁 ${gallery.views} vue${gallery.views > 1 ? 's' : ''}`
+              : gallery.selectionValidated
+                ? ' · 👁 Consulté'
+                : ' · Pas encore consulté'}
             {gallery.lastView ? ` · ${new Date(gallery.lastView).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}` : ''}
             {gallery.selectionValidated ? ` · ✅ ${(gallery.selectedPhotos || []).length} sélectionnée${(gallery.selectedPhotos || []).length > 1 ? 's' : ''}` : ''}
           </span>
